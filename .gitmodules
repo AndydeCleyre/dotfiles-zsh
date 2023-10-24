@@ -3,7 +3,8 @@
 	url = https://github.com/agkozak/agkozak-zsh-prompt
 [submodule "plugins/fast-syntax-highlighting"]
 	path = plugins/fast-syntax-highlighting
-	url = https://github.com/zdharma-continuum/fast-syntax-highlighting
+	url = https://github.com/andydecleyre/fast-syntax-highlighting
+	branch = bugfix/38
 [submodule "plugins/zsh-autoenv"]
 	path = plugins/zsh-autoenv
 	url = https://github.com/Tarrasch/zsh-autoenv

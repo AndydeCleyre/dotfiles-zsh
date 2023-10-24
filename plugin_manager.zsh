@@ -66,7 +66,7 @@
   local dest=$1     ; shift
   local gen_cmd=($@)
 
-  if ! (( $+commands[$check_cmd] ))  return
+  if ! (( $+commands[$check_cmd] ))  return 1
 
   mkdir -p ${dest:a:h}
   if [[ ! ${dest}(#qmw-2N) ]] {

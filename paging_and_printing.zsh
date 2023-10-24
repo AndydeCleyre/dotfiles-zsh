@@ -173,10 +173,10 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
   } elif (( $+commands[bat] )) {
 
     if [[ $syntax ]]  argv+=(-l $syntax)
-    bat -p --paging never --color always $@
+    bat -pp --color always $@
   } elif (( $+commands[batcat] )) {
     if [[ $syntax ]]  argv+=(-l $syntax)
-    batcat -p --paging never --color always $@
+    batcat -pp --color always $@
 
   } else {
     cat $@

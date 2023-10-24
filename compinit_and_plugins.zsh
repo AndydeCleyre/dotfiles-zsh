@@ -58,12 +58,8 @@ compinit -d ${XDG_CACHE_HOME:-~/.cache}/zsh/zcompdump-$ZSH_VERSION  # mkdir need
   zsh-autoenv
 
 # -- Generated Sources --
-.zshrc_fortnightly pip ${ZSH_PLUGINS_DIR}/pip.zsh \
-  pip completion -z
-.zshrc_fortnightly rtx ${ZSH_PLUGINS_DIR}/rtx.zsh \
-  rtx activate zsh
-. ${ZSH_PLUGINS_DIR}/pip.zsh
-. ${ZSH_PLUGINS_DIR}/rtx.zsh
+if { .zshrc_fortnightly pip ${ZSH_PLUGINS_DIR}/pip.zsh pip completion -z }  . ${ZSH_PLUGINS_DIR}/pip.zsh
+if { .zshrc_fortnightly rtx ${ZSH_PLUGINS_DIR}/rtx.zsh rtx activate zsh  }  . ${ZSH_PLUGINS_DIR}/rtx.zsh
 
 # -------
 # Cleanup

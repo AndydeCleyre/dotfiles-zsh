@@ -53,6 +53,19 @@ bindkey   '^[[1;3F' .zle_replace-last  # esc, end
 zle -N         .zle_prepend-doas
 bindkey '\e\e' .zle_prepend-doas  # esc, esc
 
+# -- `set -x` Sandwich --
+# Key: esc, s
+.zle_setx-sandwich () {
+  local obuffer=$BUFFER
+  zle .push-input
+  BUFFER="set -x; $obuffer; set +x"
+  CURSOR=$#BUFFER
+
+  if (( $+functions[_zsh_highlight] ))  _zsh_highlight
+}
+zle -N        .zle_setx-sandwich
+bindkey '\es' .zle_setx-sandwich  # esc, s
+
 # -- Expand aliases on the line --
 # Key: esc, x
 # Credit: https://unix.stackexchange.com/a/150737

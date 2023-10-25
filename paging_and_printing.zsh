@@ -136,21 +136,7 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
     ;;
   }
 
-  if (( $+commands[rich] )) {
-
-    local r_args=(--force-terminal --guides -W $(( COLUMNS-4 )))
-    if [[ $syntax ]] {
-      if [[ $syntax == yml ]]  syntax=yaml
-      r_args+=(--lexer $syntax)
-    }
-
-    if [[ ! -t 0  ]] {
-      rich $r_args -
-    } else {
-      for 1 { rich $r_args $1 }
-    }
-
-  } elif (( $+commands[highlight] )) {
+  if (( $+commands[highlight] )) {
 
     local themes=(aiseered blacknblue bluegreen ekvoli navy)
 
@@ -168,6 +154,20 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
       if [[ $content ]]  highlight $h_args <<<$content
     } else {
       highlight $h_args
+    }
+
+  } elif (( $+commands[rich] )) {
+
+    local r_args=(--force-terminal --guides -W $(( COLUMNS-4 )))
+    if [[ $syntax ]] {
+      if [[ $syntax == yml ]]  syntax=yaml
+      r_args+=(--lexer $syntax)
+    }
+
+    if [[ ! -t 0  ]] {
+      rich $r_args -
+    } else {
+      for 1 { rich $r_args $1 }
     }
 
   } elif (( $+commands[bat] )) {

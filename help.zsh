@@ -33,7 +33,7 @@ alias huh="typeset -p"
 
   local content=$($cmd $pattern $files)
   content=${content/ \(\) \{  \# / }
-  if [[ ! $content ]]  content=$(which $funcname)
+  if [[ ! $content ]]  content=$(which -x 2 $funcname)
   REPLY=$content
 }
 
@@ -91,26 +91,23 @@ wh () {  # <funcname>
       $cmd $pattern $src | .zshrc_wh-hszsh
       if ! [[ ${pipestatus:#0} ]]  return
     }
-    which -x 4 $funcname | .zshrc_wh-hszsh
+    which -x 2 $funcname | .zshrc_wh-hszsh
 
   # -- Show alias info --
   } elif (( $+aliases[$funcname] )) {
-
     local files=(${ZDOTDIR:-~}/*zsh(|rc|env)(.D))
 
+    if [[ -t 1 ]]  whence -v $funcname
     if [[ $can_search ]] {
-
       $cmd $pattern $files | .zshrc_wh-hszsh
       if ! [[ ${pipestatus:#0} ]]  return
-
     }
-
     whence -f $funcname | .zshrc_wh-hszsh
 
   # -- Desperately flail for info --
   } else {
     run-help $funcname
-    which $funcname
+    whence -as $funcname
     if (( $+commands[tldr] ))  tldr $funcname
   }
   # TODO: add huh (typeset -p) handling?

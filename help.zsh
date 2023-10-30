@@ -77,7 +77,7 @@ _zshrc_help () {  # <funcname>
   }
 }
 
-# -- Print location and content of a function/alias, or try printing help for a command --
+# -- Print location/content/help of a function/alias/command/parameter  --
 # Depends: .zshrc_help
 # Optional:
 #   - h (paging_and_printing.zsh)
@@ -144,14 +144,16 @@ wh () {  # <funcname>
     }
     whence -f $funcname | .zshrc_wh-hszsh
 
+  # -- Show parameter info --
+  } elif [[ -v $funcname ]] {
+    typeset -p $funcname | .zshrc_wh-hszsh
+
   # -- Desperately flail for info --
   } else {
     run-help $funcname
     whence -as $funcname
     if (( $+commands[tldr] ))  tldr $funcname
   }
-  # TODO: add huh (typeset -p) handling?
-  # TODO: add mz (mansnip)? probably not
 
   # -- Cleanup --
   unfunction .zshrc_wh-hszsh

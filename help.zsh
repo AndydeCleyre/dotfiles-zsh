@@ -37,6 +37,46 @@ alias huh="typeset -p"
   REPLY=$content
 }
 
+# -- Show completion message for a function --
+# Depends: .zshrc_help
+_zshrc_help () {  # <funcname>
+  setopt localoptions extendedglob
+
+  local msg REPLY
+  .zshrc_help $1
+  msg=(${(f)REPLY})
+  msg=(${msg//#(#b)([^#]*)/%B${match[1]}%b})
+  if ! [[ -v NO_COLOR ]]  msg=(${msg//#(#b)(\#*)/%F{blue}$match[1]%f})
+
+  _message -r ${(F)msg}
+}
+
+# -- Generate completion functions showing help message --
+.zshrc_help_complete () {  # <funcname...>
+  if (( $+functions[compdef] )) {
+    for 1 {
+      _$1 () {
+        _zshrc_help ${0[2,-1]}
+        _files
+      }
+      compdef _$1 $1
+    }
+  }
+}
+.zshrc_help_complete-as-prefix () {  # <funcname...>
+  if (( $+functions[compdef] )) {
+    for 1 {
+      _$1 () {
+        _zshrc_help ${0[2,-1]}
+        shift words
+        (( CURRENT-=1 ))
+        _normal -P
+      }
+      compdef _$1 $1
+    }
+  }
+}
+
 # -- Print location and content of a function/alias, or try printing help for a command --
 # Depends: .zshrc_help
 # Optional:
@@ -117,30 +157,7 @@ wh () {  # <funcname>
   unfunction .zshrc_wh-hszsh
 }
 
-# -- Show completion message for a function --
-# Depends: .zshrc_help
-_zshrc_help () {  # <funcname>
-  setopt localoptions extendedglob
-
-  local msg REPLY
-  .zshrc_help $1
-  msg=(${(f)REPLY})
-  msg=(${msg//#(#b)([^#]*)/%B${match[1]}%b})
-  if ! [[ -v NO_COLOR ]]  msg=(${msg//#(#b)(\#*)/%F{blue}$match[1]%f})
-
-  _message -r ${(F)msg}
-}
-
-# -- wh Completion --
-if (( $+functions[compdef] )) {
-  _wh () {
-    _zshrc_help ${0[2,-1]}
-    shift words
-    (( CURRENT-=1 ))
-    _normal -P
-  }
-  compdef _wh wh
-}
+.zshrc_help_complete-as-prefix wh
 
 # -- Prepend wh --
 # Key: esc, w
@@ -167,19 +184,6 @@ bindkey '\ew' .zle_prepend-wh  # esc, w
 }
 zle -N        .zle_prepend-tldr
 bindkey '\et' .zle_prepend-tldr  # esc, t
-
-# -- Generate completion functions showing help message --
-.zshrc_help_complete () {  # <funcname...>
-  if (( $+functions[compdef] )) {
-    for 1 {
-      _$1 () {
-        _zshrc_help ${0[2,-1]}
-        _files
-      }
-      compdef _$1 $1
-    }
-  }
-}
 
 # -- View portions of the Zsh man pages --
 # Depends: mansnip-kristopolous (PyPI)

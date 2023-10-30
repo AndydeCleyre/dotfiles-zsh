@@ -91,7 +91,7 @@ unfunction .zshrc_def-select-and .zshrc_def-deselect-and .zshrc_def-del-selected
 # -- Cursor left-word and deselect --
 # Keys:
 #   - ctrl+left
-#   - pgup (Superseded in ~/.config/zsh/tmux.zsh)
+#   - pgup (Superseded in tmux.zsh)
 
 # -- Cursor right-word and deselect --
 # Keys:

@@ -23,7 +23,7 @@ bindkey '^L' .zle_push-line-and-clear  # ctrl+l
 
 # -- Folder Navigation: Down --
 # Key: alt+down
-# Superseded in ~/.config/zsh/broot.zsh
+# Superseded in broot.zsh
 .zle_cd-down () {
   zle .push-input
   BUFFER="cd "

@@ -26,7 +26,7 @@ zstyle ':completion::complete:*' use-cache 1
 
 # -- Complete file path --
 # Key: ctrl+/
-# Superseded in ~/.config/zsh/broot.zsh
+# Superseded in broot.zsh
 zstyle ':completion:complete-files:*' completer _files
 zle -C complete-files menu-complete _generic
 bindkey '^_' complete-files  # ctrl+/

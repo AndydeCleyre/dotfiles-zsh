@@ -1,4 +1,5 @@
-# -- watch, but also works for functions --
+# -- zwatch --
+# It's like watch, but also works for functions
 # -t           -- disable header
 # -n <seconds> -- run command this often
 zwatch () {  # [-t] [-n <seconds>=2] <cmd> [<cmd-arg>...]
@@ -30,4 +31,11 @@ zwatch () {  # [-t] [-n <seconds>=2] <cmd> [<cmd-arg>...]
   }
 }
 
-if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete zwatch
+if (( $+functions[.zshrc_help_complete-as-prefix] ))  .zshrc_help_complete-as-prefix zwatch
+
+# _zwatch () {
+#   shift words
+#   (( CURRENT-=1 ))
+#   _normal -P
+# }
+# compdef _zwatch zwatch

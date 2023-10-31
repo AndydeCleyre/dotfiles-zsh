@@ -1,4 +1,4 @@
-zmodload -F zsh/files b:mkdir
+zmodload zsh/files
 umask 007
 
 # -- Make and enter a folder --

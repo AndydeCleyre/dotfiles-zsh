@@ -62,7 +62,7 @@ hi () {  # [-s <syntax>] [<highlight-arg>...]
     navy
   )
 
-  highlight -O truecolor -s ${themes[RANDOM % $#themes + 1]} -t 4 --force --stdout $@
+  highlight -O truecolor -s ${themes[RANDOM % $#themes + 1]} -t 2 --force --stdout $@
 }
 
 # -- Highlight with whatever --
@@ -140,7 +140,7 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
 
     local themes=(aiseered blacknblue bluegreen ekvoli navy)
 
-    local h_args=(-O truecolor -s ${themes[RANDOM % $#themes + 1]} -t 4 --force --stdout $@)
+    local h_args=(-O truecolor -s ${themes[RANDOM % $#themes + 1]} -t 2 --force --stdout $@)
     if [[ $syntax ]]  h_args+=(-S $syntax)
 
     # Empty input can yield unwanted newlines as output from highlight.

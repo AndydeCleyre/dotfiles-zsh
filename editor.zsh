@@ -22,7 +22,6 @@ mcdiff () {  # [<mcdiff-arg>...]
     seasons-spring16M
     seasons-summer16M
     seasons-winter16M
-    xoria256
     yadt256-defbg
     yadt256
   )

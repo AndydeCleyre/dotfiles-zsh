@@ -37,8 +37,8 @@ ZSHZ_UNCOMMON=1
 # --------
 
 autoload -Uz compinit
-mkdir -p     ${XDG_CACHE_HOME:-~/.cache}/zsh
-compinit -id ${XDG_CACHE_HOME:-~/.cache}/zsh/zcompdump-$ZSH_VERSION
+mkdir -p       ${XDG_CACHE_HOME:-~/.cache}/zsh
+compinit -i -d ${XDG_CACHE_HOME:-~/.cache}/zsh/zcompdump-$ZSH_VERSION
 
 # --------------------------------
 # Load some plugins after compinit

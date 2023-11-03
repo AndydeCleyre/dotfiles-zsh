@@ -63,8 +63,6 @@ PROMPT2='%B%F{blue}…%f%b '
   if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {
 
     # -- git Status --
-    # Depends: realpath from GNU coreutils or otherwise supporting --relative-to
-    # TODO: use vcs_info?
     .zshrc_prompt-gitstat () {
       emulate -L zsh
 

@@ -14,8 +14,8 @@ autoload -Uz zargs
 . ${ZDOTDIR}/completion_and_glob_opts.zsh  #
 . ${ZDOTDIR}/clear_and_foldernav.zsh       #
 . ${ZDOTDIR}/broot.zsh                     # supersedes keys:
-                                              #   - ctrl+/   (load after completion_and_glob_opts)
-                                              #   - alt+down (load after clear_and_foldernav)
+                                           #   - ctrl+/   (load after completion_and_glob_opts)
+                                           #   - alt+down (load after clear_and_foldernav)
 
 # -- These use .zshrc_help_complete if loaded (load after help) --
 . ${ZDOTDIR}/clipboard.zsh

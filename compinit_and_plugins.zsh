@@ -57,6 +57,8 @@ compinit -i -d ${XDG_CACHE_HOME:-~/.cache}/zsh/zcompdump-$ZSH_VERSION
   fast-syntax-highlighting \
   agkozak-zsh-prompt \
   zsh-autoenv
+.zshrc_load-plugin --try \
+  ${ZSH_PLUGINS_DIR}/powerlevel10k/powerlevel10k.zsh-theme
 
 # -- Generated Sources --
 if { .zshrc_fortnightly pip ${ZSH_PLUGINS_DIR}/pip.zsh pip completion -z }  . ${ZSH_PLUGINS_DIR}/pip.zsh

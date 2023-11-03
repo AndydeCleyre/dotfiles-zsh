@@ -59,8 +59,54 @@ PROMPT2='%B%F{blue}…%f%b '
   .zshrc_prompt-bubble "$distro "
   distro_bubble=$REPLY
 
-  # -- Set PROMPT and RPROMPT if agkozak isn't loaded --
-  if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {
+  # -- Configure p10k if loaded --
+  if (( $+functions[powerlevel10k_plugin_unload] )) {
+
+    if [[ -r ~/.config/zsh/.p10k.zsh ]]  . ~/.config/zsh/.p10k.zsh
+    POWERLEVEL9K_PROMPT_CHAR_OK_VIINS_CONTENT_EXPANSION='$'
+    POWERLEVEL9K_PROMPT_CHAR_ERROR_VIINS_CONTENT_EXPANSION='$'
+
+  # -- Configure agkozak if loaded --
+  } elif (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {
+
+    miniprompt () {
+      agkozak-zsh-prompt_plugin_unload
+      PROMPT='%F{green}$ %f'
+    }
+
+    if [[ $HOST == $usual_host && $USERNAME == $usual_user ]]  AGKOZAK_USER_HOST_DISPLAY=0
+    # AGKOZAK_CUSTOM_SYMBOLS=('⇣⇡' '⇣' '⇡' '+' 'x' '!' '→' '?' '$')
+    AGKOZAK_CUSTOM_SYMBOLS=('⇣⇡' '⇣' '⇡' '+' 'D' 'M' '→' '?' '$')
+    AGKOZAK_LEFT_PROMPT_ONLY=1
+    AGKOZAK_PROMPT_CHAR=('%F{green}%B$%b%f' '#' ':')
+    AGKOZAK_PROMPT_DIRTRIM=4
+    AGKOZAK_PROMPT_DIRTRIM_STRING=…
+    AGKOZAK_COLORS_PATH=magenta
+    AGKOZAK_BLANK_LINES=1
+
+    # -- Piped Command Error Return Codes --
+    # https://github.com/agkozak/agkozak-zsh-prompt/issues/34
+    .agkozak_pipestatus_hook () {
+      AGKOZAK_PIPESTATUS="${${pipestatus#0}:+(${"${pipestatus[*]}"// /|})}"
+      if [[ ! $AGKOZAK_PIPESTATUS ]]  return
+      if [[ $AGKOZAK_PIPESTATUS == *0\) ]] {
+        .zshrc_prompt-bubble "%F{yellow}${AGKOZAK_PIPESTATUS}"
+        AGKOZAK_PIPESTATUS="$REPLY "
+      } else {
+        .zshrc_prompt-bubble "%F{red\}${AGKOZAK_PIPESTATUS}"
+        AGKOZAK_PIPESTATUS="$REPLY "
+      }
+    }
+    autoload -Uz add-zsh-hook
+    add-zsh-hook precmd .agkozak_pipestatus_hook
+
+    # -- RPROMPT --
+    AGKOZAK_CUSTOM_RPROMPT="${distro_bubble} ${ptime_bubble}"
+    if [[ $TMUX ]]  AGKOZAK_CUSTOM_RPROMPT="${tmux_bubbles} ${AGKOZAK_CUSTOM_RPROMPT}"
+    AGKOZAK_CUSTOM_RPROMPT="\${AGKOZAK_PIPESTATUS}${AGKOZAK_CUSTOM_RPROMPT}"
+
+  # -- Set PROMPT and RPROMPT if no prompt plugin is loaded --
+  } else {
 
     # -- git Status --
     .zshrc_prompt-gitstat () {
@@ -91,45 +137,6 @@ PROMPT2='%B%F{blue}…%f%b '
     right_segments+=($ptime_bubble)
 
     RPROMPT=${(j: :)right_segments}
-
-  # -- Configure agkozak if loaded --
-  } else {
-
-    miniprompt () {
-      agkozak-zsh-prompt_plugin_unload
-      PROMPT='%F{green}$ %f'
-    }
-
-    if [[ $HOST == $usual_host && $USERNAME == $usual_user ]]  AGKOZAK_USER_HOST_DISPLAY=0
-    # AGKOZAK_CUSTOM_SYMBOLS=('⇣⇡' '⇣' '⇡' '+' 'x' '!' '→' '?' '$')
-    AGKOZAK_CUSTOM_SYMBOLS=('⇣⇡' '⇣' '⇡' 'A' 'D' 'M' '→' '?' '$')
-    AGKOZAK_LEFT_PROMPT_ONLY=1
-    AGKOZAK_PROMPT_CHAR=('%F{green}%B$%b%f' '#' ':')
-    AGKOZAK_PROMPT_DIRTRIM=4
-    AGKOZAK_PROMPT_DIRTRIM_STRING=…
-    AGKOZAK_COLORS_PATH=magenta
-    AGKOZAK_BLANK_LINES=1
-
-    # -- Piped Command Error Return Codes --
-    # https://github.com/agkozak/agkozak-zsh-prompt/issues/34
-    .agkozak_pipestatus_hook () {
-      AGKOZAK_PIPESTATUS="${${pipestatus#0}:+(${"${pipestatus[*]}"// /|})}"
-      if [[ ! $AGKOZAK_PIPESTATUS ]]  return
-      if [[ $AGKOZAK_PIPESTATUS == *0\) ]] {
-        .zshrc_prompt-bubble "%F{yellow}${AGKOZAK_PIPESTATUS}"
-        AGKOZAK_PIPESTATUS="$REPLY "
-      } else {
-        .zshrc_prompt-bubble "%F{red\}${AGKOZAK_PIPESTATUS}"
-        AGKOZAK_PIPESTATUS="$REPLY "
-      }
-    }
-    autoload -Uz add-zsh-hook
-    add-zsh-hook precmd .agkozak_pipestatus_hook
-
-    # -- RPROMPT --
-    AGKOZAK_CUSTOM_RPROMPT="${distro_bubble} ${ptime_bubble}"
-    if [[ $TMUX ]]  AGKOZAK_CUSTOM_RPROMPT="${tmux_bubbles} ${AGKOZAK_CUSTOM_RPROMPT}"
-    AGKOZAK_CUSTOM_RPROMPT="\${AGKOZAK_PIPESTATUS}${AGKOZAK_CUSTOM_RPROMPT}"
 
   }
 }

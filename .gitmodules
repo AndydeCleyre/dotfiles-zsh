@@ -20,3 +20,6 @@
 [submodule "plugins/zsh-completions"]
 	path = plugins/zsh-completions
 	url = https://github.com/zsh-users/zsh-completions
+[submodule "plugins/powerlevel10k"]
+	path = plugins/powerlevel10k
+	url = https://github.com/romkatv/powerlevel10k

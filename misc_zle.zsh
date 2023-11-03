@@ -110,3 +110,7 @@ bindkey ' ' magic-space
 # Key: (unsets) ctrl+s
 setopt noflowcontrol
 bindkey -r '^s'
+
+# -- Fix spelling --
+# Key: esc, f
+bindkey '\ef' spell-word

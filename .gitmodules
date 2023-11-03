@@ -1,25 +1,33 @@
 [submodule "plugins/agkozak-zsh-prompt"]
 	path = plugins/agkozak-zsh-prompt
 	url = https://github.com/agkozak/agkozak-zsh-prompt
+	shallow = true
 [submodule "plugins/fast-syntax-highlighting"]
 	path = plugins/fast-syntax-highlighting
 	url = https://github.com/andydecleyre/fast-syntax-highlighting
 	branch = bugfix/38
+	shallow = true
 [submodule "plugins/zsh-autoenv"]
 	path = plugins/zsh-autoenv
 	url = https://github.com/Tarrasch/zsh-autoenv
+	shallow = true
 [submodule "plugins/zsh-defer"]
 	path = plugins/zsh-defer
 	url = https://github.com/romkatv/zsh-defer
+	shallow = true
 [submodule "plugins/zsh-z"]
 	path = plugins/zsh-z
 	url = https://github.com/agkozak/zsh-z
+	shallow = true
 [submodule "plugins/zpy"]
 	path = plugins/zpy
 	url = https://github.com/andydecleyre/zpy
+	shallow = true
 [submodule "plugins/zsh-completions"]
 	path = plugins/zsh-completions
 	url = https://github.com/zsh-users/zsh-completions
+	shallow = true
 [submodule "plugins/powerlevel10k"]
 	path = plugins/powerlevel10k
 	url = https://github.com/romkatv/powerlevel10k
+	shallow = true

@@ -50,11 +50,8 @@
 
   ZSH_PLUGINS_DIR=${ZSH_PLUGINS_DIR:-${${(%):-%x}:P:h}/plugins}  # adjacent plugins/ folder unless already set
 
-  local folder
-  for folder ( ${ZSH_PLUGINS_DIR}/*(/) ) {
-    git -C $folder remote get-url "$(git -C $folder remote)"
-    git -C $folder pull
-  }
+  git -C ${ZSH_PLUGINS_DIR} submodule foreach \
+    git pull
 }
 
 # -- Regenerate outdated files --

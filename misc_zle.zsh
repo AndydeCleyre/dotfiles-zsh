@@ -114,3 +114,7 @@ bindkey -r '^s'
 # -- Fix spelling --
 # Key: esc, f
 bindkey '\ef' spell-word
+
+# -- Evaluate prefixed aliases --
+alias doas="=doas "
+alias sudo="=sudo "

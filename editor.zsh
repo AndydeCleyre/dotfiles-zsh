@@ -3,7 +3,7 @@ export MICRO_TRUECOLOR=1
 
 alias e="$EDITOR"
 
-xt () { touch "$@"; chmod +x "$@" }
+xt () { touch "$@"; chmod ug+x "$@" }
 xe () { xt "$@"; $EDITOR "$@" }
 xsubl () { xt "$@"; subl "$@" }
 

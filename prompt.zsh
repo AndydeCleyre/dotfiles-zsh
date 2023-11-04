@@ -8,17 +8,23 @@ PROMPT2='%B%F{blue}…%f%b '
 
 # -- Bubble String --
 # Sets: REPLY
+# -e adds hashes before format ending braces: %F{xxx} -> %F{xxx#}
 # If LANG=en_US.UTF-8 is not set,
 # or the system locale is not set to en_US.UTF-8,
 # the bubble characters may mess up the spacing
 # and put the cursor in a weird place.
 # To avoid the issue, uncomment the bookends='[]' line below.
-.zshrc_prompt-bubble () {  # <content-str>
+.zshrc_prompt-bubble () {  # [-e] <content-str>
   emulate -L zsh
   unset REPLY
 
   local bubble_bg='#16161d'
   local bubble_fg=green
+  if [[ $1 == -e ]] {
+    shift
+    bubble_bg="${bubble_bg}#"
+    bubble_fg="${bubble_fg}#"
+  }
 
   local bookends=''
   # bookends='[]'
@@ -39,9 +45,8 @@ PROMPT2='%B%F{blue}…%f%b '
   local ptime_bubble=$REPLY
 
   # -- Tab Bubbles --
-  # TODO: Reuse .zshrc_prompt-bubble here?
-  local bubble_bg='#16161d'
-  local tmux_bubbles='${(j: :)${(f)"$(tmux lsw -F "%F{'$bubble_bg'#}%f%K{'$bubble_bg'#}#{?#{==:#{pane_tty},$TTY},%F{white#},%F{blue#}}#{?#{!=:#W,zsh},#W,$}#{?#{!=:#{window_panes},1},+,}%k%F{'$bubble_bg'#}%f" 2>/dev/null)"}}'
+  .zshrc_prompt-bubble -e '#{?#{==:#{pane_tty},$TTY},%F{white#},%F{blue#}}#{?#{!=:#W,zsh},#W,$}#{?#{!=:#{window_panes},1},+,}'
+  local tmux_bubbles='${(j: :)${(f)"$(tmux lsw -F "'$REPLY'" 2>/dev/null)"}}'
 
   # -- Distro Bubble --
   local distro line distro_bubble

@@ -11,10 +11,6 @@
 	path = plugins/zsh-autoenv
 	url = https://github.com/Tarrasch/zsh-autoenv
 	shallow = true
-[submodule "plugins/zsh-defer"]
-	path = plugins/zsh-defer
-	url = https://github.com/romkatv/zsh-defer
-	shallow = true
 [submodule "plugins/zsh-z"]
 	path = plugins/zsh-z
 	url = https://github.com/agkozak/zsh-z

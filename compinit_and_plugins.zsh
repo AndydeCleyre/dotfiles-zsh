@@ -23,7 +23,6 @@ ZSHZ_UNCOMMON=1
 
 # -- Single Location Sources --
 .zshrc_load-plugin \
-  zsh-defer \
   zsh-completions \
   zsh-z
 

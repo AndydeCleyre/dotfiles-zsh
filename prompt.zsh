@@ -85,19 +85,18 @@ PROMPT2='%B%F{blue}…%f%b '
 
     # -- Piped Command Error Return Codes --
     # https://github.com/agkozak/agkozak-zsh-prompt/issues/34
-    .agkozak_pipestatus_hook () {
+    .zshrc_prompt-agkozak-pipestatus-hook () {
       AGKOZAK_PIPESTATUS="${${pipestatus#0}:+(${"${pipestatus[*]}"// /|})}"
       if [[ ! $AGKOZAK_PIPESTATUS ]]  return
       if [[ $AGKOZAK_PIPESTATUS == *0\) ]] {
         .zshrc_prompt-bubble "%F{yellow}${AGKOZAK_PIPESTATUS}"
-        AGKOZAK_PIPESTATUS="$REPLY "
       } else {
-        .zshrc_prompt-bubble "%F{red\}${AGKOZAK_PIPESTATUS}"
-        AGKOZAK_PIPESTATUS="$REPLY "
+        .zshrc_prompt-bubble "%F{red}${AGKOZAK_PIPESTATUS}"
       }
+      AGKOZAK_PIPESTATUS="$REPLY "
     }
     autoload -Uz add-zsh-hook
-    add-zsh-hook precmd .agkozak_pipestatus_hook
+    add-zsh-hook precmd .zshrc_prompt-agkozak-pipestatus-hook
 
     # -- RPROMPT --
     AGKOZAK_CUSTOM_RPROMPT="${distro_bubble} ${ptime_bubble}"

@@ -111,9 +111,18 @@ PROMPT2='%B%F{blue}…%f%b '
       emulate -L zsh
 
       local gitref=${$(git branch --show-current 2>/dev/null):-$(git rev-parse --short HEAD 2>/dev/null)}
-      local gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
-      gitroot=${$(realpath --relative-to=. $gitroot 2>/dev/null):#(.|$PWD)}
-      print -rP -- "%F{magenta}${gitroot}%F{white}${gitroot:+:}%F{blue}${gitref}%F{red}${$(git status --porcelain 2>/dev/null):+*}%f"
+
+      if [[ $gitref ]] {
+        local gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
+        gitroot=${$(realpath --relative-to=. $gitroot 2>/dev/null):#(.|$PWD)}
+
+        local dirt=$(git status --porcelain 2>/dev/null)
+
+        local REPLY
+        .zshrc_prompt-bubble "%F{magenta}${gitroot}%F{white}${gitroot:+:}%F{blue}${gitref}%F{red}${${dirt}:+*}%f"
+
+        print -rP -- $REPLY
+      }
     }
 
     # -- PROMPT --

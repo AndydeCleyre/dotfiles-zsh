@@ -74,13 +74,7 @@ PROMPT2='%B%F{blue}…%f%b '
   # -- Configure agkozak if loaded --
   } elif (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {
 
-    miniprompt () {
-      agkozak-zsh-prompt_plugin_unload
-      PROMPT='%F{green}$ %f'
-    }
-
     if [[ $HOST == $usual_host && $USERNAME == $usual_user ]]  AGKOZAK_USER_HOST_DISPLAY=0
-    # AGKOZAK_CUSTOM_SYMBOLS=('⇣⇡' '⇣' '⇡' '+' 'x' '!' '→' '?' '$')
     AGKOZAK_CUSTOM_SYMBOLS=('⇣⇡' '⇣' '⇡' '+' 'D' 'M' '→' '?' '$')
     AGKOZAK_LEFT_PROMPT_ONLY=1
     AGKOZAK_PROMPT_CHAR=('%F{green}%B$%b%f' '#' ':')
@@ -144,6 +138,15 @@ PROMPT2='%B%F{blue}…%f%b '
     RPROMPT=${(j: :)right_segments}
 
   }
+}
+
+miniprompt () {
+  if (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {
+    agkozak-zsh-prompt_plugin_unload
+  } elif (( $+functions[powerlevel10k_plugin_unload] )) {
+    powerlevel10k_plugin_unload
+  }
+  PROMPT='%F{green}$ %f'
 }
 
 dozenal_time () {

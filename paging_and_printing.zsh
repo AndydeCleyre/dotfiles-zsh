@@ -71,7 +71,7 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
   emulate -L zsh -o extendedglob
   rehash
 
-  # get syntax if first arg is md/rst file,
+  # get syntax if first arg is md/rst/log file,
   # or pop if passed with -[Ss]
   local syntax syntax_idx=${@[(I)-[Ss]]}
   if (( syntax_idx )) {
@@ -81,6 +81,7 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
     case $1 {
       *(#i).rst)  syntax=rst  ;;
       *(#i).md)   syntax=md   ;;
+      *(#i).log)  syntax=log  ;;
     }
   }
 
@@ -93,7 +94,7 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
     return
   }
 
-  # use special highlighters if present, for md/rst/diff
+  # use special highlighters if present, for md/rst/diff/log
   local hi
   case $syntax {
     md)
@@ -132,6 +133,14 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
           return
 
         }
+      }
+    ;;
+    log)
+      if (( $+commands[tspin] )) {
+
+        tspin -p $@
+        return
+
       }
     ;;
   }

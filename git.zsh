@@ -48,6 +48,10 @@ alias gapa="echoti clear && git add --patch"
 alias gpsup="git push --set-upstream"
 alias gfi="git flow init -d"
 
+alias gson="git submodule update --init"
+alias gsoff="git submodule deinit"
+alias gseach="git submodule foreach"
+
 # -- Completion Help Messages --
 # Depends: .zshrc_help_complete
 if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete gcl gcl1 gls hotfixed

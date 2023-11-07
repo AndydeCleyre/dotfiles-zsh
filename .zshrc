@@ -4,18 +4,13 @@ autoload -Uz zargs
 
 : ${ZDOTDIR:=${${(%):-%x}:P:h}}
 
-. ${ZDOTDIR}/inline_selection.zsh  #
-. ${ZDOTDIR}/tmux.zsh              # supersedes key: pgup (load after inline_selection)
+. ${ZDOTDIR}/inline_selection.zsh
+. ${ZDOTDIR}/tmux.zsh  # supersedes key: pgup (load after inline_selection)
 
 . ${ZDOTDIR}/compinit_and_plugins.zsh  # otherwise: autoload -Uz compinit && compinit
-. ${ZDOTDIR}/prompt.zsh                # configures agkozak if loaded (load after compinit_and_plugins)
-. ${ZDOTDIR}/help.zsh                  # uses compdef if loaded       (load after compinit_and_plugins)
 
-. ${ZDOTDIR}/completion_and_glob_opts.zsh  #
-. ${ZDOTDIR}/clear_and_foldernav.zsh       #
-. ${ZDOTDIR}/broot.zsh                     # supersedes keys:
-                                           #   - ctrl+/   (load after completion_and_glob_opts)
-                                           #   - alt+down (load after clear_and_foldernav)
+. ${ZDOTDIR}/prompt.zsh  # configures prompt plugin if loaded (load after compinit_and_plugins)
+. ${ZDOTDIR}/help.zsh    # uses compdef if loaded             (load after compinit_and_plugins)
 
 # -- These use .zshrc_help_complete if loaded (load after help) --
 . ${ZDOTDIR}/clipboard.zsh
@@ -28,10 +23,19 @@ autoload -Uz zargs
 . ${ZDOTDIR}/zwatch.zsh
 
 . ${ZDOTDIR}/cd.zsh
+. ${ZDOTDIR}/clear_and_foldernav.zsh
+. ${ZDOTDIR}/completion_and_glob_opts.zsh
 . ${ZDOTDIR}/editor.zsh
 . ${ZDOTDIR}/history.zsh
+. ${ZDOTDIR}/misc_python.zsh
 . ${ZDOTDIR}/misc_zle.zsh
 . ${ZDOTDIR}/multiline_enter.zsh
+. ${ZDOTDIR}/broot.zsh  # supersedes keys:
+                        #   - ctrl+/   (load after completion_and_glob_opts)
+                        #   - alt+down (load after clear_and_foldernav)
+
+# -- Plugins after everything --
+if (( $+functions[.zshrc_load-plugin] ))  .zshrc_load-plugin zsh-autoenv
 
 # if [[ -r ${ZDOTDIR}/unsorted.zsh ]]  . ${ZDOTDIR}/unsorted.zsh  # TODO: mostly empty this
 

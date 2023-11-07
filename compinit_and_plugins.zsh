@@ -1,5 +1,4 @@
 # -- .zshrc_load-plugin, .zshrc_fortnightly, .zshrc_upgrade-plugins, ZSH_PLUGINS_DIR --
-# Unloaded later: .zshrc_load-plugin, .zshrc_fortnightly
 . ${${(%):-%x}:P:h}/plugin_manager.zsh
 
 # -----------------
@@ -65,9 +64,3 @@ if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {
 # -- Generated Sources --
 if { .zshrc_fortnightly pip ${ZSH_PLUGINS_DIR}/pip.zsh pip completion -z }  . ${ZSH_PLUGINS_DIR}/pip.zsh
 if { .zshrc_fortnightly rtx ${ZSH_PLUGINS_DIR}/rtx.zsh rtx activate zsh  }  . ${ZSH_PLUGINS_DIR}/rtx.zsh
-
-# -------
-# Cleanup
-# -------
-
-unfunction .zshrc_load-plugin .zshrc_fortnightly

@@ -1,10 +1,7 @@
-# TODO:
-#   - bubbled folder in agkozak
-#   - underlined folder in agkozak
-
 setopt promptsubst transientrprompt
 
 PROMPT2='%B%F{blue}…%f%b '
+PROMPT_EOL_MARK='%B%F{red}%f%b'
 
 # -- Bubble String --
 # Sets: REPLY

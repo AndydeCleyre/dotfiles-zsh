@@ -5,9 +5,10 @@
 setopt \
   always_to_end \
   complete_in_word \
-  extendedglob \
-  globdots \
-  nocaseglob
+  extended_glob \
+  glob_dots \
+  glob_star_short \
+  no_case_glob
 
 zstyle ':completion:*:*:*:*:*' menu select
 

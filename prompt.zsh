@@ -13,6 +13,7 @@ PROMPT_EOL_MARK='%F{red} %f'
 # the bubble characters may mess up the spacing
 # and put the cursor in a weird place.
 # To avoid the issue, uncomment the bookends='[]' line below.
+# Also comment out distro_icons entries.
 .zshrc_prompt-bubble () {  # [-e] <content-str>
   emulate -L zsh
   unset REPLY
@@ -153,9 +154,15 @@ PROMPT_EOL_MARK='%F{red} %f'
 
     # -- RPROMPT --
     local right_segments=()
-    if [[ $HOST     != $usual_host ]]  right_segments+=('%F{blue}%m%f')
-    if [[ $USERNAME != $usual_user ]]  right_segments+=('%(!.%F{red}%n%f.%F{green}%n%f)')
-    if [[ $TMUX ]]                     right_segments+=($tmux_bubbles)
+    if [[ $HOST != $usual_host ]] {
+      .zshrc_prompt-bubble '%F{blue}%m%f'
+      right_segments+=($REPLY)
+    }
+    if [[ $USERNAME != $usual_user ]] {
+      .zshrc_prompt-bubble '%(!.%F{red}%n%f.%F{green}%n%f)'
+      right_segments+=($REPLY)
+    }
+    if [[ $TMUX ]]  right_segments+=($tmux_bubbles)
     right_segments+=($distro_bubble)
     right_segments+=($time_bubble)
 

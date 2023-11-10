@@ -34,9 +34,6 @@ autoload -Uz zargs
                         #   - ctrl+/   (load after completion_and_glob_opts)
                         #   - alt+down (load after clear_and_foldernav)
 
-# -- Plugins after everything --
-if (( $+functions[.zshrc_load-plugin] ))  .zshrc_load-plugin zsh-autoenv
-
 # if [[ -r ${ZDOTDIR}/unsorted.zsh ]]  . ${ZDOTDIR}/unsorted.zsh  # TODO: mostly empty this
 
 # If commenting most lines,

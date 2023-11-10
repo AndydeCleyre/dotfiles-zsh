@@ -7,10 +7,6 @@
 	url = https://github.com/andydecleyre/fast-syntax-highlighting
 	branch = bugfix/38
 	shallow = true
-[submodule "plugins/zsh-autoenv"]
-	path = plugins/zsh-autoenv
-	url = https://github.com/Tarrasch/zsh-autoenv
-	shallow = true
 [submodule "plugins/zsh-z"]
 	path = plugins/zsh-z
 	url = https://github.com/agkozak/zsh-z

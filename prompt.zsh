@@ -1,11 +1,13 @@
 setopt promptsubst transientrprompt
 
+autoload -Uz add-zsh-hook
+
 PROMPT2='%B%F{blue}…%f%b '
 PROMPT_EOL_MARK='%B%F{red}%f%b'
 
 # -- Bubble String --
 # Sets: REPLY
-# -e adds hashes before format ending braces: %F{xxx} -> %F{xxx#}
+# -e: add hashes before format ending braces: %F{xxx} -> %F{xxx#}
 # If LANG=en_US.UTF-8 is not set,
 # or the system locale is not set to en_US.UTF-8,
 # the bubble characters may mess up the spacing
@@ -39,7 +41,7 @@ PROMPT_EOL_MARK='%B%F{red}%f%b'
   # -- Time Bubble --
   .zshrc_prompt-bubble '$(dozenal_time)'  # fun
   # .zshrc_prompt-bubble '%D{%L:%M}'      # business
-  local ptime_bubble=$REPLY
+  local time_bubble=$REPLY
 
   # -- Tab Bubbles --
   .zshrc_prompt-bubble -e '#{?#{==:#{pane_tty},$TTY},%F{white#},%F{blue#}}#{?#{!=:#W,zsh},#W,$}#{?#{!=:#{window_panes},1},+,}'
@@ -92,11 +94,10 @@ PROMPT_EOL_MARK='%B%F{red}%f%b'
       }
       AGKOZAK_PIPESTATUS="$REPLY "
     }
-    autoload -Uz add-zsh-hook
     add-zsh-hook precmd .zshrc_prompt-agkozak-pipestatus-hook
 
     # -- RPROMPT --
-    AGKOZAK_CUSTOM_RPROMPT="${distro_bubble} ${ptime_bubble}"
+    AGKOZAK_CUSTOM_RPROMPT="${distro_bubble} ${time_bubble}"
     if [[ $TMUX ]]  AGKOZAK_CUSTOM_RPROMPT="${tmux_bubbles} ${AGKOZAK_CUSTOM_RPROMPT}"
     AGKOZAK_CUSTOM_RPROMPT="\${AGKOZAK_PIPESTATUS}${AGKOZAK_CUSTOM_RPROMPT}"
 
@@ -104,33 +105,51 @@ PROMPT_EOL_MARK='%B%F{red}%f%b'
   } else {
 
     # -- git Status --
+    # Sets: REPLY
     .zshrc_prompt-gitstat () {
       emulate -L zsh
+      unset REPLY
 
       local gitref=${$(git branch --show-current 2>/dev/null):-$(git rev-parse --short HEAD 2>/dev/null)}
 
       if [[ $gitref ]] {
+        local dirt=$(git status --porcelain 2>/dev/null)
+
         local gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
         gitroot=${$(realpath --relative-to=. $gitroot 2>/dev/null):#(.|$PWD)}
 
-        local dirt=$(git status --porcelain 2>/dev/null)
-
-        local REPLY
-        .zshrc_prompt-bubble "%F{magenta}${gitroot}%F{white}${gitroot:+:}%F{blue}${gitref}%F{red}${${dirt}:+*}%f"
-
-        print -rP -- $REPLY
+        REPLY="%F{magenta}${gitroot}%F{white}${gitroot:+:}%F{blue}${gitref}%F{red}${${dirt}:+*}%f"
       }
     }
 
     # -- PROMPT --
-    local segments=()
-    segments+='${${pipestatus#0}:+%U%F{red\}${(j:|:)pipestatus} <-%f%u }'            # retcodes if non-zero
-    .zshrc_prompt-bubble '%B%F{magenta}%U%~%u%b'
-    segments+="$REPLY "                                                              # folder
-    segments+='%U$(.zshrc_prompt-gitstat)%u${$(git rev-parse HEAD 2>/dev/null):+ }'  # git info
-    segments+=$'\n''%B%F{green}%(!.#.$)%f%b '                                        # prompt symbol
+    .zshrc_prompt-setpsvar () {
+      ZSHRC_PROMPT_PIPESTATUS=(${pipestatus})
+      emulate -L zsh
 
-    PROMPT=${(j::)segments}
+      psvar=()
+
+      # -- retcodes if non-zero --
+      local pipestatus_nonzero=(${ZSHRC_PROMPT_PIPESTATUS#0}) pipestatus_color=red
+      if [[ $pipestatus_nonzero ]] {
+        if [[ ${ZSHRC_PROMPT_PIPESTATUS[-1]} == 0 ]]  pipestatus_color=yellow
+        .zshrc_prompt-bubble "%U%F{$pipestatus_color}${(j:|:)ZSHRC_PROMPT_PIPESTATUS} <-%f%u"
+        psvar+=($REPLY)
+      }
+
+      # -- folder --
+      .zshrc_prompt-bubble '%B%F{magenta}%U%~%u%b'
+      psvar+=($REPLY)
+
+      # -- git info --
+      .zshrc_prompt-gitstat
+      if [[ $REPLY ]] {
+        .zshrc_prompt-bubble "%U${REPLY}%u"
+        psvar+=($REPLY)
+      }
+    }
+    add-zsh-hook precmd .zshrc_prompt-setpsvar
+    PROMPT='${(j: :)psvar}'$'\n''%B%F{green}%(!.#.$)%f%b '
 
     # -- RPROMPT --
     local right_segments=()
@@ -138,7 +157,7 @@ PROMPT_EOL_MARK='%B%F{red}%f%b'
     if [[ $USERNAME != $usual_user ]]  right_segments+=('%(!.%F{red}%n%f.%F{green}%n%f)')
     if [[ $TMUX ]]                     right_segments+=($tmux_bubbles)
     right_segments+=($distro_bubble)
-    right_segments+=($ptime_bubble)
+    right_segments+=($time_bubble)
 
     RPROMPT=${(j: :)right_segments}
 

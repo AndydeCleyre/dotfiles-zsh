@@ -3,7 +3,7 @@ setopt promptsubst transientrprompt
 autoload -Uz add-zsh-hook
 
 PROMPT2='%B%F{blue}…%f%b '
-PROMPT_EOL_MARK='%B%F{red}%f%b'
+PROMPT_EOL_MARK='%F{red} %f'
 
 # -- Bubble String --
 # Sets: REPLY

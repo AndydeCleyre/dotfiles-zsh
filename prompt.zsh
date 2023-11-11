@@ -45,7 +45,7 @@ PROMPT_EOL_MARK='%F{red} %f'
   local time_bubble=$REPLY
 
   # -- Tab Bubbles --
-  .zshrc_prompt-bubble -e '#{?#{==:#{pane_tty},$TTY},%F{white#},%F{blue#}}#{?#{!=:#W,zsh},#W,$}#{?#{!=:#{window_panes},1},+,}'
+  .zshrc_prompt-bubble -e '#{?#{==:#{pane_tty},$TTY},%F{white#}%U,%F{blue#}}#{?#{!=:#W,zsh},#W,$}#{?#{!=:#{window_panes},1},+,}%u'
   local tmux_bubbles='${(j: :)${(f)"$(tmux lsw -F "'$REPLY'" 2>/dev/null)"}}'
 
   # -- Distro Bubble --

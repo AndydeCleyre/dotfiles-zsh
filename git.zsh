@@ -50,8 +50,22 @@ alias gfi="git flow init -d"
 
 alias gson="git submodule update --init"
 alias gsoff="git submodule deinit"
-alias gseach="git submodule foreach"
+
+# -- git submodule foreach, and eval --
+# You can use your functions and aliases
+gse () {  # <cmd> [<cmd-arg>...]
+  emulate -L zsh
+  trap "cd ${(q-)PWD}" EXIT INT QUIT
+
+  local folders=(${(f)"$(git submodule --quiet foreach pwd)"}) folder
+  for folder ( $folders ) {
+    print -rlu2 -- "Entering $folder to eval $@"
+    cd $folder
+    eval "$@"
+  }
+}
 
 # -- Completion Help Messages --
-# Depends: .zshrc_help_complete
+# Depends: .zshrc_help_complete, .zshrc_help_complete-as-prefix
 if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete gcl gcl1 gls hotfixed
+if (( $+functions[.zshrc_help_complete-as-prefix] ))  .zshrc_help_complete-as-prefix gse

@@ -32,6 +32,57 @@ PROMPT_EOL_MARK='%F{red} %f'
   REPLY="%F{${bubble_bg}}${bookends[1]}%K{${bubble_bg}}%F{${bubble_fg}}${@}%F{${bubble_bg}}%k${bookends[-1]}%f"
 }
 
+# -- git Status --
+# Sets: REPLY
+.zshrc_prompt-gitstat () {
+  emulate -L zsh
+  unset REPLY
+
+  local gitref=${$(git branch --show-current 2>/dev/null):-$(git rev-parse --short HEAD 2>/dev/null)}
+
+  if [[ $gitref ]] {
+    local dirt=$(git status --porcelain 2>/dev/null)
+
+    local gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
+    gitroot=${$(realpath --relative-to=. $gitroot 2>/dev/null):#(.|$PWD)}
+
+    REPLY="%F{magenta}${gitroot}%F{white}${gitroot:+:}%F{blue}${gitref}%F{red}${${dirt}:+*}%f"
+  }
+}
+
+# -- PROMPT --
+.zshrc_prompt-setpsvar () {
+  ZSHRC_PROMPT_RET=$?
+  ZSHRC_PROMPT_PIPESTATUS=(${pipestatus})
+
+  emulate -L zsh
+  local REPLY
+  psvar=()
+
+  # -- retcodes if non-zero --
+  local pipestatus_nonzero=(${ZSHRC_PROMPT_PIPESTATUS#0}) pipestatus_color=red
+  if [[ ! $pipestatus_nonzero ]] && (( ZSHRC_PROMPT_RET )) {
+    ZSHRC_PROMPT_PIPESTATUS=($ZSHRC_PROMPT_RET)
+    pipestatus_nonzero=($ZSHRC_PROMPT_RET)
+  }
+  if [[ $pipestatus_nonzero ]] {
+    if [[ ${ZSHRC_PROMPT_PIPESTATUS[-1]} == 0 ]]  pipestatus_color=yellow
+    .zshrc_prompt-bubble "%U%F{$pipestatus_color}${(j:|:)ZSHRC_PROMPT_PIPESTATUS} <-%f%u"
+    psvar+=($REPLY)
+  }
+
+  # -- folder --
+  .zshrc_prompt-bubble '%B%F{magenta}%U%~%u%b'
+  psvar+=($REPLY)
+
+  # -- git info --
+  .zshrc_prompt-gitstat
+  if [[ $REPLY ]] {
+    .zshrc_prompt-bubble "%U${REPLY}%u"
+    psvar+=($REPLY)
+  }
+}
+
 
 () {
   emulate -L zsh
@@ -105,55 +156,6 @@ PROMPT_EOL_MARK='%F{red} %f'
   # -- Set PROMPT and RPROMPT if no prompt plugin is loaded --
   } else {
 
-    # -- git Status --
-    # Sets: REPLY
-    .zshrc_prompt-gitstat () {
-      emulate -L zsh
-      unset REPLY
-
-      local gitref=${$(git branch --show-current 2>/dev/null):-$(git rev-parse --short HEAD 2>/dev/null)}
-
-      if [[ $gitref ]] {
-        local dirt=$(git status --porcelain 2>/dev/null)
-
-        local gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
-        gitroot=${$(realpath --relative-to=. $gitroot 2>/dev/null):#(.|$PWD)}
-
-        REPLY="%F{magenta}${gitroot}%F{white}${gitroot:+:}%F{blue}${gitref}%F{red}${${dirt}:+*}%f"
-      }
-    }
-
-    # -- PROMPT --
-    .zshrc_prompt-setpsvar () {
-      ZSHRC_PROMPT_RET=$?
-      ZSHRC_PROMPT_PIPESTATUS=(${pipestatus})
-
-      emulate -L zsh
-      psvar=()
-
-      # -- retcodes if non-zero --
-      local pipestatus_nonzero=(${ZSHRC_PROMPT_PIPESTATUS#0}) pipestatus_color=red
-      if [[ ! $pipestatus_nonzero ]] && (( ZSHRC_PROMPT_RET )) {
-        ZSHRC_PROMPT_PIPESTATUS=($ZSHRC_PROMPT_RET)
-        pipestatus_nonzero=($ZSHRC_PROMPT_RET)
-      }
-      if [[ $pipestatus_nonzero ]] {
-        if [[ ${ZSHRC_PROMPT_PIPESTATUS[-1]} == 0 ]]  pipestatus_color=yellow
-        .zshrc_prompt-bubble "%U%F{$pipestatus_color}${(j:|:)ZSHRC_PROMPT_PIPESTATUS} <-%f%u"
-        psvar+=($REPLY)
-      }
-
-      # -- folder --
-      .zshrc_prompt-bubble '%B%F{magenta}%U%~%u%b'
-      psvar+=($REPLY)
-
-      # -- git info --
-      .zshrc_prompt-gitstat
-      if [[ $REPLY ]] {
-        .zshrc_prompt-bubble "%U${REPLY}%u"
-        psvar+=($REPLY)
-      }
-    }
     add-zsh-hook precmd .zshrc_prompt-setpsvar
     PROMPT='${(j: :)psvar}'$'\n''%B%F{green}%(!.#.$)%f%b '
 

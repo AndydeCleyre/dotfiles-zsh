@@ -125,13 +125,18 @@ PROMPT_EOL_MARK='%F{red} %f'
 
     # -- PROMPT --
     .zshrc_prompt-setpsvar () {
+      ZSHRC_PROMPT_RET=$?
       ZSHRC_PROMPT_PIPESTATUS=(${pipestatus})
-      emulate -L zsh
 
+      emulate -L zsh
       psvar=()
 
       # -- retcodes if non-zero --
       local pipestatus_nonzero=(${ZSHRC_PROMPT_PIPESTATUS#0}) pipestatus_color=red
+      if [[ ! $pipestatus_nonzero ]] && (( ZSHRC_PROMPT_RET )) {
+        ZSHRC_PROMPT_PIPESTATUS=($ZSHRC_PROMPT_RET)
+        pipestatus_nonzero=($ZSHRC_PROMPT_RET)
+      }
       if [[ $pipestatus_nonzero ]] {
         if [[ ${ZSHRC_PROMPT_PIPESTATUS[-1]} == 0 ]]  pipestatus_color=yellow
         .zshrc_prompt-bubble "%U%F{$pipestatus_color}${(j:|:)ZSHRC_PROMPT_PIPESTATUS} <-%f%u"

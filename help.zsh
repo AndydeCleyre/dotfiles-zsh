@@ -33,7 +33,7 @@ alias huh="typeset -p"
 
   local content=$($cmd $pattern $files)
   content=${content/ \(\) \{  \# / }
-  if [[ ! $content ]]  content=$(which -x 2 $funcname)
+  if [[ ! $content ]]  content=$(whence -c -x 2 $funcname)
   REPLY=$content
 }
 
@@ -131,7 +131,7 @@ wh () {  # <funcname>
       $cmd $pattern $src | .zshrc_wh-hszsh
       if ! [[ ${pipestatus:#0} ]]  return
     }
-    which -x 2 $funcname | .zshrc_wh-hszsh
+    whence -c -x 2 $funcname | .zshrc_wh-hszsh
 
   # -- Show alias info --
   } elif (( $+aliases[$funcname] )) {

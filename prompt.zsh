@@ -1,3 +1,7 @@
+# -------
+# General
+# -------
+
 setopt promptsubst transientrprompt
 
 autoload -Uz add-zsh-hook
@@ -5,15 +9,31 @@ autoload -Uz add-zsh-hook
 PROMPT2='%B%F{blue}…%f%b '
 PROMPT_EOL_MARK='%F{red} %f'
 
-# -- Bubble String --
+# -- Simplify on demand --
+miniprompt () {
+  if (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {
+    agkozak-zsh-prompt_plugin_unload
+  } elif (( $+functions[powerlevel10k_plugin_unload] )) {
+    powerlevel10k_plugin_unload
+  }
+  PROMPT='%B%F{green}$ %f%b'
+  RPROMPT=
+}
+
+# ----------------
+# Format Functions
+# ----------------
+
+# -- Put text in a bubble --
 # Sets: REPLY
 # -e: add hashes before format ending braces: %F{xxx} -> %F{xxx#}
+# --
 # If LANG=en_US.UTF-8 is not set,
 # or the system locale is not set to en_US.UTF-8,
 # the bubble characters may mess up the spacing
 # and put the cursor in a weird place.
 # To avoid the issue, uncomment the bookends='[]' line below.
-# Also comment out distro_icons entries.
+# Also comment out distro_icons entries, lower down.
 .zshrc_prompt-bubble () {  # [-e] <content-str>
   emulate -L zsh
   unset REPLY
@@ -31,6 +51,10 @@ PROMPT_EOL_MARK='%F{red} %f'
 
   REPLY="%F{${bubble_bg}}${bookends[1]}%K{${bubble_bg}}%F{${bubble_fg}}${@}%F{${bubble_bg}}%k${bookends[-1]}%f"
 }
+
+# -----------------
+# Content Functions
+# -----------------
 
 # -- git Status --
 # Sets: REPLY
@@ -50,7 +74,82 @@ PROMPT_EOL_MARK='%F{red} %f'
   }
 }
 
-# -- PROMPT --
+# -- Print time in dozenal format --
+.zshrc_prompt-dozenal-time () {
+  emulate -L zsh
+
+  local ten=Ŧ lem=Ł
+
+  local h_m=(${(s: :)${(%):-%D{%L %M}}})
+  if [[ "$1" && "$2" ]] {
+    local user_hour=$1
+    (( user_hour %= 12 ))
+    h_m=($user_hour $2)
+  }
+
+  local hour=${h_m[1]:s/10/$ten/:s/11/$lem/:s/12/0/}
+  local -i minute=${h_m[2]}
+
+  local fivers=${$(( minute/5 )):s/10/$ten/:s/11/$lem/}
+  local spillover="${$(( minute%5 )):/0}"
+
+  print -r -- "${hour}.${fivers}${spillover:+:}${spillover}"
+}
+
+# -- Craft an RPROMPT string --
+# Sets: REPLY
+.zshrc_prompt-rprompt () {
+  emulate -L zsh
+
+  local usual_host='pop-os' usual_user='andy'
+
+  # -- Time Bubble --
+  .zshrc_prompt-bubble '$(.zshrc_prompt-dozenal-time)'  # fun
+  # .zshrc_prompt-bubble '%D{%L:%M}'                    # business
+  local time_bubble=$REPLY
+
+  # -- Tab Bubbles --
+  .zshrc_prompt-bubble -e '#{?#{==:#{pane_tty},$TTY},%F{white#}%U,%F{blue#}}#{?#{!=:#W,zsh},#W,$}#{?#{!=:#{window_panes},1},+,}%u'
+  local tmux_bubbles='${(j: :)${(f)"$(tmux lsw -F "'$REPLY'" 2>/dev/null)"}}'
+
+  # -- Distro Bubble --
+  local distro line distro_bubble
+  local -A distro_icons=(
+    'Alpine Linux' ''
+    'Arch Linux' ''
+    'Debian GNU/Linux 12 (bookworm)' ''
+    'Fedora Linux' ''
+    'Pop!_OS' ''
+    'Ubuntu 22.04.3 LTS' ''
+  )
+  read line </etc/os-release
+  distro=${${${line#*=}#*\"}%\"*}  # 🤞
+  if (( $+distro_icons[$distro] ))  distro=$distro_icons[$distro]
+  .zshrc_prompt-bubble "$distro "
+  distro_bubble=$REPLY
+
+  # -- All Segments --
+  local right_segments=()
+  if [[ $HOST != $usual_host ]] {
+    .zshrc_prompt-bubble '%F{blue}%m%f'
+    right_segments+=($REPLY)
+  }
+  if [[ $USERNAME != $usual_user ]] {
+    .zshrc_prompt-bubble '%(!.%F{red}%n%f.%F{green}%n%f)'
+    right_segments+=($REPLY)
+  }
+  if [[ $TMUX ]]  right_segments+=($tmux_bubbles)
+  right_segments+=($distro_bubble)
+  right_segments+=($time_bubble)
+
+  REPLY=${(j: :)right_segments}
+}
+
+# --------------
+# Hook Functions
+# --------------
+
+# -- Populate psvar --
 .zshrc_prompt-setpsvar () {
   ZSHRC_PROMPT_RET=$?
   ZSHRC_PROMPT_PIPESTATUS=(${pipestatus})
@@ -83,127 +182,50 @@ PROMPT_EOL_MARK='%F{red} %f'
   }
 }
 
+# ----------------------------------------------------
+# Set up PROMPT and RPROMPT, or agkozak or p10k plugin
+# ----------------------------------------------------
 
-() {
-  emulate -L zsh
-  local REPLY
+# -- Configure p10k if loaded --
+if (( $+functions[powerlevel10k_plugin_unload] )) {
+  if [[ -r ~/.config/zsh/.p10k.zsh ]]  . ~/.config/zsh/.p10k.zsh
+  POWERLEVEL9K_PROMPT_CHAR_ERROR_VIINS_CONTENT_EXPANSION='%F{green}%B$%b%f'
+  POWERLEVEL9K_PROMPT_CHAR_OK_VIINS_CONTENT_EXPANSION='%F{green}%B$%b%f'
+  POWERLEVEL9K_TIME_FORMAT='%D{%L:%M}'
+  POWERLEVEL9K_VIRTUALENV_SHOW_PYTHON_VERSION=true
 
-  local usual_host='pop-os' usual_user='andy'
+# -- Configure agkozak if loaded --
+} elif (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {
+  AGKOZAK_USER_HOST_DISPLAY=0
+  AGKOZAK_CUSTOM_SYMBOLS=('⇣⇡' '⇣' '⇡' '+' 'D' 'M' '→' '?' '$')
+  AGKOZAK_LEFT_PROMPT_ONLY=1
+  AGKOZAK_PROMPT_CHAR=('%F{green}%B$%b%f' '#' ':')
+  AGKOZAK_PROMPT_DIRTRIM=4
+  AGKOZAK_PROMPT_DIRTRIM_STRING=…
+  AGKOZAK_COLORS_PATH=magenta
+  AGKOZAK_BLANK_LINES=1
 
-  # -- Time Bubble --
-  .zshrc_prompt-bubble '$(dozenal_time)'  # fun
-  # .zshrc_prompt-bubble '%D{%L:%M}'      # business
-  local time_bubble=$REPLY
-
-  # -- Tab Bubbles --
-  .zshrc_prompt-bubble -e '#{?#{==:#{pane_tty},$TTY},%F{white#}%U,%F{blue#}}#{?#{!=:#W,zsh},#W,$}#{?#{!=:#{window_panes},1},+,}%u'
-  local tmux_bubbles='${(j: :)${(f)"$(tmux lsw -F "'$REPLY'" 2>/dev/null)"}}'
-
-  # -- Distro Bubble --
-  local distro line distro_bubble
-  local -A distro_icons=(
-    'Alpine Linux' ''
-    'Arch Linux' ''
-    'Debian GNU/Linux 12 (bookworm)' ''
-    'Fedora Linux' ''
-    'Pop!_OS' ''
-    'Ubuntu 22.04.3 LTS' ''
-  )
-  read line </etc/os-release
-  distro=${${${line#*=}#*\"}%\"*}  # 🤞
-  if (( $+distro_icons[$distro] ))  distro=$distro_icons[$distro]
-  .zshrc_prompt-bubble "$distro "
-  distro_bubble=$REPLY
-
-  # -- Configure p10k if loaded --
-  if (( $+functions[powerlevel10k_plugin_unload] )) {
-
-    if [[ -r ~/.config/zsh/.p10k.zsh ]]  . ~/.config/zsh/.p10k.zsh
-    POWERLEVEL9K_PROMPT_CHAR_OK_VIINS_CONTENT_EXPANSION='%F{green}%B$%b%f'
-    POWERLEVEL9K_PROMPT_CHAR_ERROR_VIINS_CONTENT_EXPANSION='%F{green}%B$%b%f'
-
-  # -- Configure agkozak if loaded --
-  } elif (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {
-
-    if [[ $HOST == $usual_host && $USERNAME == $usual_user ]]  AGKOZAK_USER_HOST_DISPLAY=0
-    AGKOZAK_CUSTOM_SYMBOLS=('⇣⇡' '⇣' '⇡' '+' 'D' 'M' '→' '?' '$')
-    AGKOZAK_LEFT_PROMPT_ONLY=1
-    AGKOZAK_PROMPT_CHAR=('%F{green}%B$%b%f' '#' ':')
-    AGKOZAK_PROMPT_DIRTRIM=4
-    AGKOZAK_PROMPT_DIRTRIM_STRING=…
-    AGKOZAK_COLORS_PATH=magenta
-    AGKOZAK_BLANK_LINES=1
-
-    # -- Piped Command Error Return Codes --
-    # https://github.com/agkozak/agkozak-zsh-prompt/issues/34
-    .zshrc_prompt-agkozak-pipestatus-hook () {
-      AGKOZAK_PIPESTATUS="${${pipestatus#0}:+(${"${pipestatus[*]}"// /|})}"
-      if [[ ! $AGKOZAK_PIPESTATUS ]]  return
-      if [[ $AGKOZAK_PIPESTATUS == *0\) ]] {
-        .zshrc_prompt-bubble "%F{yellow}${AGKOZAK_PIPESTATUS}"
-      } else {
-        .zshrc_prompt-bubble "%F{red}${AGKOZAK_PIPESTATUS}"
-      }
-      AGKOZAK_PIPESTATUS="$REPLY "
+  # -- Piped Command Error Return Codes --
+  # https://github.com/agkozak/agkozak-zsh-prompt/issues/34
+  .zshrc_prompt-agkozak-pipestatus-hook () {
+    AGKOZAK_PIPESTATUS="${${pipestatus#0}:+(${"${pipestatus[*]}"// /|})}"
+    if [[ ! $AGKOZAK_PIPESTATUS ]]  return
+    if [[ $AGKOZAK_PIPESTATUS == *0\) ]] {
+      .zshrc_prompt-bubble "%F{yellow}${AGKOZAK_PIPESTATUS}"
+    } else {
+      .zshrc_prompt-bubble "%F{red}${AGKOZAK_PIPESTATUS}"
     }
-    add-zsh-hook precmd .zshrc_prompt-agkozak-pipestatus-hook
-
-    # -- RPROMPT --
-    AGKOZAK_CUSTOM_RPROMPT="${distro_bubble} ${time_bubble}"
-    if [[ $TMUX ]]  AGKOZAK_CUSTOM_RPROMPT="${tmux_bubbles} ${AGKOZAK_CUSTOM_RPROMPT}"
-    AGKOZAK_CUSTOM_RPROMPT="\${AGKOZAK_PIPESTATUS}${AGKOZAK_CUSTOM_RPROMPT}"
-
-  # -- Set PROMPT and RPROMPT if no prompt plugin is loaded --
-  } else {
-
-    add-zsh-hook precmd .zshrc_prompt-setpsvar
-    PROMPT='${(j: :)psvar}'$'\n''%B%F{green}%(!.#.$)%f%b '
-
-    # -- RPROMPT --
-    local right_segments=()
-    if [[ $HOST != $usual_host ]] {
-      .zshrc_prompt-bubble '%F{blue}%m%f'
-      right_segments+=($REPLY)
-    }
-    if [[ $USERNAME != $usual_user ]] {
-      .zshrc_prompt-bubble '%(!.%F{red}%n%f.%F{green}%n%f)'
-      right_segments+=($REPLY)
-    }
-    if [[ $TMUX ]]  right_segments+=($tmux_bubbles)
-    right_segments+=($distro_bubble)
-    right_segments+=($time_bubble)
-
-    RPROMPT=${(j: :)right_segments}
-
+    AGKOZAK_PIPESTATUS="$REPLY"
   }
-}
+  add-zsh-hook precmd .zshrc_prompt-agkozak-pipestatus-hook
 
-miniprompt () {
-  if (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {
-    agkozak-zsh-prompt_plugin_unload
-  } elif (( $+functions[powerlevel10k_plugin_unload] )) {
-    powerlevel10k_plugin_unload
-  }
-  PROMPT='%F{green}$ %f'
-}
+  .zshrc_prompt-rprompt
+  AGKOZAK_CUSTOM_RPROMPT="\${AGKOZAK_PIPESTATUS} $REPLY"
 
-dozenal_time () {
-  emulate -L zsh
-
-  local ten=Ŧ lem=Ł
-
-  local h_m=(${(s: :)${(%):-%D{%L %M}}})
-  if [[ "$1" && "$2" ]] {
-    local user_hour=$1
-    (( user_hour %= 12 ))
-    h_m=($user_hour $2)
-  }
-
-  local hour=${h_m[1]:s/10/$ten/:s/11/$lem/:s/12/0/}
-  local -i minute=${h_m[2]}
-
-  local fivers=${$(( minute/5 )):s/10/$ten/:s/11/$lem/}
-  local spillover="${$(( minute%5 )):/0}"
-
-  print -r -- "${hour}.${fivers}${spillover:+:}${spillover}"
+# -- Set PROMPT and RPROMPT if no prompt plugin is loaded --
+} else {
+  add-zsh-hook precmd .zshrc_prompt-setpsvar
+  PROMPT='${(j: :)psvar}'$'\n''%B%F{green}%(!.#.$)%f%b '
+  .zshrc_prompt-rprompt
+  RPROMPT=$REPLY
 }

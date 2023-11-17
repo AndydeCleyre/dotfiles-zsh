@@ -25,7 +25,7 @@ br () {  # [<broot-opt>...]
   BUFFER="br"
   zle .accept-line
 }
-zle -N .zle_broot
+zle -N       .zle_broot
 bindkey '^b' .zle_broot  # ctrl+b
 
 # ----------------
@@ -34,7 +34,7 @@ bindkey '^b' .zle_broot  # ctrl+b
 
 # -- Folder Navigation: Down --
 # Key: alt+down
-# Depends: ~/.config/broot/select-folder.hjson
+# Depends: ~/.config/broot/select-folder.hjson ( https://github.com/AndydeCleyre/dotfiles-broot )
 # Optional: .zle_redraw-prompt (clear_and_foldernav.zsh)
 .zle_cd-broot () {
   echoti rmkx
@@ -44,17 +44,17 @@ bindkey '^b' .zle_broot  # ctrl+b
   )"
   if (( $+functions[.zle_redraw-prompt] ))  zle .zle_redraw-prompt
 }
-zle -N .zle_cd-broot
+zle -N            .zle_cd-broot
 bindkey '^[[1;3B' .zle_cd-broot  # alt+down
 
 # -- Start writing a for loop over broot-selected paths (each is $f) --
 # Key: ctrl+f
-# Depends: ~/.config/broot/select.hjson
+# Depends: ~/.config/broot/select.hjson ( https://github.com/AndydeCleyre/dotfiles-broot )
 bindkey -s '^f' 'for f ( ${(f)"$(br --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/select.hjson;${XDG_CONFIG_HOME:-${HOME}/.config}/broot/conf.hjson")"} )  '
 
 # -- Complete current word as path using broot --
 # Key: ctrl+/
-# Depends: ~/.config/broot/select.hjson
+# Depends: ~/.config/broot/select.hjson ( https://github.com/AndydeCleyre/dotfiles-broot )
 .zle_insert-path-broot () {
   setopt localoptions extendedglob
 
@@ -130,7 +130,7 @@ bindkey -s '^f' 'for f ( ${(f)"$(br --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/
   if (( $+functions[_zsh_highlight] ))  _zsh_highlight
 
 }
-zle -N .zle_insert-path-broot
+zle -N       .zle_insert-path-broot
 bindkey '^_' .zle_insert-path-broot  # ctrl+/
 
 }

@@ -26,5 +26,5 @@
 [submodule "plugins/powerlevel10k"]
 	path = plugins/powerlevel10k
 	url = https://github.com/romkatv/powerlevel10k
-	branch = main
+	branch = master
 	shallow = true

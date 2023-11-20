@@ -126,7 +126,7 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
       }
     ;;
     diff)
-      for hi ( dunk riff delta diff-so-fancy colordiff ) {
+      for hi ( riff delta diff-so-fancy colordiff ) {
         if (( $+commands[$hi] )) {
 
           $hi $@

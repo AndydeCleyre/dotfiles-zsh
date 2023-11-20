@@ -124,8 +124,8 @@ miniprompt () {
   )
   read line </etc/os-release
   distro=${${${line#*=}#*\"}%\"*}  # 🤞
-  if (( $+distro_icons[$distro] ))  distro=$distro_icons[$distro]
-  .zshrc_prompt-bubble "$distro "
+  if (( $+distro_icons[$distro] ))  distro="$distro_icons[$distro] "
+  .zshrc_prompt-bubble "$distro"
   distro_bubble=$REPLY
 
   # -- All Segments --

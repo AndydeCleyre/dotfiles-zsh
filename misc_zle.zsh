@@ -14,6 +14,7 @@ bindkey '^[[3;5~' kill-word  # ctrl+delete
 # Keys:
 #   - esc, ctrl+up
 #   - esc, home
+#   - esc, backspace
 .zle_replace-first () {
   local words=(${(z)BUFFER})
   zle .push-line
@@ -24,12 +25,14 @@ bindkey '^[[3;5~' kill-word  # ctrl+delete
 }
 zle -N              .zle_replace-first
 bindkey '^[^[[1;5A' .zle_replace-first  # esc, ctrl+up
-bindkey   '^[[1;3H' .zle_replace-first  # esc, home
+bindkey '^[[1;3H'   .zle_replace-first  # esc, home
+bindkey '^[^?'      .zle_replace-first  # esc, backspace
 
 # -- Replace last word --
 # Keys:
 #   - esc, ctrl+down
 #   - esc, end
+#   - esc, del
 .zle_replace-last () {
   local words=(${(z)BUFFER})
   zle .push-line
@@ -40,7 +43,8 @@ bindkey   '^[[1;3H' .zle_replace-first  # esc, home
 }
 zle -N              .zle_replace-last
 bindkey '^[^[[1;5B' .zle_replace-last  # esc, ctrl+down
-bindkey   '^[[1;3F' .zle_replace-last  # esc, end
+bindkey '^[[1;3F'   .zle_replace-last  # esc, end
+bindkey '^[^[[3~'   .zle_replace-last  # esc, del
 
 # -- Prepend doas --
 # Key: esc, esc
@@ -80,8 +84,11 @@ zle -N        .zle_expand-aliases
 bindkey '\ex' .zle_expand-aliases  # esc, x
 
 # -- Undo line edit --
-# Key: esc, u
+# Keys:
+#   - esc, u
+#   - esc, z
 bindkey '\eu' undo  # esc, u
+bindkey '\ez' undo  # esc, z
 
 # -- Edit current line in editor --
 # Key: esc, e

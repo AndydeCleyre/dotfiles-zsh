@@ -11,7 +11,7 @@ bak () {  # <file>...
   emulate -L zsh
 
   for 1 {
-    cp -i $1 $1.bak
+    cp -ri $1 $1.bak
     ls -l $1 $1.bak
   }
 }

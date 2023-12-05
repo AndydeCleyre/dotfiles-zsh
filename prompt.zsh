@@ -16,8 +16,9 @@ miniprompt () {
   } elif (( $+functions[powerlevel10k_plugin_unload] )) {
     powerlevel10k_plugin_unload
   }
-  PROMPT='%B%F{green}$ %f%b'
+  PROMPT=$'\n''%B%F{green}$ %f%b'
   RPROMPT=
+  unset VIRTUAL_ENV_DISABLE_PROMPT
 }
 
 # ----------------
@@ -32,7 +33,7 @@ miniprompt () {
 # or the system locale is not set to en_US.UTF-8,
 # the bubble characters may mess up the spacing
 # and put the cursor in a weird place.
-# To avoid the issue, uncomment the bookends='[]' line below.
+# To avoid the issue, uncomment the bookends='' line below.
 # Also comment out distro_icons entries, lower down.
 .zshrc_prompt-bubble () {  # [-e] <content-str>
   emulate -L zsh
@@ -47,7 +48,8 @@ miniprompt () {
   }
 
   local bookends=''
-  # bookends='[]'
+  # bookends=('<<' '>>')
+  # bookends=''
 
   REPLY="%F{${bubble_bg}}${bookends[1]}%K{${bubble_bg}}%F{${bubble_fg}}${@}%F{${bubble_bg}}%k${bookends[-1]}%f"
 }
@@ -71,6 +73,18 @@ miniprompt () {
     gitroot=${$(realpath --relative-to=. $gitroot 2>/dev/null):#(.|$PWD)}
 
     REPLY="%F{magenta}${gitroot}%F{white}${gitroot:+:}%F{blue}${gitref}%F{red}${${dirt}:+*}%f"
+  }
+}
+
+# -- yadm Status --
+# Sets: REPLY
+.zshrc_prompt-yadmstat () {
+  emulate -L zsh
+  unset REPLY
+
+  if (( $+commands[yadm] )) {
+    local dirt=$(yadm status --porcelain . 2>/dev/null)
+    if [[ $dirt ]]  REPLY="%F{red}${${dirt}:+*}%f"
   }
 }
 
@@ -166,18 +180,34 @@ miniprompt () {
   }
   if [[ $pipestatus_nonzero ]] {
     if [[ ${ZSHRC_PROMPT_PIPESTATUS[-1]} == 0 ]]  pipestatus_color=yellow
-    .zshrc_prompt-bubble "%U%F{$pipestatus_color}${(j:|:)ZSHRC_PROMPT_PIPESTATUS} <-%f%u"
+    .zshrc_prompt-bubble "%F{$pipestatus_color}${(j:|:)ZSHRC_PROMPT_PIPESTATUS} <-%f"
     psvar+=($REPLY)
   }
 
   # -- folder --
-  .zshrc_prompt-bubble '%B%F{magenta}%U%~%u%b'
+  .zshrc_prompt-bubble '%B%F{magenta}%~%b'
   psvar+=($REPLY)
 
   # -- git info --
   .zshrc_prompt-gitstat
   if [[ $REPLY ]] {
-    .zshrc_prompt-bubble "%U${REPLY}%u"
+    .zshrc_prompt-bubble $REPLY
+    psvar+=($REPLY)
+  }
+
+  # -- yadm info --
+  .zshrc_prompt-yadmstat
+  if [[ $REPLY ]] {
+    .zshrc_prompt-bubble .$REPLY
+    psvar+=($REPLY)
+  }
+
+  # -- venv --
+  if [[ $VIRTUAL_ENV ]] {
+    local venv_parent=${VIRTUAL_ENV:h:t}
+    if (( #venv_parent > 9 ))  venv_parent=${venv_parent[1,4]}…${venv_parent[-3,-1]}
+
+    .zshrc_prompt-bubble "${venv_parent}/${VIRTUAL_ENV:t}"
     psvar+=($REPLY)
   }
 }
@@ -224,8 +254,9 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
 
 # -- Set PROMPT and RPROMPT if no prompt plugin is loaded --
 } else {
+  VIRTUAL_ENV_DISABLE_PROMPT=1
   add-zsh-hook precmd .zshrc_prompt-setpsvar
-  PROMPT='${(j: :)psvar}'$'\n''%B%F{green}%(!.#.$)%f%b '
+  PROMPT=$'\n''%B%F{white}--%f%b ${(j: :)psvar} %B%F{white}--%f%b'$'\n''%B%F{green}%(!.#.$)%f%b '
   .zshrc_prompt-rprompt
   RPROMPT=$REPLY
 }

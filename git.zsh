@@ -59,7 +59,7 @@ gse () {  # <cmd> [<cmd-arg>...]
 
   local folders=(${(f)"$(git submodule --quiet foreach pwd)"}) folder
   for folder ( $folders ) {
-    print -rlu2 -- "Entering $folder to eval $@"
+    print -rlu2 -- "-- Entering $folder to eval: $@"
     cd $folder
     eval "$@"
   }

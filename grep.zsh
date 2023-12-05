@@ -1,8 +1,8 @@
 # -- ripgrep sugar --
-alias rg="=rg --smart-case --hidden"
-alias rg1="=rg --smart-case --hidden --maxdepth 1"
-alias rg2="=rg --smart-case --hidden --maxdepth 2"
-alias rgm="=rg --smart-case --hidden --multiline --multiline-dotall"
+alias rg="=rg --smart-case --hidden --no-ignore --glob '!.git' --glob '!.venv' --glob '!.tox' --glob '!.mypy_cache'"
+alias rg1="rg --maxdepth 1"
+alias rg2="rg --maxdepth 2"
+alias rgm="rg --multiline --multiline-dotall"
 
 # -- grep --
 g () {  # <grep-arg>...

@@ -57,9 +57,12 @@ gse () {  # <cmd> [<cmd-arg>...]
   emulate -L zsh
   trap "cd ${(q-)PWD}" EXIT INT QUIT
 
-  local folders=(${(f)"$(git submodule --quiet foreach pwd)"}) folder
+  local git_opts=()
+  while [[ $1 == -* ]] { git_opts+=($1); shift }
+
+  local folders=(${(f)"$(git $git_opts submodule --quiet foreach pwd)"}) folder
   for folder ( $folders ) {
-    print -rlu2 -- "-- Entering $folder to eval: $@"
+    print -rlu2 -- "-- Entering $folder to eval -- $@"
     cd $folder
     eval "$@"
   }

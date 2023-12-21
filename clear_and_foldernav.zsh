@@ -26,9 +26,9 @@ bindkey '^L' .zle_push-line-and-clear  # ctrl+l
 # Superseded in broot.zsh
 .zle_cd-down () {
   zle .push-input
-  BUFFER="cd "
-  CURSOR=$#BUFFER
+  LBUFFER="cd "
   zle .menu-expand-or-complete
+  # zle .expand-or-complete
 }
 zle -N            .zle_cd-down
 bindkey '^[[1;3B' .zle_cd-down  # alt+down

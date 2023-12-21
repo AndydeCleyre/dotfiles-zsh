@@ -68,7 +68,28 @@ gse () {  # <cmd> [<cmd-arg>...]
   }
 }
 
+# -- yadm-ify git func/alias --
+# Basically, prepend GIT_DIR=(yadm repo)
+# Key: esc, y
+.zle_prepend-yadm () {
+  local words=(${(z)BUFFER})
+  print -S $BUFFER
+  BUFFER=
+
+  if [[ $words == gsb ]] {
+    LBUFFER="GIT_DIR=${HOME}/.local/share/yadm/repo.git ${words} ."
+  } elif [[ $words[1] == gse ]] {
+    LBUFFER="${words[1]} --git-dir=${HOME}/.local/share/yadm/repo.git ${words[2,-1]}"
+  } else {
+    LBUFFER="GIT_DIR=${HOME}/.local/share/yadm/repo.git ${words}"
+  }
+
+  if (( $+functions[_zsh_highlight] ))  _zsh_highlight
+}
+zle -N        .zle_prepend-yadm
+bindkey '\ey' .zle_prepend-yadm  # esc, y
+
 # -- Completion Help Messages --
-# Depends: .zshrc_help_complete, .zshrc_help_complete-as-prefix
-if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete gcl gcl1 gls hotfixed
+# Depends: help.zsh (.zshrc_help_complete, .zshrc_help_complete-as-prefix)
+if (( $+functions[.zshrc_help_complete]           ))  .zshrc_help_complete gcl gcl1 gls hotfixed
 if (( $+functions[.zshrc_help_complete-as-prefix] ))  .zshrc_help_complete-as-prefix gse

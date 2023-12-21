@@ -18,7 +18,8 @@ ZSHZ_UNCOMMON=1
 # ---------------------------------
 
 # -- Generated Sources --
-.zshrc_fortnightly rtx ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_rtx rtx complete -s zsh || true
+.zshrc_fortnightly rtx   ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_rtx   rtx complete -s zsh        || true
+.zshrc_fortnightly prqlc ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_prqlc prqlc shell-completion zsh || true
 
 # -- Load if found --
 .zshrc_load-plugin zsh-completions zsh-z

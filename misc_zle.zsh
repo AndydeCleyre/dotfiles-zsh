@@ -91,13 +91,24 @@ bindkey '\ez' undo  # esc, z
 
 # -- Edit current line in editor --
 # Key: esc, e
-autoload -Uz  edit-command-line
-zle -N        edit-command-line
-bindkey '\ee' edit-command-line  # esc, e
+# A replacement for stock edit-command-line,
+# to retrigger f-s-h
+.zle_edit-command-line () {
+  echoti rmkx
+  () {
+    ${EDITOR:-vi} $1
+    BUFFER=$(<$1)
+    CURSOR=$#BUFFER
+  } =(<<<"$BUFFER")
+  if (( $+functions[_zsh_highlight] ))  _zsh_highlight
+}
+zle -N        .zle_edit-command-line
+bindkey '\ee' .zle_edit-command-line  # esc, e
 
 # -- Copy current line to clipboard --
 # Key: esc, c
 # TODO: test wayland
+# TODO: add PREBUFFER?
 .zle_buffer-to-clipboard () {
   if [[ $XDG_SESSION_TYPE == x11 ]] {
     <<<$BUFFER xclip -sel clip
@@ -119,8 +130,12 @@ bindkey -r '^s'
 
 # -- Fix spelling --
 # Key: esc, f
-bindkey '\ef' spell-word
+bindkey '\ef' spell-word  # esc, f
 
 # -- Evaluate prefixed aliases --
 alias doas="=doas "
 alias sudo="=sudo "
+
+# -- Copy previous word on line --
+# Key: esc, space
+bindkey '\e ' copy-prev-shell-word

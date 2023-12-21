@@ -129,12 +129,12 @@ miniprompt () {
   # -- Distro Bubble --
   local distro line distro_bubble
   local -A distro_icons=(
-    'Alpine Linux' ''
-    'Arch Linux' ''
-    'Debian GNU/Linux 12 (bookworm)' ''
-    'Fedora Linux' ''
-    'Pop!_OS' ''
-    'Ubuntu 22.04.3 LTS' ''
+    'Alpine Linux' '%F{#0d597f}'
+    'Arch Linux' '%F{#1793d1}'
+    'Debian GNU/Linux 12 (bookworm)' '%F{#A80030}'
+    'Fedora Linux' '%F{#50a1d9}'
+    'Pop!_OS' '%F{#6cc7d2}'  # #faa41a #48b9c7 #6cc7d2
+    'Ubuntu 22.04.3 LTS' '%F{#6e2d97}'
   )
   read line </etc/os-release
   distro=${${${line#*=}#*\"}%\"*}  # 🤞

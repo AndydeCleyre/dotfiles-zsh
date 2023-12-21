@@ -17,9 +17,9 @@ bindkey '^[[3;5~' kill-word  # ctrl+delete
 #   - esc, backspace
 .zle_replace-first () {
   local words=(${(z)BUFFER})
-  zle .push-line
-  BUFFER=" ${words[2,-1]}"
-  CURSOR=0
+  print -S $BUFFER
+  BUFFER=
+  RBUFFER=" ${words[2,-1]}"
 
   if (( $+functions[_zsh_highlight] ))  _zsh_highlight
 }
@@ -35,9 +35,9 @@ bindkey '^[^?'      .zle_replace-first  # esc, backspace
 #   - esc, del
 .zle_replace-last () {
   local words=(${(z)BUFFER})
-  zle .push-line
-  BUFFER="${words[1,-2]} "
-  CURSOR=$#BUFFER
+  print -S $BUFFER
+  BUFFER=
+  LBUFFER="${words[1,-2]} "
 
   if (( $+functions[_zsh_highlight] ))  _zsh_highlight
 }
@@ -62,8 +62,7 @@ bindkey '\e\e' .zle_prepend-doas  # esc, esc
 .zle_setx-sandwich () {
   local obuffer=$BUFFER
   zle .push-input
-  BUFFER="set -x; $obuffer; set +x"
-  CURSOR=$#BUFFER
+  LBUFFER="set -x; $obuffer; set +x"
 
   if (( $+functions[_zsh_highlight] ))  _zsh_highlight
 }

@@ -166,8 +166,7 @@ wh () {  # <funcname>
 .zle_prepend-wh () {
   local words=(${(z)BUFFER})
   zle .push-line
-  BUFFER="wh ${words[1]}"
-  CURSOR=$#BUFFER
+  LBUFFER="wh ${words[1]}"
 
   if (( $+functions[_zsh_highlight] ))  _zsh_highlight
 }
@@ -179,8 +178,7 @@ bindkey '\ew' .zle_prepend-wh  # esc, w
 .zle_prepend-tldr () {
   local words=(${(z)BUFFER})
   zle .push-line
-  BUFFER="tldr ${words[1]}"
-  CURSOR=$#BUFFER
+  LBUFFER="tldr ${words[1]}"
 
   if (( $+functions[_zsh_highlight] ))  _zsh_highlight
 }

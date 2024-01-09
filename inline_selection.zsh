@@ -160,21 +160,21 @@ unfunction .zshrc_def-surround-selection-or-type-opener
 
   local keyseq
 
-  .zshrc_def-deselect-and left       .backward-char '^[[D'                        # left
-  .zshrc_def-deselect-and right      .forward-char '^[[C'                         # right
-  .zshrc_def-deselect-and left-word  .backward-word '^[[1;5D' '^[[5~'             # {ctrl+left,pgup}
-  .zshrc_def-deselect-and right-word .forward-word '^[[1;5C' '^[[6~'              # {ctrl+right,pgdown}
-  .zshrc_def-deselect-and home       .beginning-of-line '^[[1;5A' '^[[H' '^[[1~'  # home
-  .zshrc_def-deselect-and end        .end-of-line '^[[1;5B' '^[[F' '^[[4~'        # end
+  .zshrc_def-deselect-and left       .backward-char        '^[[D'                    # left
+  .zshrc_def-deselect-and right      .forward-char         '^[[C'                    # right
+  .zshrc_def-deselect-and left-word  .backward-word        '^[[1;5D' '^[[5~'         # {ctrl+left,pgup}
+  .zshrc_def-deselect-and right-word .forward-word         '^[[1;5C' '^[[6~'         # {ctrl+right,pgdown}
+  .zshrc_def-deselect-and home       .beginning-of-line    '^[[1;5A' '^[[H' '^[[1~'  # home
+  .zshrc_def-deselect-and end        .end-of-line          '^[[1;5B' '^[[F' '^[[4~'  # end
 
-  .zshrc_def-select-and left       .backward-char '^[[1;2D'                # shift+left
-  .zshrc_def-select-and right      .forward-char '^[[1;2C'                 # shift+right
-  .zshrc_def-select-and left-word  .backward-word '^[[1;6D' '^[[5;2~'      # {ctrl+shift+left,shift+pgup}
-  .zshrc_def-select-and right-word .forward-word '^[[1;6C' '^[[6;2~'       # {ctrl+shift+right,shift+pgdown}
-  .zshrc_def-select-and home       .beginning-of-line '^[[1;2H' '^[[1;6A'  # {shift+home,ctrl+shift+up}
-  .zshrc_def-select-and end        .end-of-line '^[[1;2F' '^[[1;6B'        # {shift+end,ctrl+shift+down}
+  .zshrc_def-select-and left         .backward-char        '^[[1;2D'                 # shift+left
+  .zshrc_def-select-and right        .forward-char         '^[[1;2C'                 # shift+right
+  .zshrc_def-select-and left-word    .backward-word        '^[[1;6D' '^[[5;2~'       # {ctrl+shift+left,shift+pgup}
+  .zshrc_def-select-and right-word   .forward-word         '^[[1;6C' '^[[6;2~'       # {ctrl+shift+right,shift+pgdown}
+  .zshrc_def-select-and home         .beginning-of-line    '^[[1;2H' '^[[1;6A'       # {shift+home,ctrl+shift+up}
+  .zshrc_def-select-and end          .end-of-line          '^[[1;2F' '^[[1;6B'       # {shift+end,ctrl+shift+down}
 
-  .zshrc_def-del-selected-or bksp .backward-delete-char '^?'             # backspace
-  .zshrc_def-del-selected-or del  .delete-char '^[[3~' "^[3'5~" '\e[3~'  # delete
+  .zshrc_def-del-selected-or bksp    .backward-delete-char '^?'                      # backspace
+  .zshrc_def-del-selected-or del     .delete-char          '^[[3~' "^[3'5~" '\e[3~'  # delete
 }
 unfunction .zshrc_def-select-and .zshrc_def-deselect-and .zshrc_def-del-selected-or

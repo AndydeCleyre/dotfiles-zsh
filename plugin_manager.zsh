@@ -56,7 +56,7 @@
 
 # -- Regenerate outdated files --
 # Do nothing and return 1 if check-cmd isn't in PATH
-.zshrc_fortnightly () {  # <check-cmd> <dest> <gen-cmd>
+.zshrc_fortnightly () {  # <check-cmd> <dest> <gen-cmd>...
   emulate -L zsh -o extendedglob
 
   local check_cmd=$1; shift

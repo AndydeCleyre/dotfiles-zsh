@@ -96,7 +96,7 @@ bindkey '\ez' undo  # esc, z
 .zle_edit-command-line () {
   echoti rmkx
   () {
-    ${EDITOR:-vi} $1
+    <$TTY ${EDITOR:-vi} $1
     BUFFER=$(<$1)
     CURSOR=$#BUFFER
   } =(<<<"$BUFFER")

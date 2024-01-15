@@ -1,5 +1,6 @@
 # -- Refresh prompt, rerunning any hooks --
-# Credit: romkatv/z4h
+# Credit: Roman Perepelitsa
+# Original: https://github.com/romkatv/zsh4humans/blob/v2/fn/-z4h-redraw-prompt
 .zle_redraw-prompt () {
   for 1 ( chpwd $chpwd_functions precmd $precmd_functions ) {
     if (( $+functions[$1] ))  $1 &>/dev/null

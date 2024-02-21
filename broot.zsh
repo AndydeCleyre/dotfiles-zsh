@@ -4,7 +4,10 @@ if (( $+commands[broot] )) {  # Without broot, skip this file
 # Basics
 # ------
 
+zmodload zsh/mapfile
+
 # -- Run broot, cd into pathfile if successful --
+# Depends: zmapfile
 br () {  # [<broot-opt>...]
   emulate -L zsh
 
@@ -12,7 +15,7 @@ br () {  # [<broot-opt>...]
   trap "rm ${(q-)pathfile}" EXIT INT QUIT
   if { broot --verb-output "$pathfile" $@ } {
     if [[ -r $pathfile ]] {
-      local folder=$(<$pathfile)
+      local folder=${mapfile[$pathfile]}
       if [[ $folder ]]  cd $folder
     }
   } else {

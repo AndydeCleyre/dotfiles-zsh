@@ -133,7 +133,7 @@ bindkey -s '^f' 'for f ( ${(f)"$(br --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/
   if (( $+functions[_zsh_highlight] ))  _zsh_highlight
 
 }
-zle -N       .zle_insert-path-broot
-bindkey '^_' .zle_insert-path-broot  # ctrl+/
+zle -N        .zle_insert-path-broot
+bindkey '^_'  .zle_insert-path-broot  # ctrl+/
 
 }

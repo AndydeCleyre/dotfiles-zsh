@@ -4,14 +4,17 @@ if (( $+commands[broot] )) {  # Without broot, skip this file
 # Basics
 # ------
 
-# -- Run broot, eval cmdfile if successful --
+# -- Run broot, cd into pathfile if successful --
 br () {  # [<broot-opt>...]
   emulate -L zsh
 
-  local cmdfile=$(mktemp)
-  trap "rm ${(q-)cmdfile}" EXIT INT QUIT
-  if { broot --outcmd "$cmdfile" $@ } {
-    if [[ -r $cmdfile ]]  eval "$(<$cmdfile)"
+  local pathfile=$(mktemp)
+  trap "rm ${(q-)pathfile}" EXIT INT QUIT
+  if { broot --verb-output "$pathfile" $@ } {
+    if [[ -r $pathfile ]] {
+      local folder=$(<$pathfile)
+      if [[ $folder ]]  cd $folder
+    }
   } else {
     return
   }

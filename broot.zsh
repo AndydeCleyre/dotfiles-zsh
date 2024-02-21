@@ -46,6 +46,7 @@ bindkey '^b' .zle_broot  # ctrl+b
     --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/select-folder.hjson;${XDG_CONFIG_HOME:-${HOME}/.config}/broot/conf.hjson"
   )"
   if (( $+functions[.zle_redraw-prompt] ))  zle .zle_redraw-prompt
+  if (( $+functions[_zsh_highlight]     ))  _zsh_highlight
 }
 zle -N            .zle_cd-broot
 bindkey '^[[1;3B' .zle_cd-broot  # alt+down

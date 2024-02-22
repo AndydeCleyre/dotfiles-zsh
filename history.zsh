@@ -12,12 +12,12 @@ setopt \
 # This re-triggers f-s-h.
 .zle_hist () {
   integer cursor=$CURSOR mark=$MARK
-  if [[ $LASTWIDGET == .zle_hist_* ]] {
+  if [[ $LASTWIDGET == .zle_hist-* ]] {
     CURSOR=$MARK
   } else {
     MARK=$CURSOR
   }
-  if { zle .history-beginning-search-${WIDGET##*_}ward } {
+  if { zle .history-beginning-search-${WIDGET##*-}ward } {
     zle .end-of-line
   } else {
     CURSOR=$cursor
@@ -29,9 +29,9 @@ setopt \
 () {
   emulate -L zsh
   local widget keyseq
-  for widget ( back for )  zle -N .zle_hist_${widget} .zle_hist
-  for keyseq ( '^[OA' '^[[A' )  bindkey $keyseq .zle_hist_back  # up
-  for keyseq ( '^[OB' '^[[B' )  bindkey $keyseq .zle_hist_for   # down
+  for widget ( back for )  zle -N .zle_hist-${widget} .zle_hist
+  for keyseq ( '^[OA' '^[[A' )  bindkey $keyseq .zle_hist-back  # up
+  for keyseq ( '^[OB' '^[[B' )  bindkey $keyseq .zle_hist-for   # down
 }
 
 ## -- Simple History --

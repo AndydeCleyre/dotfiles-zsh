@@ -16,6 +16,7 @@ bindkey '^A' .zle_select-all  # ctrl+a
     zle quote-region
   } else {
     LBUFFER+="'"
+    if (( $+functions[_zsh_highlight] ))  _zsh_highlight
   }
 }
 zle -N      .zle_squote-selection-or-squote

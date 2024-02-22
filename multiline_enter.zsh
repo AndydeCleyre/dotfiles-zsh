@@ -13,6 +13,7 @@
       if [[ $BUFFER != *${hint}* ]] {
         LBUFFER+=$hint
         zle .self-insert-unmeta
+        if (( $+functions[_zsh_highlight] ))  _zsh_highlight
       }
     }
   }

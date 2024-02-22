@@ -18,18 +18,18 @@
     }
   }
 }
-zle -N .zle_accept-except-multiline
+zle -N       .zle_accept-except-multiline
 bindkey '^M' .zle_accept-except-multiline  # Enter
 
 # -- Run input if multiline, otherwise insert newline --
 # Key: alt+enter
 # Credit: https://programming.dev/comment/2479198
-.zle_accept_only_multiline () {
+.zle_accept-only-multiline () {
   if [[ $BUFFER == *$'\n'* ]] {
     zle .accept-line
   } else {
     zle .self-insert-unmeta
   }
 }
-zle -N .zle_accept_only_multiline
-bindkey '^[^M' .zle_accept_only_multiline  # Enter
+zle -N         .zle_accept-only-multiline
+bindkey '^[^M' .zle_accept-only-multiline  # Enter

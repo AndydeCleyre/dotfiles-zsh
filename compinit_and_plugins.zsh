@@ -37,7 +37,7 @@ compinit -i -d ${XDG_CACHE_HOME:-~/.cache}/zsh/zcompdump-$ZSH_VERSION
 # --------------------------------
 
 # -- Generated Sources --
-if { .zshrc_fortnightly pip  ${ZSH_PLUGINS_DIR}/pip.zsh pip completion -z  }  . ${ZSH_PLUGINS_DIR}/pip.zsh
+if { .zshrc_fortnightly pip  ${ZSH_PLUGINS_DIR}/pip.zsh  pip completion -z }  . ${ZSH_PLUGINS_DIR}/pip.zsh
 if { .zshrc_fortnightly mise ${ZSH_PLUGINS_DIR}/mise.zsh mise activate zsh }  . ${ZSH_PLUGINS_DIR}/mise.zsh
 
 # -- Load if found --

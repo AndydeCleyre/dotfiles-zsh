@@ -139,3 +139,6 @@ alias sudo="=sudo "
 # -- Copy previous word on line --
 # Key: esc, space
 bindkey '\e ' copy-prev-shell-word
+
+# -- Don't color bg for pasted text --
+zle_highlight=(paste:none)

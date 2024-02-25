@@ -9,9 +9,9 @@ export BAT_PAGER=
 man () {  # <man-arg>...
   # standout -> standout
   # no-standout -> no-standout
-  # underline -> green underline
+  # underline -> underline green
   # no-underline -> no-color no-underline
-  # bold -> bold
+  # bold -> bold white
   # blink -> bold red
   # no-bold no-blink no-underline -> no-bold no-color no-underline
 
@@ -19,7 +19,7 @@ man () {  # <man-arg>...
   LESS_TERMCAP_se=${(%):-%s} \
   LESS_TERMCAP_us=${(%):-%F{green}%U} \
   LESS_TERMCAP_ue=${(%):-%f%u} \
-  LESS_TERMCAP_md=${(%):-%B} \
+  LESS_TERMCAP_md=${(%):-%B%F{white}} \
   LESS_TERMCAP_mb=${(%):-%B%F{red}} \
   LESS_TERMCAP_me=${(%):-%b%f%u} \
   =man $@

@@ -79,9 +79,9 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
     argv=($@[1,$syntax_idx-1] $@[$syntax_idx+2,-1])
   } else {
     case $1 {
-      *(#i).rst)  syntax=rst  ;;
-      *(#i).md)   syntax=md   ;;
-      *(#i).log)  syntax=log  ;;
+      (*(#i).rst)  syntax=rst  ;;
+      (*(#i).md)   syntax=md   ;;
+      (*(#i).log)  syntax=log
     }
   }
 
@@ -97,16 +97,17 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
   # use special highlighters if present, for md/rst/diff/log
   local hi
   case $syntax {
-    md)
+
+    (md)
       for hi ( mdcat glow ) {
         if (( $+commands[$hi] )) {
 
           case $hi {
             # ensure it passes style though pipes to a pager:
-            glow)   argv=(-s dark $@)  ;;
+            (glow)   argv=(-s dark $@)  ;;
 
             # do not fetch remote images:
-            mdcat)  argv=(--local $@)  ;;
+            (mdcat)  argv=(--local $@)
           }
 
           $hi $@
@@ -114,8 +115,8 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
 
         }
       }
-    ;;
-    rst)
+
+    ;; (rst)
       if (( $+commands[pandoc] )) {
         if (( $+commands[mdcat] )) || (( $+commands[glow] )) {
 
@@ -124,25 +125,26 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
 
         }
       }
-    ;;
-    diff)
+
+    ;; (diff)
       for hi ( riff delta diff-so-fancy colordiff ) {
         if (( $+commands[$hi] )) {
 
+          # TODO: this doesn't work for file args yet! whoops!
           $hi $@
           return
 
         }
       }
-    ;;
-    log)
+
+    ;; (log)
       if (( $+commands[tspin] )) {
 
         tspin -p $@
         return
 
       }
-    ;;
+
   }
 
   if (( $+commands[highlight] )) {
@@ -221,11 +223,10 @@ sho () {  # [-s <syntax>] <code-file> [[-s <syntax>] <code-file>]...
   local syntax h_args
   while [[ $@ ]] {
     if [[ $1 == -s ]] {
-      shift
-      syntax=$1
-      shift
+      syntax=$2
+      shift 2
     } else {
-      print -rlPu2 -- "%F{blue}==>%f%F{green} $1 %f%F{blue}<==%f"
+      print -rlPu2 -- "%F{blue}--%F{green}%U%B $1 %b%u%F{blue}--%f"
       h_args=()
       if [[ $syntax ]]  h_args+=(-s $syntax)
       syntax=

@@ -2,7 +2,7 @@ alias pie="pip install -e ."
 alias i="ipython"
 
 alias ddg="ddgr -n 3 -x"
-alias define="cambrinary -w"
+alias define="camb"
 
 # Depends:
 #   - yt-dlp (PyPI)

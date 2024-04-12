@@ -1,6 +1,6 @@
 if (( $+commands[eza] )) {
-  alias ls="eza --binary --octal-permissions --no-permissions --git --icons"
-  alias recent="eza --binary --octal-permissions --no-permissions --git -snew --icons"
+  alias ls="eza --binary --octal-permissions --no-permissions --git --icons=always"
+  alias recent="eza --binary --octal-permissions --no-permissions --git -snew --icons=always"
 } else {
   alias ls="ls --color=auto"
   alias recent="ls -rt"

@@ -39,7 +39,7 @@ miniprompt () {
   emulate -L zsh
   unset REPLY
 
-  local bubble_bg='#16161d'
+  local bubble_bg='#1f1f28'
   local bubble_fg=green
   if [[ $1 == -e ]] {
     shift
@@ -109,6 +109,7 @@ miniprompt () {
 
   print -r -- "${hour}.${fivers}${spillover:+:}${spillover}"
 }
+# TODO: when tmux is "empty" there's an extra gap
 
 # -- Craft an RPROMPT string --
 # Sets: REPLY
@@ -140,6 +141,7 @@ miniprompt () {
   read line </etc/os-release
   distro=${${${line#*=}#*\"}%\"*}  # 🤞
   if (( $+distro_icons[$distro] ))  distro="$distro_icons[$distro] "
+  # TODO: pattern match instead
   .zshrc_prompt-bubble "$distro"
   distro_bubble=$REPLY
 
@@ -154,10 +156,11 @@ miniprompt () {
     right_segments+=($REPLY)
   }
   if [[ $TMUX ]]  right_segments+=($tmux_bubbles)
-  right_segments+=($distro_bubble)
   right_segments+=($time_bubble)
+  right_segments+=($distro_bubble)
 
   REPLY=${(j: :)right_segments}
+  # REPLY='${(P):-'$REPLY'}'
 }
 
 # --------------

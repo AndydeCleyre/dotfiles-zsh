@@ -77,13 +77,14 @@ _zshrc_help () {  # <funcname>
   }
 }
 
-# -- Print location/content/help of a function/alias/command/parameter  --
+# -- Print location/content/comments of a function/alias/command/parameter  --
 # Depends: .zshrc_help
 # Optional:
 #   - h (paging_and_printing.zsh)
-#   - tldr (PyPI)
+#   - ripgrep, pcre2grep, or pcregrep
 # TODO:
 #   - alias tracking?
+#   - mz or equivalent integration (mansnip-k... zsh) (optional)?  mansnip zshall $@
 wh () {  # <funcname>
   emulate -L zsh -o extendedglob
   rehash
@@ -108,7 +109,6 @@ wh () {  # <funcname>
   local funcname=$1
 
   local pattern='^(#[^\n]*\n)*^('$funcname' ?\(([^\n]*|[\s\S]*?\n)\}$|alias '$funcname'=[^\n]+)'
-
   local cmd=() can_search=1
   if (( $+commands[rg] )) {
     cmd+=(rg -UNI)
@@ -121,38 +121,41 @@ wh () {  # <funcname>
     can_search=
   }
 
-  # -- Show function info --
-  if (( $+functions[$funcname] )) {
-    local src=${functions_source[$funcname]}
-    [[ $src ]] || can_search=
+  local nature=${${(z)$(whence -w $funcname)}[-1]}
+  case $nature {
 
-    if [[ -t 1 ]]  whence -v $funcname
-    if [[ $can_search ]] {
-      $cmd $pattern $src | .zshrc_wh-hszsh
-      if ! [[ ${pipestatus:#0} ]]  return
-    }
-    whence -c -x 2 $funcname | .zshrc_wh-hszsh
+    (function)
+      local src=${functions_source[$funcname]}
+      [[ $src ]] || can_search=
 
-  # -- Show alias info --
-  } elif (( $+aliases[$funcname] )) {
-    local files=(${ZDOTDIR:-~}/*zsh(|rc|env)(.D))
+      if [[ -t 1 ]]  whence q-v $funcname
+      if [[ $can_search ]] {
+        $cmd $pattern $src | .zshrc_wh-hszsh
+        if ! [[ ${pipestatus:#0} ]]  return
+      }
+      whence -fx2 $funcname | .zshrc_wh-hszsh
 
-    if [[ -t 1 ]]  whence -v $funcname
-    if [[ $can_search ]] {
-      $cmd $pattern $files | .zshrc_wh-hszsh
-      if ! [[ ${pipestatus:#0} ]]  return
-    }
-    whence -f $funcname | .zshrc_wh-hszsh
+    ;; (alias)
+      local files=(${ZDOTDIR:-~}/*zsh(|rc|env)(.D))
 
-  # -- Show parameter info --
-  } elif [[ -v $funcname ]] {
-    typeset -p $funcname | .zshrc_wh-hszsh
+      if [[ -t 1 ]]  whence -v $funcname
+      if [[ $can_search ]] {
+        $cmd $pattern $files | .zshrc_wh-hszsh
+        if ! [[ ${pipestatus:#0} ]]  return
+        # TODO: filename!
+      }
+      whence $funcname | .zshrc_wh-hszsh
 
-  # -- Desperately flail for info --
-  } else {
-    run-help $funcname
-    whence -as $funcname
-    if (( $+commands[tldr] ))  tldr $funcname
+    ;; (builtin)
+      whence -v $funcname
+
+    ;; (none)
+      if [[ -v $funcname ]] {
+        typeset -p $funcname | .zshrc_wh-hszsh
+      }
+
+    ;; (*)
+      whence -s $funcname
   }
 
   # -- Cleanup --

@@ -38,21 +38,9 @@ l () {  # [<less-arg>...] [<doc>[:<line-num>] (or read stdin)]
 }
 
 # -- Highlight with highlight --
-hi () {  # [-s <syntax>] [<highlight-arg>...]
+# Depends: highlight ( https://gitlab.com/saalen/highlight )
+hi () {  # [-s <syntax>] [<filepath>...]
   emulate -L zsh
-
-  argv=(${argv:/-s/-S})
-
-  if [[ -v NO_COLOR ]] {
-    local syntax_idx=${@[(I)-S]}
-    if (( syntax_idx ))  argv=($@[1,$syntax_idx-1] $@[$syntax_idx+2,-1])
-    if [[ $1 ]] {
-      for 1 { <$1 >&1 }
-    } else {
-      >&1
-    }
-    return
-  }
 
   local themes=(
     aiseered
@@ -62,18 +50,75 @@ hi () {  # [-s <syntax>] [<highlight-arg>...]
     navy
   )
 
-  highlight -O truecolor -s ${themes[RANDOM % $#themes + 1]} -t 2 --force --stdout $@
+  argv=(
+    --out-format=truecolor
+    --style=${themes[RANDOM % $#themes + 1]}
+    --replace-tabs=2
+    --force
+    --stdout
+    ${@:/-s/-S}
+  )
+
+  if [[ -t 0 ]] {
+    highlight $@
+  } else {
+    local content=$(<&0)
+    if [[ $content ]]  highlight $@ <<<$content
+  }
+  # Empty input can yield unwanted newlines as output from highlight.
+  # https://gitlab.com/saalen/highlight/-/issues/147
+  # This can be avoided in highlight >= 3.56 with: --no-trailing-nl=empty-file
+  # As a workaround for more version support,
+  # we check stdin for non-emptiness before passing it along to highlight.
+}
+
+# -- Highlight with rich-cli --
+# Depends: rich-cli (PyPI)
+ric () {  # [-s <syntax>] [<filepath>...]
+  emulate -L zsh
+
+  local r_args=(
+    --force-terminal
+    --guides
+    --max-width $(( COLUMNS-4 ))
+  )
+
+  local syntax syntax_idx=${@[(I)-s]}
+  if (( syntax_idx )) {
+    syntax=${@[$syntax_idx+1]}
+    argv=($@[1,$syntax_idx-1] $@[$syntax_idx+2,-1])
+  }
+
+  if [[ $syntax ]] {
+    if [[ $syntax == yml ]]  syntax=yaml
+    r_args+=(--lexer $syntax)
+  }
+
+  if [[ -t 0  ]] {
+    for 1 { rich $r_args $1 }
+  } else {
+    rich $r_args -
+  }
 }
 
 # -- Highlight with whatever --
 # dispatches to rich-cli, highlight, bat, etc. if it can
-h () {  # [-s <syntax>] [<doc>... (or read stdin)]
+# Depends:
+#   - hi
+#   - ric
+# Optional:
+#   - bat/highlight/rich-cli
+#   - colordiff/delta/diff-so-fancy/riff
+#   - glow/mdcat
+#   - pandoc
+#   - tspin
+h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
   emulate -L zsh -o extendedglob
   rehash
 
   # get syntax if first arg is md/rst/log file,
-  # or pop if passed with -[Ss]
-  local syntax syntax_idx=${@[(I)-[Ss]]}
+  # or pop if passed with -s
+  local syntax syntax_idx=${@[(I)-s]}
   if (( syntax_idx )) {
     syntax=${@[$syntax_idx+1]}
     argv=($@[1,$syntax_idx-1] $@[$syntax_idx+2,-1])
@@ -104,7 +149,7 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
 
           case $hi {
             # ensure it passes style though pipes to a pager:
-            (glow)   argv=(-s dark $@)  ;;
+            (glow)   argv=(--style dark $@)  ;;
 
             # do not fetch remote images:
             (mdcat)  argv=(--local $@)
@@ -130,7 +175,7 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
       for hi ( riff delta diff-so-fancy colordiff ) {
         if (( $+commands[$hi] )) {
 
-          # TODO: this doesn't work for file args yet! whoops!
+          # TODO: this does not work for file args yet! whoops!
           $hi $@
           return
 
@@ -140,7 +185,7 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
     ;; (log)
       if (( $+commands[tspin] )) {
 
-        tspin -p $@
+        tspin --print $@
         return
 
       }
@@ -149,51 +194,31 @@ h () {  # [-s <syntax>] [<doc>... (or read stdin)]
 
   if (( $+commands[highlight] )) {
 
-    local themes=(aiseered blacknblue bluegreen ekvoli navy)
-
-    local h_args=(-O truecolor -s ${themes[RANDOM % $#themes + 1]} -t 2 --force --stdout $@)
-    if [[ $syntax ]]  h_args+=(-S $syntax)
-
-    # Empty input can yield unwanted newlines as output from highlight.
-    # https://gitlab.com/saalen/highlight/-/issues/147
-    # This can be avoided in highlight >= 3.56 with: --no-trailing-nl=empty-file
-    # As a workaround for more version support,
-    # we check stdin for non-emptiness before passing it along to highlight.
-
-    if [[ ! -t 0 ]] {
-      local content=$(<&0)
-      if [[ $content ]]  highlight $h_args <<<$content
-    } else {
-      highlight $h_args
-    }
+    if [[ $syntax ]]  argv+=(-s $syntax)
+    hi $@
 
   } elif (( $+commands[rich] )) {
 
-    local r_args=(--force-terminal --guides -W $(( COLUMNS-4 )))
-    if [[ $syntax ]] {
-      if [[ $syntax == yml ]]  syntax=yaml
-      r_args+=(--lexer $syntax)
-    }
-
-    if [[ ! -t 0  ]] {
-      rich $r_args -
-    } else {
-      for 1 { rich $r_args $1 }
-    }
+    if [[ $syntax ]]  argv+=(-s $syntax)
+    ric $@
 
   } elif (( $+commands[bat] )) {
 
     if [[ $syntax ]]  argv+=(-l $syntax)
-    bat -pp --color always $@
+    bat --style=plain --pager=never --color=always $@
+
   } elif (( $+commands[batcat] )) {
+
     if [[ $syntax ]]  argv+=(-l $syntax)
-    batcat -pp --color always $@
+    batcat --style=plain --pager=never --color=always $@
 
   } else {
+
     cat $@
+
   }
 }
-alias hs="h -s"  # <syntax> [<file> (or read stdin)]
+alias hs="h -s"  # <syntax> [<filepath>... (or read stdin)]
 
 # -- Highlight and page --
 # Depends: h
@@ -226,7 +251,8 @@ sho () {  # [-s <syntax>] <code-file> [[-s <syntax>] <code-file>]...
       syntax=$2
       shift 2
     } else {
-      print -rlPu2 -- "%F{blue}--%F{green}%U%B $1 %b%u%F{blue}--%f"
+      print -rlPu2 -- "%F{blue}${(l:$#1+6::~:)}%f"
+      print -rlPu2 -- "%F{blue}%B%U  %F{green} $1 %F{blue}  %u%b%f"
       h_args=()
       if [[ $syntax ]]  h_args+=(-s $syntax)
       syntax=
@@ -237,5 +263,5 @@ sho () {  # [-s <syntax>] <code-file> [[-s <syntax>] <code-file>]...
 }
 
 # -- Completion Help Messages --
-# Depends: .zshrc_help_complete
-if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete l hi h lh sho
+# Depends: .zshrc_help_complete (help.zsh)
+if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete l lh h hi ric sho

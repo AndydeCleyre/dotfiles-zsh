@@ -16,7 +16,7 @@ miniprompt () {
   } elif (( $+functions[powerlevel10k_plugin_unload] )) {
     powerlevel10k_plugin_unload
   }
-  PROMPT=$'\n''%B%F{green}$ %f%b'
+  PROMPT=$'\n''%B%F{green}-- $ %f%b'
   RPROMPT=
   unset VIRTUAL_ENV_DISABLE_PROMPT
 }
@@ -223,8 +223,8 @@ miniprompt () {
 # -- Configure p10k if loaded --
 if (( $+functions[powerlevel10k_plugin_unload] )) {
   if [[ -r ~/.config/zsh/.p10k.zsh ]]  . ~/.config/zsh/.p10k.zsh
-  POWERLEVEL9K_PROMPT_CHAR_ERROR_VIINS_CONTENT_EXPANSION='%F{green}%B$%b%f'
-  POWERLEVEL9K_PROMPT_CHAR_OK_VIINS_CONTENT_EXPANSION='%F{green}%B$%b%f'
+  POWERLEVEL9K_PROMPT_CHAR_ERROR_VIINS_CONTENT_EXPANSION='%F{green}%B-- $%b%f'
+  POWERLEVEL9K_PROMPT_CHAR_OK_VIINS_CONTENT_EXPANSION='%F{green}%B-- $%b%f'
   POWERLEVEL9K_TIME_FORMAT='%D{%L:%M}'
   POWERLEVEL9K_VIRTUALENV_SHOW_PYTHON_VERSION=true
 
@@ -233,7 +233,7 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
   AGKOZAK_USER_HOST_DISPLAY=0
   AGKOZAK_CUSTOM_SYMBOLS=('⇣⇡' '⇣' '⇡' '+' 'D' 'M' '→' '?' '$')
   AGKOZAK_LEFT_PROMPT_ONLY=1
-  AGKOZAK_PROMPT_CHAR=('%F{green}%B$%b%f' '#' ':')
+  AGKOZAK_PROMPT_CHAR=('%F{green}%B-- $%b%f' '#' ':')
   AGKOZAK_PROMPT_DIRTRIM=4
   AGKOZAK_PROMPT_DIRTRIM_STRING=…
   AGKOZAK_COLORS_PATH=magenta

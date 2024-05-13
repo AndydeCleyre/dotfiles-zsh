@@ -128,7 +128,7 @@ wh () {  # <funcname>
       local src=${functions_source[$funcname]}
       [[ $src ]] || can_search=
 
-      if [[ -t 1 ]]  whence q-v $funcname
+      if [[ -t 1 ]]  whence -v $funcname
       if [[ $can_search ]] {
         $cmd $pattern $src | .zshrc_wh-hszsh
         if ! [[ ${pipestatus:#0} ]]  return

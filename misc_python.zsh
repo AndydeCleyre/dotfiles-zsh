@@ -1,4 +1,9 @@
-alias pie="pip install -e ."
+pie () {
+  emulate -L zsh
+  local cmd=(pip install -e .)
+  if (( $+commands[uv] ))  cmd=(uv $cmd)
+  $cmd
+}
 alias i="ipython"
 
 alias ddg="ddgr -n 3 -x"

@@ -42,7 +42,7 @@ bindkey "'" .zle_squote-selection-or-squote  # '
         BUFFER=\${left}\${middle}\${right}
 
         (( REGION_ACTIVE=0 ))
-        (( CURSOR+=1 ))
+        (( CURSOR=\$#left+\$#middle ))
       } else {
         LBUFFER+=${(q-)1}
       }

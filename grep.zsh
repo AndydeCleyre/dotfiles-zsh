@@ -4,6 +4,9 @@ alias rg1="rg --maxdepth 1"
 alias rg2="rg --maxdepth 2"
 alias rgm="rg --multiline --multiline-dotall"
 
+# -- ugrep sugar --
+alias ug="=ug --smart-case --glob-ignore-case --hidden"
+
 # -- grep --
 g () {  # <grep-arg>...
   emulate -L zsh
@@ -67,20 +70,23 @@ gblock () {  # <term> [<pcre(2)grep-arg>...]
   rehash
 
   # TODO: pure zsh with pcre?
-  local pattern='(^[^\n]+\n)*[^\n]*'$1'[^\n]*(\n[^\n]+)*'
+  local pattern='(.+\n)*.*'$1'.*(\n.+)*'
   shift
 
-  local cmd
-  if (( $+commands[rg] )) {
-    cmd=(rg -UIN --color never $pattern)
+  local cmd common=(--no-filename --color=never)
+  if (( $+commands[ugrep] )) {
+    cmd=(ugrep     $common                              $pattern)
+  } elif (( $+commands[rg] )) {
+    cmd=(rg        $common --multiline --no-line-number $pattern)
   } elif (( $+commands[pcre2grep] )) {
-    cmd=(pcre2grep -Mh $pattern)
+    cmd=(pcre2grep $common --multiline                  $pattern)
   } elif (( $+commands[pcregrep] )) {
-    cmd=(pcregrep -Mh $pattern)
+    cmd=(pcregrep  $common --multiline                  $pattern)
   } else {
     print -rlu2 \
       'This function requires one of:' \
-      '  - ripgrep (rg)' \
+      '  - ugrep' \
+      '  - rg (ripgrep)' \
       '  - pcre2grep (pcre2-utils)' \
       '  - pcregrep'
     return 1

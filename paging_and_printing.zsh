@@ -113,11 +113,12 @@ ric () {  # [-s <syntax>] [<filepath>...]
 #   - glow/mdcat
 #   - pandoc
 #   - tspin
+#   - xmq
 h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
   emulate -L zsh -o extendedglob
   rehash
 
-  # get syntax if first arg is md/rst/log file,
+  # get syntax if first arg is md/rst/log/html/xml file,
   # or pop if passed with -s
   local syntax syntax_idx=${@[(I)-s]}
   if (( syntax_idx )) {
@@ -127,6 +128,8 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
     case $1 {
       (*(#i).rst)  syntax=rst  ;;
       (*(#i).md)   syntax=md   ;;
+      (*(#i).html) syntax=html ;;
+      (*(#i).xml)  syntax=xml  ;;
       (*(#i).log)  syntax=log
     }
   }
@@ -140,7 +143,7 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
     return
   }
 
-  # use special highlighters if present, for md/rst/diff/log
+  # use special highlighters if present, for md/rst/diff/log/html/xml
   local hi
   case $syntax {
 
@@ -181,6 +184,12 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
           return
 
         }
+      }
+
+    ;; (html|xml)
+      if (( $+commands[xmq] )) {
+        for 1 { xmq $1 render-terminal --color }
+        return
       }
 
     ;; (log)

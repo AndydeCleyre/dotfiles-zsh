@@ -81,6 +81,7 @@ ric () {  # [-s <syntax>] [<filepath>...]
     --force-terminal
     --guides
     --max-width $(( COLUMNS-4 ))
+    --theme native
   )
 
   local syntax syntax_idx=${@[(I)-s]}

@@ -182,6 +182,16 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
         if (( $+commands[$hi] )) {
 
           # TODO: this does not work for file args yet! whoops!
+          # no args all good
+          # one arg, maybe redirect its content as stdin
+          # two args, maybe good?
+
+          case $hi {
+            (riff)      argv=(--no-pager --color on $@) ;;
+            (delta)     argv=(--paging never $@)        ;;
+            (colordiff) argv=(--color=always $@)
+          }
+
           $hi $@
           return
 

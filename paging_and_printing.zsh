@@ -209,8 +209,12 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
         if (( $+commands[$hi] )) {
 
           case $hi {
-            (jq)    argv=(--color-output $@) ;;
-            (jello) argv=(-C $@)
+            (jq)
+              if (( $#@ ))  argv=(. $@)
+              argv=(--color-output $@)
+            ;; (jello)
+              if (( $#@ ))  argv=(-f $@)
+              argv=(-C $@)
           }
 
           $hi $@

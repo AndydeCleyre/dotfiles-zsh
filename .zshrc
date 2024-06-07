@@ -26,11 +26,12 @@ autoload -Uz zargs
 . ${ZDOTDIR}/clear_and_foldernav.zsh
 . ${ZDOTDIR}/completion_and_glob_opts.zsh
 . ${ZDOTDIR}/editor.zsh
+. ${ZDOTDIR}/github.zsh
 . ${ZDOTDIR}/history.zsh
 . ${ZDOTDIR}/misc_python.zsh
 . ${ZDOTDIR}/misc_zle.zsh
 . ${ZDOTDIR}/multiline_enter.zsh
-. ${ZDOTDIR}/pacman.zsh
+. ${ZDOTDIR}/pacman.zsh  # uses gh-install (github.zsh) for pacaptr installation function
 . ${ZDOTDIR}/broot.zsh  # supersedes keys:
                         #   - ctrl+/   (load after completion_and_glob_opts)
                         #   - alt+down (load after clear_and_foldernav)

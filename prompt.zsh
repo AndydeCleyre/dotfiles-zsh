@@ -39,7 +39,7 @@ miniprompt () {
   emulate -L zsh
   unset REPLY
 
-  local bubble_bg='#262c2e'
+  local bubble_bg='#222222'
   local bubble_fg=green
   if [[ $1 == -e ]] {
     shift

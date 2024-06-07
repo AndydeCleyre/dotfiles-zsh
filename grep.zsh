@@ -5,7 +5,7 @@ alias rg2="rg --maxdepth 2"
 alias rgm="rg --multiline --multiline-dotall"
 
 # -- ugrep sugar --
-alias ug="=ug --smart-case --glob-ignore-case --hidden"
+alias ug="=ug --recursive --smart-case --glob-ignore-case --hidden"
 
 # -- grep --
 g () {  # <grep-arg>...

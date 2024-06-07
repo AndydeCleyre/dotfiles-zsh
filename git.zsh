@@ -54,7 +54,7 @@ alias gsoff="git submodule deinit"
 # -- git submodule foreach, and eval --
 # You can use your functions and aliases
 gse () {  # <cmd> [<cmd-arg>...]
-  emulate -L zsh
+  emulate -L zsh -o localtraps
   trap "cd ${(q-)PWD}" EXIT INT QUIT
 
   local git_opts=()

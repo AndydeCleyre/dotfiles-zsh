@@ -9,7 +9,7 @@ zmodload zsh/mapfile
 # -- Run broot, cd into pathfile if successful --
 # Depends: zmapfile
 br () {  # [<broot-opt>...]
-  emulate -L zsh
+  emulate -L zsh -o localtraps
 
   local pathfile=$(mktemp)
   trap "rm ${(q-)pathfile}" EXIT INT QUIT

@@ -49,7 +49,11 @@ bindkey '^[^[[3~'   .zle_replace-last  # esc, del
 # -- Prepend doas --
 # Key: esc, esc
 .zle_prepend-doas () {
-  BUFFER="doas $BUFFER"
+  if (( $+commands[doas] )) {
+    BUFFER="doas $BUFFER"
+  } else {
+    BUFFER="sudo $BUFFER"
+  }
   CURSOR=$#BUFFER
 
   if (( $+functions[_zsh_highlight] ))  _zsh_highlight

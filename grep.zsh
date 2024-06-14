@@ -5,7 +5,18 @@ alias rg2="rg --maxdepth 2"
 alias rgm="rg --multiline --multiline-dotall"
 
 # -- ugrep sugar --
-alias ug="=ug --recursive --smart-case --glob-ignore-case --hidden"
+ug () {
+  emulate -L zsh
+
+  local args=(--smart-case --glob-ignore-case --hidden)
+  if [[ -t 0 ]] {
+    args+=(--recursive)
+  } else {
+    args+=(--no-line-number)
+  }
+
+  =ug $args $@
+}
 
 # -- grep --
 g () {  # <grep-arg>...

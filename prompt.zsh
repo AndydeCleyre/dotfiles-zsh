@@ -200,11 +200,11 @@ miniprompt () {
   }
 
   # -- yadm info --
-  .zshrc_prompt-yadmstat
-  if [[ $REPLY ]] {
-    .zshrc_prompt-bubble .$REPLY
-    psvar+=($REPLY)
-  }
+  # .zshrc_prompt-yadmstat
+  # if [[ $REPLY ]] {
+  #   .zshrc_prompt-bubble .$REPLY
+  #   psvar+=($REPLY)
+  # }
 
   # -- venv --
   if [[ $VIRTUAL_ENV ]] {

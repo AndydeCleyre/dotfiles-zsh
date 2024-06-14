@@ -228,7 +228,7 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
   POWERLEVEL9K_TIME_FORMAT='%D{%L:%M}'
   POWERLEVEL9K_VIRTUALENV_CONTENT_EXPANSION='${P9K_CONTENT%% *}'
   POWERLEVEL9K_VIRTUALENV_SHOW_PYTHON_VERSION=true
-  POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time background_jobs virtualenv my_rprompt newline)
+  POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(newline status command_execution_time background_jobs virtualenv my_rprompt)
   prompt_my_rprompt () { .zshrc_prompt-rprompt; p10k segment -e -t "$REPLY" }
 
 # -- Configure agkozak if loaded --

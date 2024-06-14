@@ -226,7 +226,10 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
   POWERLEVEL9K_PROMPT_CHAR_ERROR_VIINS_CONTENT_EXPANSION='%F{green}%B-- $%b%f'
   POWERLEVEL9K_PROMPT_CHAR_OK_VIINS_CONTENT_EXPANSION='%F{green}%B-- $%b%f'
   POWERLEVEL9K_TIME_FORMAT='%D{%L:%M}'
+  POWERLEVEL9K_VIRTUALENV_CONTENT_EXPANSION='${P9K_CONTENT%% *}'
   POWERLEVEL9K_VIRTUALENV_SHOW_PYTHON_VERSION=true
+  POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time background_jobs virtualenv my_rprompt newline)
+  prompt_my_rprompt () { .zshrc_prompt-rprompt; p10k segment -e -t "$REPLY" }
 
 # -- Configure agkozak if loaded --
 } elif (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {

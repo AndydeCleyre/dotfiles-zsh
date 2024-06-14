@@ -7,6 +7,10 @@ autoload -Uz zargs
 . ${ZDOTDIR}/inline_selection.zsh
 . ${ZDOTDIR}/tmux.zsh  # supersedes key: pgup (load after inline_selection)
 
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 . ${ZDOTDIR}/compinit_and_plugins.zsh  # otherwise: autoload -Uz compinit && compinit
 
 . ${ZDOTDIR}/prompt.zsh  # configures prompt plugin if loaded (load after compinit_and_plugins)

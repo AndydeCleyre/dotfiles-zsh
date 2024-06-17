@@ -254,7 +254,7 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
     } else {
       .zshrc_prompt-bubble "%F{red}${AGKOZAK_PIPESTATUS}"
     }
-    AGKOZAK_PIPESTATUS="$REPLY"
+    AGKOZAK_PIPESTATUS=$REPLY
   }
   add-zsh-hook precmd .zshrc_prompt-agkozak-pipestatus-hook
 

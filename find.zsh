@@ -1,14 +1,14 @@
 # -- Find by part of the basename, then successively filter (globby) --
 # -F -- don't follow linked folders
 fnd () {  # [-F] <leaf-term> [<term>...]
-  emulate -L zsh -o extendedglob -o globdots
+  emulate -L zsh -o extendedglob -o globdots -o globstarshort
 
   local matches=()
   if [[ $1 == -F ]] {
     shift
-    matches=(**/*(#l)$1*)
+    matches=(**(#l)$1*)
   } else {
-    matches=(***/*(#l)$1*)
+    matches=(***(#l)$1*)
   }
   shift
   for 1 { matches=(${(M)matches:#*(#l)$1*}) }

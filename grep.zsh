@@ -8,7 +8,7 @@ alias rgm="rg --multiline --multiline-dotall"
 ug () {
   emulate -L zsh
 
-  local args=(--smart-case --glob-ignore-case --hidden)
+  local args=(--smart-case --glob-ignore-case --hidden --ignore-binary)
   if [[ -t 0 ]] {
     args+=(--recursive)
   } else {

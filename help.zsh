@@ -1,3 +1,5 @@
+# TODO: wh: multiple func args?
+
 # -- Smarter-than-man help for current command --
 # Key: esc, h
 if (( $+aliases[run-help] )) {
@@ -15,19 +17,26 @@ alias huh="typeset -p"
   rehash
 
   local funcname=$1
-  local pattern='^(#[^\n]*\n)*^(alias '$funcname'=[^\n]+|'$funcname' ?\([^\n]*)'
+  local pattern='^(#.*\n)*^(alias '$funcname'=.+|'$funcname' ?\(.*)'
 
   local files=(${ZDOTDIR:-~}/*zsh(|rc|env)(.D))
 
-  local cmd=()
-  if (( $+commands[rg] )) {
-    cmd+=(rg -UNI)
+  local cmd=() common=(--no-filename --color=never)
+  if (( $+commands[ugrep] )) {
+    cmd+=(ugrep     $common)
+  } elif (( $+commands[rg] )) {
+    cmd+=(rg        $common --multiline --no-line-number)
   } elif (( $+commands[pcre2grep] )) {
-    cmd+=(pcre2grep -Mh)
+    cmd+=(pcre2grep $common --multiline)
   } elif (( $+commands[pcregrep] )) {
-    cmd+=(pcregrep -Mh)
+    cmd+=(pcregrep  $common --multiline)
   } else {
-    print -u2 'Not found: ripgrep, pcre2grep, or pcregrep'
+    print -rlu2 \
+      'This function requires one of:' \
+      '  - ugrep' \
+      '  - rg (ripgrep)' \
+      '  - pcre2grep (pcre2-utils)' \
+      '  - pcregrep'
     return 2
   }
 
@@ -78,10 +87,11 @@ _zshrc_help () {  # <funcname>
 }
 
 # -- Print location/content/comments of a function/alias/command/parameter  --
-# Depends: .zshrc_help
+# Depends:
+#   - .zshrc_help
 # Optional:
 #   - h (paging_and_printing.zsh)
-#   - ripgrep, pcre2grep, or pcregrep
+#   - ugrep, ripgrep, pcre2grep, or pcregrep
 # TODO:
 #   - alias tracking?
 #   - mz or equivalent integration (mansnip-k... zsh) (optional)?  mansnip zshall $@
@@ -108,16 +118,23 @@ wh () {  # <funcname>
 
   local funcname=$1
 
-  local pattern='^(#[^\n]*\n)*^('$funcname' ?\(([^\n]*|[\s\S]*?\n)\}$|alias '$funcname'=[^\n]+)'
-  local cmd=() can_search=1
-  if (( $+commands[rg] )) {
-    cmd+=(rg -UNI)
+  local pattern='^(#.*\n)*('$funcname' ?\(.+\}$|'$funcname' ?\((([^}].*)?\n)+\}$|alias '$funcname'=.+)'
+  local cmd=() common=(--no-filename --color=never) can_search=1
+  if (( $+commands[ugrep] )) {
+    cmd+=(ugrep     $common --perl-regexp)
+  } elif (( $+commands[rg] )) {
+    cmd+=(rg        $common --multiline --no-line-number)
   } elif (( $+commands[pcre2grep] )) {
-    cmd+=(pcre2grep -Mh)
+    cmd+=(pcre2grep $common --multiline)
   } elif (( $+commands[pcregrep] )) {
-    cmd+=(pcregrep -Mh)
+    cmd+=(pcregrep  $common --multiline)
   } else {
-    print -u2 'Not found: ripgrep, pcre2grep, or pcregrep'
+    print -rlu2 \
+      'This function requires one of:' \
+      '  - ugrep' \
+      '  - rg (ripgrep)' \
+      '  - pcre2grep (pcre2-utils)' \
+      '  - pcregrep'
     can_search=
   }
 
@@ -178,6 +195,7 @@ bindkey '\ew' .zle_prepend-wh  # esc, w
 
 # -- Prepend tldr --
 # Key: esc, t
+# TODO: maybe specially handle 'git branch' -> 'git-branch', etc.
 .zle_prepend-tldr () {
   local words=(${(z)BUFFER})
   zle .push-line

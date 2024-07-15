@@ -222,7 +222,7 @@ miniprompt () {
 
 # -- Configure p10k if loaded --
 if (( $+functions[powerlevel10k_plugin_unload] )) {
-  if [[ -r ~/.config/zsh/.p10k.zsh ]]  . ~/.config/zsh/.p10k.zsh
+  if [[ -r ${ZDOTDIR:-${${(%):-%x}:P:h}}/.p10k.zsh ]]  . ${ZDOTDIR:-${${(%):-%x}:P:h}}/.p10k.zsh
   POWERLEVEL9K_PROMPT_CHAR_ERROR_VIINS_CONTENT_EXPANSION='%F{green}%B-- $%b%f'
   POWERLEVEL9K_PROMPT_CHAR_OK_VIINS_CONTENT_EXPANSION='%F{green}%B-- $%b%f'
   POWERLEVEL9K_VIRTUALENV_CONTENT_EXPANSION='${P9K_CONTENT%% *}'

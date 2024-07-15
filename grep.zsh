@@ -2,13 +2,13 @@
 alias rg="=rg --smart-case --hidden --no-ignore --glob '!.git' --glob '!.venv' --glob '!.tox' --glob '!.mypy_cache' --glob '!.nox'"
 alias rg1="rg --maxdepth 1"
 alias rg2="rg --maxdepth 2"
-alias rgm="rg --multiline --multiline-dotall"
+alias rgm="rg --multiline"
 
 # -- ugrep sugar --
 ug () {
   emulate -L zsh
 
-  local args=(--smart-case --glob-ignore-case --hidden --ignore-binary)
+  local args=(--smart-case --glob-ignore-case --hidden --ignore-binary --perl-regexp)
   if [[ -t 0 ]] {
     args+=(--recursive)
   } else {
@@ -84,7 +84,7 @@ gblock () {  # <term> [<pcre(2)grep-arg>...]
   local pattern='(.+\n)*.*'$1'.*(\n.+)*'
   shift
 
-  local cmd common=(--no-filename --color=never)
+  local cmd=() common=(--no-filename --color=never)
   if (( $+commands[ugrep] )) {
     cmd=(ugrep     $common                              $pattern)
   } elif (( $+commands[rg] )) {

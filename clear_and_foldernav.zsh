@@ -41,6 +41,7 @@ bindkey '^[[1;3B' .zle_cd-down  # alt+down
 # Optional: .zle_redraw-prompt
 # Credit: Roman Perepelitsa
 # Original: https://github.com/romkatv/zsh4humans/blob/v2/fn/-z4h-cd-rotate
+
 setopt autopushd pushdignoredups
 DIRSTACKSIZE=12
 

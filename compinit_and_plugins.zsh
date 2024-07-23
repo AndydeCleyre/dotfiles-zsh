@@ -43,7 +43,7 @@ if { .zshrc_fortnightly pip  ${ZSH_PLUGINS_DIR}/pip.zsh  pip completion -z }  . 
 if { .zshrc_fortnightly mise ${ZSH_PLUGINS_DIR}/mise.zsh mise activate zsh }  . ${ZSH_PLUGINS_DIR}/mise.zsh
 
 # -- Load if found --
-.zshrc_load-plugin fast-syntax-highlighting agkozak-zsh-prompt
-if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] ))  .zshrc_load-plugin --try ${ZSH_PLUGINS_DIR}/powerlevel10k/powerlevel10k.zsh-theme
 .zshrc_load-plugin --try /usr/share/doc/pkgfile/command-not-found.zsh /etc/zsh_command_not_found
 .zshrc_load-plugin --try ~/Code/zpy ${ZSH_PLUGINS_DIR}/zpy
+.zshrc_load-plugin fast-syntax-highlighting agkozak-zsh-prompt zsh-autoenv
+if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] ))  .zshrc_load-plugin --try ${ZSH_PLUGINS_DIR}/powerlevel10k/powerlevel10k.zsh-theme

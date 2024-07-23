@@ -1,30 +1,35 @@
 [submodule "plugins/agkozak-zsh-prompt"]
-	path = plugins/agkozak-zsh-prompt
-	url = https://github.com/agkozak/agkozak-zsh-prompt
-	branch = main
-	shallow = true
+  path = plugins/agkozak-zsh-prompt
+  url = https://github.com/agkozak/agkozak-zsh-prompt
+  branch = main
+  shallow = true
 [submodule "plugins/fast-syntax-highlighting"]
-	path = plugins/fast-syntax-highlighting
-	url = https://github.com/andydecleyre/fast-syntax-highlighting
-	branch = bugfix/38
-	shallow = true
+  path = plugins/fast-syntax-highlighting
+  url = https://github.com/andydecleyre/fast-syntax-highlighting
+  branch = bugfix/38
+  shallow = true
 [submodule "plugins/zsh-z"]
-	path = plugins/zsh-z
-	url = https://github.com/agkozak/zsh-z
-	branch = master
-	shallow = true
+  path = plugins/zsh-z
+  url = https://github.com/agkozak/zsh-z
+  branch = master
+  shallow = true
 [submodule "plugins/zpy"]
-	path = plugins/zpy
-	url = https://github.com/andydecleyre/zpy
-	branch = master
-	shallow = true
+  path = plugins/zpy
+  url = https://github.com/andydecleyre/zpy
+  branch = master
+  shallow = true
 [submodule "plugins/zsh-completions"]
-	path = plugins/zsh-completions
-	url = https://github.com/zsh-users/zsh-completions
-	branch = master
-	shallow = true
+  path = plugins/zsh-completions
+  url = https://github.com/zsh-users/zsh-completions
+  branch = master
+  shallow = true
 [submodule "plugins/powerlevel10k"]
-	path = plugins/powerlevel10k
-	url = https://github.com/romkatv/powerlevel10k
-	branch = master
-	shallow = true
+  path = plugins/powerlevel10k
+  url = https://github.com/romkatv/powerlevel10k
+  branch = master
+  shallow = true
+[submodule "plugins/zsh-autoenv"]
+  path = plugins/zsh-autoenv
+  url = https://github.com/Tarrasch/zsh-autoenv
+  branch = master
+  shallow = true

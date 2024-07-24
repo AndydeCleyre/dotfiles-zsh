@@ -11,6 +11,7 @@ setopt \
   no_case_glob
 
 zstyle ':completion:*:*:*:*:*' menu select
+bindkey '^I' menu-expand-or-complete
 
 # if (( $+commands[dircolors] ))  eval "$(dircolors -b)"
 # export LS_COLORS="$(vivid generate snazzy)"

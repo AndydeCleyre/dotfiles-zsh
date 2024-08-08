@@ -167,6 +167,11 @@ miniprompt () {
 # Hook Functions
 # --------------
 
+# -- Time slow commands --
+.zshrc_prompt-timecheck () {
+  ZSHRC_PROMPT_PRETIME=$EPOCHREALTIME
+}
+
 # -- Populate psvar --
 .zshrc_prompt-setpsvar () {
   ZSHRC_PROMPT_RET=$?
@@ -213,6 +218,18 @@ miniprompt () {
 
     .zshrc_prompt-bubble "${venv_parent}/${VIRTUAL_ENV:t}"
     psvar+=($REPLY)
+  }
+
+  # -- slow cmd time --
+  if [[ $ZSHRC_PROMPT_PRETIME ]] {
+    local cmd_duration=$(( EPOCHREALTIME - ZSHRC_PROMPT_PRETIME ))
+    unset ZSHRC_PROMPT_PRETIME
+    if (( cmd_duration > 1 )) {
+      local bigten=$(( cmd_duration * 10 + 0.5 ))
+      bigten=${bigten%%.*}
+      .zshrc_prompt-bubble ${bigten[1,-2]}.${bigten[-1]}s
+      psvar+=($REPLY)
+    }
   }
 }
 
@@ -265,6 +282,7 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
 } else {
   VIRTUAL_ENV_DISABLE_PROMPT=1
   add-zsh-hook precmd .zshrc_prompt-setpsvar
+  add-zsh-hook preexec .zshrc_prompt-timecheck
   PROMPT=$'\n''%B%F{white}--%f%b ${(j: :)psvar} %B%F{white}--%f%b'$'\n''%B%F{green}%(!.#.$)%f%b '
   .zshrc_prompt-rprompt
   RPROMPT=$REPLY

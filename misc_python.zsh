@@ -9,6 +9,8 @@ alias i="ipython"
 alias ddg="ddgr -n 3 -x"
 alias define="camb"
 
+if (( $+functions[compdef] )) && (( $+commands[nt2json] ))  compdef _gnu_generic nt2yaml nt2toml nt2json json2nt toml2nt yaml2nt
+
 # Depends:
 #   - yt-dlp (PyPI)
 #   - sops (not Python)

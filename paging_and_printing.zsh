@@ -155,13 +155,15 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
 
           case $hi {
             # ensure it passes style though pipes to a pager:
-            (glow)   argv=(--style dark $@)  ;;
+            (glow)  argv=(--style dark $@) ;;
+            # TODO:
+            # https://github.com/charmbracelet/glow/issues/440
 
             # do not fetch remote images:
             (mdcat)  argv=(--local $@)
           }
 
-          $hi $@
+          CLICOLOR_FORCE=1 $hi $@
           return
 
         }
@@ -181,10 +183,10 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
       for hi ( riff delta diff-so-fancy colordiff ) {
         if (( $+commands[$hi] )) {
 
-          # TODO: this does not work for file args yet! whoops!
-          # no args all good
-          # one arg, maybe redirect its content as stdin
-          # two args, maybe good?
+          # TODO: this does not work for all file args yet! whoops!
+          # no file args: all good
+          # one file arg: need to redirect its content as stdin
+          # two file args: good except for diff-so-fancy
 
           case $hi {
             (riff)      argv=(--no-pager --color on $@) ;;

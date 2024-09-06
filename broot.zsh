@@ -57,7 +57,13 @@ bindkey '^[[1;3B' .zle_cd-broot  # alt+down
 # -- Start writing a for loop over broot-selected paths (each is $f) --
 # Key: ctrl+f
 # Depends: ~/.config/broot/select.hjson ( https://github.com/AndydeCleyre/dotfiles-broot )
-bindkey -s '^f' 'for f ( ${(f)"$(br --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/select.hjson;${XDG_CONFIG_HOME:-${HOME}/.config}/broot/conf.hjson")"} )  '
+.zle_for-broot () {
+  zle .push-input
+  LBUFFER='for f ( ${(f)"$(br --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/select.hjson;${XDG_CONFIG_HOME:-${HOME}/.config}/broot/conf.hjson")"} ) {'$'\n''  '
+  RBUFFER=' $f'$'\n''}'
+}
+zle -N       .zle_for-broot
+bindkey '^f' .zle_for-broot
 
 # -- Complete current word as path using broot --
 # Key: ctrl+/

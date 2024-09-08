@@ -1,7 +1,7 @@
 [submodule "plugins/agkozak-zsh-prompt"]
   path = plugins/agkozak-zsh-prompt
   url = https://github.com/agkozak/agkozak-zsh-prompt
-  branch = main
+  branch = master
   shallow = true
 [submodule "plugins/fast-syntax-highlighting"]
   path = plugins/fast-syntax-highlighting

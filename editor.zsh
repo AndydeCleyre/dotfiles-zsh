@@ -31,3 +31,6 @@ mcdiff () {  # [<mcdiff-arg>...]
   print -rl -- "Using skin: $skin:t:r"
   COLORTERM=truecolor =mcdiff -c -S $skin $@
 }
+
+# https://github.com/zed-industries/zed/issues/17413
+compdef _gnu_generic zed

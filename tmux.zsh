@@ -1,6 +1,6 @@
 if (( $+commands[tmux] )) {  # Without tmux, skip this file
 
-if ! [[ $TMUX ]] { tmux new -A } else {  # Join or create a session in not in one already
+if ! [[ $TMUX ]] { tmux new -A } else {  # Join or create a session if not in one already
 
 # -- Activate copy mode and scroll up a page --
 # Key: pgup

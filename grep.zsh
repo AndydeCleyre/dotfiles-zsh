@@ -1,7 +1,15 @@
 # -- ripgrep sugar --
-alias rg="=rg --smart-case --hidden --no-ignore --glob '!.git' --glob '!.venv' --glob '!.tox' --glob '!.mypy_cache' --glob '!.nox' --glob '!.pytest_cache'"
-alias rg1="rg --maxdepth 1"
-alias rg2="rg --maxdepth 2"
+rg () {
+  emulate -L zsh
+
+  local args=(--smart-case --hidden --no-ignore)
+  local ignores=('!.git/' '!.venv/' '!venv/' '!.tox/' '!.mypy_cache/' '!.nox/' '!.pytest_cache/')
+  args+=(${${ignores/*/--glob}:^ignores})
+
+  =rg $args $@
+}
+alias rg1="rg --max-depth 1"
+alias rg2="rg --max-depth 2"
 alias rgm="rg --multiline"
 
 # -- ugrep sugar --
@@ -9,7 +17,7 @@ ug () {
   emulate -L zsh
 
   local args=(--smart-case --glob-ignore-case --hidden --ignore-binary --perl-regexp)
-  local ignores=('!.git/' '!.venv/' '!.tox/' '!.mypy_cache/' '!.nox/' '!.pytest_cache/')
+  local ignores=('!.git/' '!.venv/' '!venv/' '!.tox/' '!.mypy_cache/' '!.nox/' '!.pytest_cache/')
   args+=(--glob=${(j:,:)ignores})
   if [[ -t 0 ]] {
     args+=(--recursive)

@@ -16,7 +16,7 @@ miniprompt () {
   } elif (( $+functions[powerlevel10k_plugin_unload] )) {
     powerlevel10k_plugin_unload
   }
-  PROMPT=$'\n''%B%F{green}-- $ %f%b'
+  PROMPT=$'\n''%B%F{white}-- %F{green}$ %f%b'
   RPROMPT=
   unset VIRTUAL_ENV_DISABLE_PROMPT
 }
@@ -39,7 +39,7 @@ miniprompt () {
   emulate -L zsh
   unset REPLY
 
-  local bubble_bg='#222222'
+  local bubble_bg='#222221'
   local bubble_fg=green
   if [[ $1 == -e ]] {
     shift
@@ -240,8 +240,8 @@ miniprompt () {
 # -- Configure p10k if loaded --
 if (( $+functions[powerlevel10k_plugin_unload] )) {
   if [[ -r ${ZDOTDIR:-${${(%):-%x}:P:h}}/.p10k.zsh ]]  . ${ZDOTDIR:-${${(%):-%x}:P:h}}/.p10k.zsh
-  POWERLEVEL9K_PROMPT_CHAR_ERROR_VIINS_CONTENT_EXPANSION='%F{green}%B-- $%b%f'
-  POWERLEVEL9K_PROMPT_CHAR_OK_VIINS_CONTENT_EXPANSION='%F{green}%B-- $%b%f'
+  POWERLEVEL9K_PROMPT_CHAR_ERROR_VIINS_CONTENT_EXPANSION='%F{white}%B-- %F{green}$%b%f'
+  POWERLEVEL9K_PROMPT_CHAR_OK_VIINS_CONTENT_EXPANSION='%F{white}%B-- %F{green}$%b%f'
   POWERLEVEL9K_STATUS_ERROR=true
   POWERLEVEL9K_VIRTUALENV_CONTENT_EXPANSION='${P9K_CONTENT%% *}'
   POWERLEVEL9K_VIRTUALENV_SHOW_PYTHON_VERSION=true
@@ -255,7 +255,7 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
   AGKOZAK_USER_HOST_DISPLAY=0
   AGKOZAK_CUSTOM_SYMBOLS=('⇣⇡' '⇣' '⇡' '+' 'D' 'M' '→' '?' '$')
   AGKOZAK_LEFT_PROMPT_ONLY=1
-  AGKOZAK_PROMPT_CHAR=('%F{green}%B-- $%b%f' '#' ':')
+  AGKOZAK_PROMPT_CHAR=('%F{white}%B-- %F{green}$%b%f' '#' ':')
   AGKOZAK_PROMPT_DIRTRIM=4
   AGKOZAK_PROMPT_DIRTRIM_STRING=…
   AGKOZAK_COLORS_PATH=magenta
@@ -283,7 +283,7 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
   VIRTUAL_ENV_DISABLE_PROMPT=1
   add-zsh-hook precmd .zshrc_prompt-setpsvar
   add-zsh-hook preexec .zshrc_prompt-timecheck
-  PROMPT=$'\n''%B%F{white}--%f%b ${(j: :)psvar} %B%F{white}--%f%b'$'\n''%B%F{green}%(!.#.$)%f%b '
+  PROMPT=$'\n''${(j: :)psvar}'$'\n''%B%F{white}-- %F{green}%(!.#.$)%f%b '
   .zshrc_prompt-rprompt
   RPROMPT=$REPLY
 }

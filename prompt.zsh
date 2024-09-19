@@ -115,6 +115,7 @@ miniprompt () {
 # Sets: REPLY
 .zshrc_prompt-rprompt () {
   emulate -L zsh
+  zmodload zsh/mapfile
 
   local usual_host='pop-os' usual_user='andy'
 
@@ -128,20 +129,18 @@ miniprompt () {
   local tmux_bubbles='${(j: :)${(f)"$(tmux lsw -F "'$REPLY'" 2>/dev/null)"}}'
 
   # -- Distro Bubble --
-  local distro line distro_bubble
+  local distro lines distro_bubble
   local -A distro_icons=(
-    'Alpine Linux'                   '%F{#0d597f}'
-    'Arch Linux'                     '%F{#1793d1}'
-    'Debian GNU/Linux 12 (bookworm)' '%F{#A80030}'
-    'Debian GNU/Linux trixie/sid'    '%F{#A80030}'
-    'Fedora Linux'                   '%F{#50a1d9}'
-    'Pop!_OS'                        '%F{#6cc7d2}'  # #faa41a #48b9c7 #6cc7d2
-    'Ubuntu 22.04.3 LTS'             '%F{#6e2d97}'
+    'alpine' '%F{#0d597f}'
+    'arch'   '%F{#1793d1}'
+    'debian' '%F{#A80030}'
+    'fedora' '%F{#50a1d9}'
+    'pop'    '%F{#6cc7d2}'  # #faa41a #48b9c7 #6cc7d2
+    'ubuntu' '%F{#6e2d97}'
   )
-  read line </etc/os-release
-  distro=${${${line#*=}#*\"}%\"*}  # 🤞
+  lines=(${(f)mapfile[/etc/os-release]})
+  distro=${${(M)lines:#ID=*}#*=}
   if (( $+distro_icons[$distro] ))  distro="$distro_icons[$distro] "
-  # TODO: pattern match instead
   .zshrc_prompt-bubble "$distro"
   distro_bubble=$REPLY
 

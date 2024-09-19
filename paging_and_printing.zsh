@@ -202,7 +202,11 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
 
     ;; (html|xml)
       if (( $+commands[xmq] )) {
-        for 1 { xmq $1 render-terminal --color }
+        if [[ $1 ]] {
+          for 1 { xmq $1 render-terminal --color }
+        } else {
+          xmq render-terminal --color
+        }
         return
       }
 

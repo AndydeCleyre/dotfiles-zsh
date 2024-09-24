@@ -1,7 +1,7 @@
 pie () {
   emulate -L zsh
   local cmd=(pip install -e .)
-  if (( $+commands[uv] ))  cmd=(uv $cmd)
+  if (( $+commands[uv] ))  cmd=(uv pip install -p python -e .)
   $cmd
 }
 alias i="ipython"

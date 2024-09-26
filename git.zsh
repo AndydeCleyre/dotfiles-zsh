@@ -60,9 +60,10 @@ gse () {  # <cmd> [<cmd-arg>...]
   local git_opts=()
   while [[ $1 == -* ]] { git_opts+=($1); shift }
 
+  local origwd=$PWD
   local folders=(${(f)"$(git $git_opts submodule --quiet foreach pwd)"}) folder
   for folder ( $folders ) {
-    print -rlu2 -- "-- Entering $folder to eval -- $@"
+    print -rlu2 -- "-- ${${folder#$origwd/}/#~/~} -- $@"
     cd $folder
     eval "$@"
   }

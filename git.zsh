@@ -63,7 +63,7 @@ gse () {  # <cmd> [<cmd-arg>...]
   local origwd=$PWD
   local folders=(${(f)"$(git $git_opts submodule --quiet foreach pwd)"}) folder
   for folder ( $folders ) {
-    print -rlu2 -- "-- ${${folder#$origwd/}/#~/~} -- $@"
+    print -rlPu2 -- '' "%B%F{white}-- %F{green}$%b%f $@ %B%F{yellow}:: %F{magenta}${${folder#$origwd/}/#~/~}%b%f"
     cd $folder
     eval "$@"
   }

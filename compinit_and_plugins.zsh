@@ -13,18 +13,19 @@ ZSHZ_CMD=j
 ZSHZ_NO_RESOLVE_SYMLINKS=1
 ZSHZ_UNCOMMON=1
 
-# ---------------------------------
-# Load some plugins before compinit
-# ---------------------------------
+# -------------------------------------------------
+# Load completions and some plugins before compinit
+# -------------------------------------------------
 
 # -- Generated Sources --
 .zshrc_fortnightly mise  ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_mise  mise completion zsh                || true
+.zshrc_fortnightly prqlc ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_prqlc prqlc shell-completion zsh         || true
 .zshrc_fortnightly ruff  ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_ruff  ruff generate-shell-completion zsh || true
 .zshrc_fortnightly uv    ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_uv    uv generate-shell-completion zsh   || true
-.zshrc_fortnightly prqlc ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_prqlc prqlc shell-completion zsh         || true
 
 # -- Load if found --
 .zshrc_load-plugin zsh-completions zsh-z
+.zshrc_load-plugin --try /usr/share/doc/pkgfile/command-not-found.zsh /etc/zsh_command_not_found  # before mise activation
 
 # --------
 # compinit
@@ -43,7 +44,5 @@ if { .zshrc_fortnightly pip  ${ZSH_PLUGINS_DIR}/pip.zsh  pip completion -z }  . 
 if { .zshrc_fortnightly mise ${ZSH_PLUGINS_DIR}/mise.zsh mise activate zsh }  . ${ZSH_PLUGINS_DIR}/mise.zsh
 
 # -- Load if found --
-.zshrc_load-plugin --try /usr/share/doc/pkgfile/command-not-found.zsh /etc/zsh_command_not_found
-.zshrc_load-plugin --try ~/Code/zpy ${ZSH_PLUGINS_DIR}/zpy
-.zshrc_load-plugin fast-syntax-highlighting agkozak-zsh-prompt zsh-autoenv
+.zshrc_load-plugin agkozak-zsh-prompt fast-syntax-highlighting zpy zsh-autoenv
 if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] ))  .zshrc_load-plugin --try ${ZSH_PLUGINS_DIR}/powerlevel10k/powerlevel10k.zsh-theme

@@ -16,7 +16,7 @@
 [submodule "plugins/zpy"]
   path = plugins/zpy
   url = https://github.com/andydecleyre/zpy
-  branch = master
+  branch = develop
   shallow = true
 [submodule "plugins/zsh-completions"]
   path = plugins/zsh-completions

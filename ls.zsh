@@ -39,4 +39,8 @@ tree () {  # [-L <depth>] [-d] [<arg>...]
   $cmd $@
 }
 
+ncdu () {
+  =ncdu -t ${${$(nproc 2>/dev/null):-$(sysctl -n hw.logicalcpu 2>/dev/null)}:-4} -x -e --color dark-bg $@
+}
+
 if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete tree

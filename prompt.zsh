@@ -64,15 +64,11 @@ miniprompt () {
   emulate -L zsh
   unset REPLY
 
-  local gitref=${$(git branch --show-current 2>/dev/null):-$(git rev-parse --short HEAD 2>/dev/null)}
-
-  if [[ $gitref ]] {
-    local dirt=$(git status --porcelain 2>/dev/null)
-
+  vcs_info
+  if [[ $vcs_info_msg_0_ ]] {
     local gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
     gitroot=${$(realpath --relative-to=. $gitroot 2>/dev/null):#(.|$PWD)}
-
-    REPLY="%F{magenta}${gitroot}%F{white}${gitroot:+:}%F{blue}${gitref}%F{red}${${dirt}:+*}%f"
+    REPLY="%F{magenta}${gitroot}%F{white}${gitroot:+:}${vcs_info_msg_0_}"
   }
 }
 
@@ -280,9 +276,19 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
 # -- Set PROMPT and RPROMPT if no prompt plugin is loaded --
 } else {
   VIRTUAL_ENV_DISABLE_PROMPT=1
+
+  autoload -Uz vcs_info
+  zstyle ':vcs_info:*' enable git
+  zstyle ':vcs_info:*' check-for-changes true
+  zstyle ':vcs_info:*' unstagedstr '*'
+  zstyle ':vcs_info:*' stagedstr '*'
+  zstyle ':vcs_info:git*' formats '%F{blue}%b%F{red}%u%c%f'
+  zstyle ':vcs_info:git*' actionformats '%F{blue}%b%F{yellow}|%a%F{red}%u%c%f'
+
   add-zsh-hook precmd .zshrc_prompt-setpsvar
   add-zsh-hook preexec .zshrc_prompt-timecheck
   PROMPT=$'\n''${(j: :)psvar}'$'\n''%B%F{white}-- %F{green}%(!.#.$)%f%b '
+
   .zshrc_prompt-rprompt
   RPROMPT=$REPLY
 }

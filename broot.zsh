@@ -12,7 +12,7 @@ br () {  # [<broot-opt>...]
   emulate -L zsh -o localtraps
 
   local pathfile=$(mktemp)
-  trap "rm ${(q-)pathfile}" EXIT INT QUIT
+  trap "=rm ${(q-)pathfile}" EXIT INT QUIT
   if { broot --verb-output "$pathfile" $@ } {
     if [[ -r $pathfile ]] {
       local folder=${mapfile[$pathfile]}

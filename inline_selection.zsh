@@ -58,6 +58,45 @@ bindkey "'" .zle_squote-selection-or-squote  # '
 .zshrc_def-surround-selection-or-type-opener '"' '"' dquote
 unfunction .zshrc_def-surround-selection-or-type-opener
 
+# -- Delete selection and type character --
+# Keys: most characters
+# Warning: this might make typing noticeably slower
+.zshrc_def-del-selected-and-type-char () {  # <char> [<name>]
+  if [[ ! $2 ]]  2=$1
+  eval "
+    .zle_del-selected-and-type-$2 () {
+      if (( REGION_ACTIVE ))  zle .kill-region
+      LBUFFER+=${(q-)1}
+      if (( \$+functions[_zsh_highlight] ))  _zsh_highlight
+    }
+    zle -N           .zle_del-selected-and-type-$2
+    bindkey -- ${(q-)1} .zle_del-selected-and-type-$2
+  "
+}
+() {
+  emulate -L zsh
+  local char
+  for char (
+    q w e r t y u i o p a s d f g h j k l z x c v b n m
+    Q W E R T Y U I O P A S D F G H J K L Z X C V B N M
+    1 2 3 4 5 6 7 8 9 0 , : / . + _ % @ ! = ^ $ -
+    \~ \# ' '
+  )  .zshrc_def-del-selected-and-type-char $char
+  .zshrc_def-del-selected-and-type-char \; semicolon
+  .zshrc_def-del-selected-and-type-char \< lt
+  .zshrc_def-del-selected-and-type-char \> gt
+  .zshrc_def-del-selected-and-type-char \? question
+  .zshrc_def-del-selected-and-type-char \` backtick
+  .zshrc_def-del-selected-and-type-char \& amp
+  .zshrc_def-del-selected-and-type-char \* star
+  .zshrc_def-del-selected-and-type-char \\ backslash
+  .zshrc_def-del-selected-and-type-char \| pipe
+  .zshrc_def-del-selected-and-type-char \) paren
+  .zshrc_def-del-selected-and-type-char \} brace
+  .zshrc_def-del-selected-and-type-char \] bracket
+}
+unfunction .zshrc_def-del-selected-and-type-char
+
 # --------------------------------
 # -- Move cursor and (de)select --
 # --------------------------------

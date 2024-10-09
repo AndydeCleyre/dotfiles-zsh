@@ -123,10 +123,6 @@ bindkey '\ee' .zle_edit-command-line  # esc, e
 zle -N        .zle_buffer-to-clipboard
 bindkey '\ec' .zle_buffer-to-clipboard  # esc, c
 
-# -- Expand !! and !$ on space --
-# Key: space
-bindkey ' ' magic-space
-
 # -- Avoid accidental stops --
 # Key: (unsets) ctrl+s
 setopt noflowcontrol

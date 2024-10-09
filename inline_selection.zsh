@@ -66,7 +66,7 @@ unfunction .zshrc_def-surround-selection-or-type-opener
   eval "
     .zle_del-selected-and-type-$2 () {
       if (( REGION_ACTIVE ))  zle .kill-region
-      LBUFFER+=${(q-)1}
+      zle self-insert ${(q-)1}
       if (( \$+functions[_zsh_highlight] ))  _zsh_highlight
     }
     zle -N           .zle_del-selected-and-type-$2
@@ -80,7 +80,7 @@ unfunction .zshrc_def-surround-selection-or-type-opener
     q w e r t y u i o p a s d f g h j k l z x c v b n m
     Q W E R T Y U I O P A S D F G H J K L Z X C V B N M
     1 2 3 4 5 6 7 8 9 0 , : / . + _ % @ ! = ^ $ -
-    \~ \# ' '
+    \~ \#
   )  .zshrc_def-del-selected-and-type-char $char
   .zshrc_def-del-selected-and-type-char \; semicolon
   .zshrc_def-del-selected-and-type-char \< lt
@@ -94,6 +94,7 @@ unfunction .zshrc_def-surround-selection-or-type-opener
   .zshrc_def-del-selected-and-type-char \) paren
   .zshrc_def-del-selected-and-type-char \} brace
   .zshrc_def-del-selected-and-type-char \] bracket
+  .zshrc_def-del-selected-and-type-char ' ' space
 }
 unfunction .zshrc_def-del-selected-and-type-char
 

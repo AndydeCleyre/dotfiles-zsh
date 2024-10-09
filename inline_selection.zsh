@@ -13,9 +13,9 @@ bindkey '^A' .zle_select-all  # ctrl+a
 # Key: '
 .zle_squote-selection-or-squote () {
   if (( REGION_ACTIVE )) {
-    zle quote-region
+    zle .quote-region
   } else {
-    zle self-insert \'
+    zle .self-insert \'
   }
 }
 zle -N      .zle_squote-selection-or-squote
@@ -45,7 +45,7 @@ bindkey "'" .zle_squote-selection-or-squote  # '
 
         if (( \$+functions[_zsh_highlight] ))  _zsh_highlight
       } else {
-        zle self-insert ${(q-)1}
+        zle .self-insert ${(q-)1}
       }
     }
     zle -N           .zle_$3-selection-or-$3
@@ -66,7 +66,7 @@ unfunction .zshrc_def-surround-selection-or-type-opener
   eval "
     .zle_del-selected-and-type-$2 () {
       if (( REGION_ACTIVE ))  zle .kill-region
-      zle self-insert ${(q-)1}
+      zle .self-insert ${(q-)1}
       if (( \$+functions[_zsh_highlight] ))  _zsh_highlight
     }
     zle -N           .zle_del-selected-and-type-$2

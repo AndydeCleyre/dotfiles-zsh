@@ -87,11 +87,8 @@ zle -N        .zle_expand-aliases
 bindkey '\ex' .zle_expand-aliases  # esc, x
 
 # -- Undo line edit --
-# Keys:
-#   - esc, u
-#   - esc, z
+# Key: esc, u
 bindkey '\eu' undo  # esc, u
-bindkey '\ez' undo  # esc, z
 
 # -- Edit current line in editor --
 # Key: esc, e

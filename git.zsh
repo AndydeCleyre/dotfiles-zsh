@@ -39,7 +39,7 @@ hotfixed () {  # <master-branch-name>=master
 alias gl="git pull --recurse-submodules"
 alias gsb="git status -sb"
 alias gco="git checkout --recurse-submodules"
-alias gd="git diff --submodule=diff"
+alias gd="git diff --submodule=log"
 alias gc="git commit -v"
 alias ga="git add"
 alias gp="git push"

@@ -64,11 +64,26 @@ miniprompt () {
   emulate -L zsh
   unset REPLY
 
-  vcs_info
-  if [[ $vcs_info_msg_0_ ]] {
-    local gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
-    gitroot=${$(realpath --relative-to=. $gitroot 2>/dev/null):#(.|$PWD)}
-    REPLY="%F{magenta}${gitroot}%F{white}${gitroot:+:}${vcs_info_msg_0_}"
+  if ! (( $+commands[git] ))  return
+
+  vcs_info 2>/dev/null
+  if [[ $VCS_INFO_backends ]] {
+    if [[ $vcs_info_msg_0_ ]] {
+      local gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
+      gitroot=${$(realpath --relative-to=. $gitroot 2>/dev/null):#(.|$PWD)}
+      REPLY="%F{magenta}${gitroot}%F{white}${gitroot:+:}${vcs_info_msg_0_}"
+    }
+  } else {
+    local gitref=${$(git branch --show-current 2>/dev/null):-$(git rev-parse --short HEAD 2>/dev/null)}
+
+    if [[ $gitref ]] {
+      local dirt=$(git status --porcelain 2>/dev/null)
+
+      local gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
+      gitroot=${$(realpath --relative-to=. $gitroot 2>/dev/null):#(.|$PWD)}
+
+      REPLY="%F{magenta}${gitroot}%F{white}${gitroot:+:}%F{blue}${gitref}%F{red}${${dirt}:+*}%f"
+    }
   }
 }
 

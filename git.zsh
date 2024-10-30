@@ -48,7 +48,20 @@ alias gapa="echoti clear && git add --patch"
 alias gpsup="git push --set-upstream"
 alias gfi="git flow init -d"
 
-alias gson="git submodule update --init"
+# -- git submodule ... ACTIVATE! --
+gson () {  # <submod-dir>...
+  emulate -L zsh -o errreturn
+
+  git submodule update --init --remote $@
+
+  local groot submod relsubmod branch
+  groot=$(git rev-parse --show-toplevel)
+  for submod ( $@ ) {
+    relsubmod=${${submod:P}#$groot/}
+    branch=$(git config -f "${groot}/.gitmodules" "submodule.$relsubmod.branch")
+    git -C "$submod" switch "$branch"
+  }
+}
 alias gsoff="git submodule deinit"
 
 # -- git submodule foreach, and eval --
@@ -94,3 +107,13 @@ bindkey '\ey' .zle_prepend-yadm  # esc, y
 # Depends: help.zsh (.zshrc_help_complete, .zshrc_help_complete-as-prefix)
 if (( $+functions[.zshrc_help_complete]           ))  .zshrc_help_complete gcl gcl1 gls hotfixed
 if (( $+functions[.zshrc_help_complete-as-prefix] ))  .zshrc_help_complete-as-prefix gse
+
+# -- More Completions --
+# Optional: help.zsh (_zshrc_help)
+_gson () {
+  if (( $+functions[_zshrc_help] ))  _zshrc_help ${0[2,-1]}
+  words=(git submodule init --)
+  (( CURRENT=$#words ))
+  _normal -P
+}
+if (( $+functions[compdef] ))  compdef _gson gson

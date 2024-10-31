@@ -17,6 +17,7 @@ bindkey '^A' .zle_select-all  # ctrl+a
   } else {
     zle .self-insert \'
   }
+  if (( $+functions[_zsh_highlight] ))  _zsh_highlight
 }
 zle -N      .zle_squote-selection-or-squote
 bindkey "'" .zle_squote-selection-or-squote  # '
@@ -42,11 +43,10 @@ bindkey "'" .zle_squote-selection-or-squote  # '
 
         (( REGION_ACTIVE=0 ))
         (( CURSOR=\$#left+\$#middle ))
-
-        if (( \$+functions[_zsh_highlight] ))  _zsh_highlight
       } else {
         zle .self-insert ${(q-)1}
       }
+      if (( \$+functions[_zsh_highlight] ))  _zsh_highlight
     }
     zle -N           .zle_$3-selection-or-$3
     bindkey ${(q-)1} .zle_$3-selection-or-$3

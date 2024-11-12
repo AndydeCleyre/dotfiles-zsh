@@ -11,6 +11,44 @@ alias define="camb"
 alias rb="rainbow"
 if (( $+commands[trash] ))  alias rm="trash --verbose"
 
+# -- Use wheezy.template similarly to jq and jello --
+# Pipe JSON to it, and provide template content as args.
+# @j is the JSON. Examples:
+#   <pyrightconfig.json wz '@j["venvPath"] is the parent path and @j["venv"] is the folder'
+#   <pyrightconfig.json wz '@(print(dumps(j)))'
+# See https://wheezytemplate.readthedocs.io/en/latest/userguide.html#core-extension
+wz () {  # <template line>...
+  emulate -L zsh
+  local tmpl=(
+    '@require(__args__)'
+    '@(j=__args__[0])\'
+    '@(from json import dumps)\'
+    $@
+  )
+  # wheezy.template =(<<<${(F)tmpl}) "$(<&0)"
+  wheezy.template =(<<<${(F)tmpl}) =(<&0)
+}
+
+# -- yt-dlp, interactively choose quality --
+# Depends:
+#   - yt-dlp (PyPI)
+#   - xclip
+yt () {  # [[<yt-dlp arg>...] <uri>]
+  emulate -L zsh
+
+  local uri=${@[-1]:-$(xclip -sel clip -o)}
+  if [[ $@ ]]  shift -p
+
+  local quality
+  print -u2 "Quality?"
+  select quality ( 540 720 1080 best ) { break }
+
+  local args=($@)
+  if [[ $quality ]]  args+=(-S "res:$quality")
+
+  yt-dlp $args "$uri"
+}
+
 if (( $+functions[compdef] )) && (( $+commands[nt2json] ))  compdef _gnu_generic nt2yaml nt2toml nt2json json2nt toml2nt yaml2nt
 
 # Depends:

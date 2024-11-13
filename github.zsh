@@ -20,7 +20,7 @@ gh-install () {  # <gh-owner> <gh-repo> <archive-name> <src-bin-name> [<dst-bin-
   dest=${1:-~/.local/bin}
   [[ $ghowner && $ghrepo && $tgz && $srcbin && $dstbin && $dest ]]
 
-  local netget=(wget -qO -)
+  local netget=(wget -U Wget/1.21.2 -qO -)
   if ! (( $+commands[wget] ))  netget=(curl -sSL)
 
   local lines=(${(f)"$($netget "https://api.github.com/repos/${ghowner}/${ghrepo}/releases/latest")"})

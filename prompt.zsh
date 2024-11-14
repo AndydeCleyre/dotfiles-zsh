@@ -150,7 +150,7 @@ miniprompt () {
     'ubuntu' '%F{#6e2d97}'
   )
   lines=(${(f)mapfile[/etc/os-release]})
-  distro=${${(M)lines:#ID=*}#*=}
+  distro=${${${(M)lines:#ID=*}##*=\"#}%%\"#}
   if (( $+distro_icons[$distro] ))  distro="$distro_icons[$distro] "
   .zshrc_prompt-bubble "$distro"
   distro_bubble=$REPLY

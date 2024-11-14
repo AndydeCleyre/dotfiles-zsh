@@ -39,7 +39,7 @@ miniprompt () {
   emulate -L zsh
   unset REPLY
 
-  local bubble_bg='#222221'
+  local bubble_bg='#1f1f28'
   local bubble_fg=green
   if [[ $1 == -e ]] {
     shift
@@ -142,12 +142,29 @@ miniprompt () {
   # -- Distro Bubble --
   local distro lines distro_bubble
   local -A distro_icons=(
-    'alpine' '%F{#0d597f}'
-    'arch'   '%F{#1793d1}'
-    'debian' '%F{#A80030}'
-    'fedora' '%F{#50a1d9}'
-    'pop'    '%F{#6cc7d2}'  # #faa41a #48b9c7 #6cc7d2
-    'ubuntu' '%F{#6e2d97}'
+    'alpine'              '%F{#0d597f}'
+    'arch'                '%F{#1793d1}'
+    'debian'              '%F{#A80030}'
+    'fedora'              '%F{#50a1d9}'
+    'opensuse-tumbleweed' '%F{#73ba25}'
+    'pop'                 '%F{#6cc7d2}'  # #faa41a #48b9c7 #6cc7d2
+    'ubuntu'              '%F{#6e2d97}'
+    'ultramarine'         '%F{#fdfdff}󱙴'  # #fdfdff #00078f
+    # solus:   .
+    # cachy: 󰫰  . #01ccff  #00aa87
+    # manjaro:   󱘊  .
+    # artix:   .
+    # archcraft:   .
+    # endeavour:   .
+    # mint: 󰣭  .
+    # mageia:   .
+    # mx:   .
+    # mandriva:   .
+    # parrot:   .
+    # peppermint: 󰄊  󱥰    .
+    # bsd: 󰱯  󰇴  .
+    # void:   .
+    # wattos:   .
   )
   lines=(${(f)mapfile[/etc/os-release]})
   distro=${${${(M)lines:#ID=*}##*=\"#}%%\"#}

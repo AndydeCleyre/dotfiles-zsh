@@ -125,7 +125,7 @@ miniprompt () {
 # -- Craft an RPROMPT string --
 # Sets: REPLY
 .zshrc_prompt-rprompt () {
-  emulate -L zsh
+  emulate -L zsh -o extendedglob
   zmodload zsh/mapfile
 
   local usual_host='pop-os' usual_user='andy'

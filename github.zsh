@@ -34,7 +34,7 @@ gh-install () {  # <gh-owner> <gh-repo> <archive-name> <src-bin-name> [<dst-bin-
     tag=$($netget $json_url | yaml-get -p tag_name)
   } elif (( $+commands[dasel] )) {
     tag=$($netget $json_url | dasel -f - -r json -w - tag_name)
-  else {
+  } else {
     local lines=(${(f)"$($netget $json_url)"})
     local tag=${${${(M)lines:# #\"tag_name\"*}##*\": \"}%\",*}
   }

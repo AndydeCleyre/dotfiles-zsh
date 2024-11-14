@@ -45,4 +45,4 @@ ZDOTDIR=${${(%):-%x}:P:h}  # this file's (realpath's) parent folder
 
 DEBIAN_PREVENT_KEYBOARD_CHANGES=1
 skip_global_compinit=1
-# setopt noglobalrcs
+setopt noglobalrcs

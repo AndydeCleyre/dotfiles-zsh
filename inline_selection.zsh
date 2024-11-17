@@ -71,6 +71,7 @@ unfunction .zshrc_def-surround-selection-or-type-opener
     }
     zle -N           .zle_del-selected-and-type-$2
     bindkey -- ${(q-)1} .zle_del-selected-and-type-$2
+    bindkey -M isearch -- ${(q-)1} self-insert
   "
 }
 () {

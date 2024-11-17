@@ -33,3 +33,8 @@
   url = https://github.com/Tarrasch/zsh-autoenv
   branch = master
   shallow = true
+[submodule "plugins/zsh-fzf-history-search"]
+  path = plugins/zsh-fzf-history-search
+  url = https://github.com/joshskidmore/zsh-fzf-history-search
+  branch = master
+  shallow = true

@@ -8,6 +8,10 @@
 # -- zpy --
 # zstyle ':zpy:*' exposed-funcs zpy pipz a8 envin envout pipup vrun
 
+# -- zsh-fzf-history-search --
+ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH=0
+ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS=0
+
 # -- zsh-z --
 ZSHZ_CMD=j
 ZSHZ_NO_RESOLVE_SYMLINKS=1
@@ -44,5 +48,5 @@ if { .zshrc_fortnightly pip  ${ZSH_PLUGINS_DIR}/pip.zsh  pip completion -z }  . 
 if { .zshrc_fortnightly mise ${ZSH_PLUGINS_DIR}/mise.zsh mise activate zsh }  . ${ZSH_PLUGINS_DIR}/mise.zsh
 
 # -- Load if found --
-.zshrc_load-plugin agkozak-zsh-prompt fast-syntax-highlighting zpy zsh-autoenv
+.zshrc_load-plugin agkozak-zsh-prompt fast-syntax-highlighting zpy zsh-autoenv zsh-fzf-history-search
 if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] ))  .zshrc_load-plugin --try ${ZSH_PLUGINS_DIR}/powerlevel10k/powerlevel10k.zsh-theme

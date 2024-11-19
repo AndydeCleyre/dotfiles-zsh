@@ -9,25 +9,13 @@
 zle -N       .zle_select-all
 bindkey '^A' .zle_select-all  # ctrl+a
 
-# -- Surround selection with single quote, or type single quote --
-# Key: '
-.zle_squote-selection-or-squote () {
-  if (( REGION_ACTIVE )) {
-    zle .quote-region
-  } else {
-    zle .self-insert \'
-  }
-  if (( $+functions[_zsh_highlight] ))  _zsh_highlight
-}
-zle -N      .zle_squote-selection-or-squote
-bindkey "'" .zle_squote-selection-or-squote  # '
-
 # -- Surround selection with an open-close pair ({}, (), etc.), or type the opener --
 # Keys:
 #   - {
 #   - [
 #   - (
 #   - "
+#   - '
 .zshrc_def-surround-selection-or-type-opener () {  # <opener> <closer> <name>
   eval "
     .zle_$3-selection-or-$3 () {
@@ -56,6 +44,7 @@ bindkey "'" .zle_squote-selection-or-squote  # '
 .zshrc_def-surround-selection-or-type-opener '[' ']' bracket
 .zshrc_def-surround-selection-or-type-opener '(' ')' paren
 .zshrc_def-surround-selection-or-type-opener '"' '"' dquote
+.zshrc_def-surround-selection-or-type-opener "'" "'" squote
 unfunction .zshrc_def-surround-selection-or-type-opener
 
 # -- Delete selection and type character --
@@ -69,33 +58,26 @@ unfunction .zshrc_def-surround-selection-or-type-opener
       zle .self-insert ${(q-)1}
       if (( \$+functions[_zsh_highlight] ))  _zsh_highlight
     }
-    zle -N           .zle_del-selected-and-type-$2
+    zle -N              .zle_del-selected-and-type-$2
     bindkey -- ${(q-)1} .zle_del-selected-and-type-$2
     bindkey -M isearch -- ${(q-)1} self-insert
   "
 }
 () {
   emulate -L zsh
-  local char
+  local char name
   for char (
     q w e r t y u i o p a s d f g h j k l z x c v b n m
     Q W E R T Y U I O P A S D F G H J K L Z X C V B N M
     1 2 3 4 5 6 7 8 9 0 , : / . + _ % @ ! = ^ $ -
     \~ \#
   )  .zshrc_def-del-selected-and-type-char $char
-  .zshrc_def-del-selected-and-type-char \; semicolon
-  .zshrc_def-del-selected-and-type-char \< lt
-  .zshrc_def-del-selected-and-type-char \> gt
-  .zshrc_def-del-selected-and-type-char \? question
-  .zshrc_def-del-selected-and-type-char \` backtick
-  .zshrc_def-del-selected-and-type-char \& amp
-  .zshrc_def-del-selected-and-type-char \* star
-  .zshrc_def-del-selected-and-type-char \\ backslash
-  .zshrc_def-del-selected-and-type-char \| pipe
-  .zshrc_def-del-selected-and-type-char \) paren
-  .zshrc_def-del-selected-and-type-char \} brace
-  .zshrc_def-del-selected-and-type-char \] bracket
-  .zshrc_def-del-selected-and-type-char ' ' space
+  for char name (
+    \; semicolon \< lt        \> gt
+    \? question  \` backtick  \& amp
+    \* star      \\ backslash \| pipe
+    \) paren     \} brace     \] bracket ' ' space
+  )  .zshrc_def-del-selected-and-type-char $char $name
 }
 unfunction .zshrc_def-del-selected-and-type-char
 
@@ -158,7 +140,7 @@ unfunction .zshrc_def-del-selected-and-type-char
 # -- Delete or delete selection --
 # Key: del
 
-.zshrc_def-select-and () {  # <action> <wrapped-zle> <keyseq>...
+.zshrc_def-select-and () {  # <name> <wrapped-zle> <keyseq>...
   eval "
     .zle_select-and-$1 () {
       if ! (( REGION_ACTIVE ))  zle .set-mark-command
@@ -170,7 +152,7 @@ unfunction .zshrc_def-del-selected-and-type-char
   "
 }
 
-.zshrc_def-deselect-and () {  # <action> <wrapped-zle> <keyseq>...
+.zshrc_def-deselect-and () {  # <name> <wrapped-zle> <keyseq>...
   eval "
     .zle_deselect-and-$1 () {
       (( REGION_ACTIVE=0 ))
@@ -182,7 +164,7 @@ unfunction .zshrc_def-del-selected-and-type-char
   "
 }
 
-.zshrc_def-del-selected-or () {  # <action> <wrapped-zle> <keyseq>...
+.zshrc_def-del-selected-or () {  # <name> <wrapped-zle> <keyseq>...
   eval "
     .zle_del-selected-or-$1 () {
       if (( REGION_ACTIVE )) {

@@ -20,14 +20,23 @@ if (( $+commands[trash] ))  alias rm="trash --verbose"
 # See https://wheezytemplate.readthedocs.io/en/latest/userguide.html#core-extension
 wz () {  # <template line>...
   emulate -L zsh
+
   local tmpl=(
-    '@require(__args__)'
-    '@(j=__args__[0])\'
-    '@(from json import dumps)\'
-    $@
+    '@require(__args__)' '@('
+    'from json import dumps'
+    'from os import environ as env'
+    'j=__args__[0]'
+    ')\' $@
   )
-  # wheezy.template =(<<<${(F)tmpl}) "$(<&0)"
-  wheezy.template =(<<<${(F)tmpl}) =(<&0)
+
+  local data
+  if [[ -t 0 ]] {
+    data='{}'
+  } else {
+    data=$(<&0)
+  }
+
+  wheezy.template =(<<<${(F)tmpl}) =(<<<$data)
 }
 
 # -- yt-dlp, interactively choose quality --

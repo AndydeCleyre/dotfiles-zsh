@@ -8,13 +8,12 @@ if (( $+commands[paru] )) {
 }
 
 # -- pacman-like interface to distro package managers --
-# Prompts to install itself from the latest GitHub release.
-# Depends: gh-install (github.zsh)
+# Optional: gh-install (github.zsh)
 pacaptr () {
   emulate -L zsh -o errreturn
   rehash
 
-  if ! (( $+commands[pacaptr] ))  gh-install rami3l pacaptr pacaptr-linux-amd64.tar.gz pacaptr
+  if ! (( $+commands[pacaptr] )) && (( $+functions[gh-install] ))  gh-install rami3l pacaptr pacaptr-linux-amd64.tar.gz pacaptr
 
   =pacaptr $@
 }

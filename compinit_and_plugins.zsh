@@ -26,6 +26,7 @@ ZSHZ_UNCOMMON=1
 .zshrc_fortnightly prqlc ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_prqlc prqlc shell-completion zsh         || true
 .zshrc_fortnightly ruff  ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_ruff  ruff generate-shell-completion zsh || true
 .zshrc_fortnightly uv    ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_uv    uv generate-shell-completion zsh   || true
+.zshrc_fortnightly yage  ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_yage  yage --completion zsh              || true
 
 # -- Load if found --
 .zshrc_load-plugin zsh-completions zsh-z

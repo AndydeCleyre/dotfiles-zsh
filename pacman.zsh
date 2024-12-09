@@ -8,12 +8,18 @@ if (( $+commands[paru] )) {
 }
 
 # -- pacman-like interface to distro package managers --
-# Optional: gh-install (github.zsh)
+# Optional: gh-install (github.zsh) or mise
 pacaptr () {
   emulate -L zsh -o errreturn
   rehash
 
-  if ! (( $+commands[pacaptr] )) && (( $+functions[gh-install] ))  gh-install rami3l pacaptr pacaptr-linux-amd64.tar.gz pacaptr
+  if ! (( $+commands[pacaptr] )) {
+    if (( $+functions[mise] )) {
+      mise use -g ubi:rami3l/pacaptr@latest
+    } elif (( $+functions[gh-install] )) {
+      gh-install rami3l pacaptr pacaptr-linux-amd64.tar.gz pacaptr
+    }
+  }
 
   =pacaptr $@
 }

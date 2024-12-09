@@ -57,15 +57,3 @@ gh-install () {  # <gh-owner> <gh-repo> <archive-name> <src-bin-name> [<dst-bin-
 
   rehash
 }
-
-# -- xmq for html and xml --
-# Prompts to install itself from the latest GitHub release.
-# Depends: gh-install (github.zsh)
-xmq () {
-  emulate -L zsh -o errreturn
-  rehash
-
-  if ! (( $+commands[xmq] ))  gh-install libxmq xmq xmq-gnulinux-release.gz xmq
-
-  =xmq $@
-}

@@ -48,6 +48,9 @@ compinit -i -d ${XDG_CACHE_HOME:-~/.cache}/zsh/zcompdump-$ZSH_VERSION
 if { .zshrc_fortnightly pip  ${ZSH_PLUGINS_DIR}/pip.zsh  pip completion -z }  . ${ZSH_PLUGINS_DIR}/pip.zsh
 if { .zshrc_fortnightly mise ${ZSH_PLUGINS_DIR}/mise.zsh mise activate zsh }  . ${ZSH_PLUGINS_DIR}/mise.zsh
 
+# https://github.com/jdx/mise/discussions/3260
+if (( $+functions[_mise_hook] ))  _mise_hook
+
 # -- Load if found --
 .zshrc_load-plugin agkozak-zsh-prompt fast-syntax-highlighting zpy zsh-autoenv zsh-fzf-history-search
 if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] ))  .zshrc_load-plugin --try ${ZSH_PLUGINS_DIR}/powerlevel10k/powerlevel10k.zsh-theme

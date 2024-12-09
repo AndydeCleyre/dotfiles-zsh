@@ -414,3 +414,47 @@ alias sc-status="systemctl status"
 alias scu="systemctl --user"
 # alias sc-list-enabled="systemctl list-unit-files --no-pager | grep enabled"
 alias sc-list-enabled="jc systemctl list-unit-files | yaml-get -p '.[state = enabled].unit_file'"
+
+
+# -- Generate PNG --
+# Depends: freeze or silicon
+codepic () {  # -s <syntax>
+  emulate -L zsh
+
+  local output=code.png
+
+  if [[ -e $output ]] {
+    print -rlu2 "Overwrite ${output}? "
+    if ! { read -q }  return
+  }
+
+  # TODO: freeze: if piped in, demand syntax (avoid xdg-open)
+  # TODO: use clipboard if not piped and no file args
+  # TODO: silicon fallback
+
+  argv=(${argv:/-s/--language})
+  =freeze \
+    --border.radius 8 \
+    --font.family 'Iosevka Term Custom' \
+    --font.ligatures \
+    --padding 10,0,10,10 \
+    --show-line-numbers \
+    --theme catppuccin-mocha \
+    --output $output \
+    $@ &>/dev/null
+
+    # silicon \
+    #   -o ${font}.png \
+    #   -l $syntax \
+    #   --theme Coldark-Dark \
+    #   --pad-horiz 20 \
+    #   --pad-vert 25 \
+    #   --shadow-blur-radius 5 \
+    #   --background-image ~/Code/colorcodebot/app/sharon-mccutcheon-33xSu0EWgP4-unsplash.jpg \
+    #   -f "${font}=${size}" \
+    #   --from-clipboard
+
+
+
+  xdg-open $output
+}

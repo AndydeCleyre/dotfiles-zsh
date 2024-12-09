@@ -23,7 +23,7 @@ wz () {  # <template line>...
 
   local tmpl=(
     '@require(__args__)' '@('
-    'from json import dumps'
+    'from json import dumps as as_json'
     'from os import environ as env'
     'j=__args__[0]'
     ')\' $@

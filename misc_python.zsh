@@ -68,12 +68,18 @@ if (( $+functions[compdef] )) && (( $+commands[nt2json] ))  compdef _gnu_generic
 # TODO: wayland paste
 dropout () {  # [<url>=<clipboard>]
   emulate -L zsh
+
   local cmd=(
     yt-dlp
     -n --netrc-location {}
     --referer https://www.dropout.tv/
-    -f http-540p
     "${@:-$(xclip -sel clip -o)}"
   )
+
+  local quality
+  print -u2 "Quality?"
+  select quality ( 540 720 1080 best ) { break }
+  if [[ $quality ]]  cmd+=(-S "res:$quality")
+
   sops exec-file --no-fifo ~/sops/netrc.enc "$cmd"
 }

@@ -44,6 +44,8 @@ hi () {  # [-s <syntax>] [<filepath>...]
 
   local themes=(
     aiseered
+    base16/gruvbox-dark-pale
+    base16/snazzy
     blacknblue
     bluegreen
     ekvoli

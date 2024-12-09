@@ -66,7 +66,5 @@
   if ! (( $+commands[$check_cmd] ))  return 1
 
   mkdir -p ${dest:a:h}
-  if [[ ! ${dest}(#qmw-2N) ]] {
-    $gen_cmd >$dest
-  }
+  if [[ ! ${dest}(#qmw-2N) ]]  $gen_cmd >$dest
 }

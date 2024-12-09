@@ -199,12 +199,14 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
 
     ;; (html|xml)
       if (( $+commands[xmq] )) {
+        local xml_success=1
         if [[ $1 ]] {
-          for 1 { xmq $1 render-terminal --color }
+          for 1 { xmq $1 render-terminal --color || xml_success= }
         } else {
+          # TODO: consider capturing stdin for if xmq fails here
           xmq render-terminal --color
         }
-        return
+        if [[ $xml_success ]]  return
       }
 
     ;; (json)

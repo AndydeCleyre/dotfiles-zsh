@@ -35,7 +35,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 . ${ZDOTDIR}/misc_python.zsh
 . ${ZDOTDIR}/misc_zle.zsh
 . ${ZDOTDIR}/multiline_enter.zsh
-. ${ZDOTDIR}/pacman.zsh  # uses gh-install (github.zsh) for pacaptr installation function
+. ${ZDOTDIR}/pacman.zsh
 . ${ZDOTDIR}/broot.zsh  # supersedes keys:
                         #   - ctrl+/   (load after completion_and_glob_opts)
                         #   - alt+down (load after clear_and_foldernav)

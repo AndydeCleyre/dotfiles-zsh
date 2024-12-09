@@ -107,16 +107,11 @@ ric () {  # [-s <syntax>] [<filepath>...]
 # -- Highlight with whatever --
 # dispatches to rich-cli, highlight, bat, etc. if it can
 # Depends:
-#   - hi
-#   - ric
+#   - hi, gt, ric
 # Optional:
-#   - bat/highlight/rich-cli
-#   - colordiff/delta/diff-so-fancy/riff
-#   - glow/mdcat
-#   - jq/jello
-#   - pandoc
-#   - tspin
-#   - xmq
+#   - bat/highlight/rich-cli/gat
+#   - colordiff/delta/diff-so-fancy/riff/diffr
+#   - glow/mdcat, jq/jello, pandoc, tspin, xmq
 h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
   emulate -L zsh -o extendedglob
   rehash
@@ -188,7 +183,7 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
           # TODO: this does not work for all file args yet! whoops!
           # no file args: all good
           # one file arg: need to redirect its content as stdin
-          # two file args: good except for diff-so-fancy
+          # two file args: good except for diff-so-fancy and diffr
 
           case $hi {
             (riff)      argv=(--no-pager --color on $@) ;;
@@ -245,6 +240,11 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
 
     if [[ $syntax ]]  argv+=(-s $syntax)
     hi $@
+
+  } elif (( $+commands[gat] )) {
+
+    if [[ $syntax ]]  argv+=(-s $syntax)
+    gt $@
 
   } elif (( $+commands[rich] )) {
 
@@ -311,6 +311,50 @@ sho () {  # [-s <syntax>] <code-file> [[-s <syntax>] <code-file>]...
   }
 }
 
+# -- Highlight with gat --
+# Depends: gat
+# Optional: gh-install (github.zsh) or mise
+gt () {  # [-s <syntax>] [<filepath>...]
+  emulate -L zsh -o errreturn
+  rehash
+
+  if ! (( $+commands[gat] )) {
+    if (( $+functions[mise] )) {
+      mise use -g ubi:koki-develop/gat@latest
+    } elif (( $+functions[gh-install] )) {
+      gh-install koki-develop gat gat_Linux_x86_64.tar.gz gat
+    }
+  }
+
+  local themes=(
+    base16-snazzy
+    doom-one
+    gruvbox
+    onedark
+    vulcan  # comments might be too dark
+  )
+
+  gat --force-color -t ${themes[RANDOM % $#themes + 1]} ${@:/-s/-l}
+}
+
+# -- Make HTML and XML readable with xmq --
+# Depends: xmq
+# Optional: gh-install (github.zsh) or mise
+xmq () {
+  emulate -L zsh -o errreturn
+  rehash
+
+  if ! (( $+commands[xmq] )) {
+    if (( $+functions[mise] )) {
+      mise use -g ubi:libxmq/xmq@latest
+    } elif (( $+functions[gh-install] )) {
+      gh-install libxmq xmq xmq-gnulinux-release.tar.gz xmq
+    }
+  }
+
+  =xmq $@
+}
+
 # -- Completion Help Messages --
 # Depends: .zshrc_help_complete (help.zsh)
-if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete l lh h hi ric sho
+if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete gt l lh h hi ric sho

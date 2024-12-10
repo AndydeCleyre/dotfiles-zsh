@@ -1,8 +1,6 @@
 # -- Install binary release from GitHub --
 # Depends:
-#   - gunzip (any)
-#   - tar (any)
-#   - wget (any) OR curl
+#   - gunzip (any), tar (any), wget (any) OR curl
 # Optional:
 #   - wheezy.template (PyPI) + wz (misc_python.zsh), OR jq, OR yamlpath (PyPI), OR dasel
 gh-install () {  # <gh-owner> <gh-repo> <archive-name> <src-bin-name> [<dst-bin-name> [<dest>=~/.local/bin]]
@@ -39,7 +37,6 @@ gh-install () {  # <gh-owner> <gh-repo> <archive-name> <src-bin-name> [<dst-bin-
     local tag=${${${(M)lines:# #\"tag_name\"*}##*\": \"}%\",*}
   }
 
-
   if (( $+commands[$dstbin] ))  $dstbin --version
   print -u2 "Available: $tag"
   print -u2 "Download $dstbin to -- $dest -- ? "
@@ -57,3 +54,7 @@ gh-install () {  # <gh-owner> <gh-repo> <archive-name> <src-bin-name> [<dst-bin-
 
   rehash
 }
+
+# -- Completion Help Messages --
+# Depends: .zshrc_help_complete (help.zsh)
+if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete gh-install

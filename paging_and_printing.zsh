@@ -76,8 +76,11 @@ hi () {  # [-s <syntax>] [<filepath>...]
 
 # -- Highlight with rich-cli --
 # Depends: rich-cli (PyPI)
+# Optional: zpy/pipx/uv and pypi-install (misc_python.zsh)
 ric () {  # [-s <syntax>] [<filepath>...]
-  emulate -L zsh
+  emulate -L zsh -o errreturn
+
+  if (( ! $+commands[rich] )) && (( $+functions[pypi-install] ))  pypi-install install rich-cli
 
   local r_args=(
     --force-terminal

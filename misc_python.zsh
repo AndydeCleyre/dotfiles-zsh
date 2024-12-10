@@ -1,3 +1,4 @@
+# --  --
 pie () {
   emulate -L zsh
   local cmd=(pip install -e .)
@@ -12,11 +13,13 @@ alias def="cambd"
 alias rb="rainbow"
 if (( $+commands[trash] ))  alias rm="trash --verbose"
 
+if (( $+functions[compdef] )) && (( $+commands[nt2json] ))  compdef _gnu_generic nt2yaml nt2toml nt2json json2nt toml2nt yaml2nt
+
 # -- Use wheezy.template similarly to jq and jello --
 # Pipe JSON to it, and provide template content as args.
 # @j is the JSON. Examples:
 #   <pyrightconfig.json wz '@j["venvPath"] is the parent path and @j["venv"] is the folder'
-#   <pyrightconfig.json wz '@(print(dumps(j)))'
+#   <pyrightconfig.json wz '@(print(as_json(j)))'
 # See https://wheezytemplate.readthedocs.io/en/latest/userguide.html#core-extension
 wz () {  # <template line>...
   emulate -L zsh
@@ -59,8 +62,7 @@ yt () {  # [[<yt-dlp arg>...] <uri>]
   yt-dlp $args "$uri"
 }
 
-if (( $+functions[compdef] )) && (( $+commands[nt2json] ))  compdef _gnu_generic nt2yaml nt2toml nt2json json2nt toml2nt yaml2nt
-
+# -- Like yt above, but for Dropout --
 # Depends:
 #   - yt-dlp (PyPI)
 #   - sops (not Python)
@@ -83,3 +85,31 @@ dropout () {  # [<url>=<clipboard>]
 
   sops exec-file --no-fifo ~/sops/netrc.enc "$cmd"
 }
+
+# -- Install a tool from PyPI --
+# Depends: zpy, uv, or pipx
+pypi-install () {  # <pkg>
+  emulate -L zsh
+
+  local installcmd=()
+
+  if (( $+functions[pipz] )) {
+    installcmd=(pipz install)
+  } elif (( $+commands[uv] )) {
+    installcmd=(uv tool install)
+  } elif (( $+commands[pipx] )) {
+    installcmd=(pipx install)
+  } else {
+    print -lu2 'None of these were found:' '  - zpy' '  - uv' '  - pipx'
+    return 1
+  }
+
+  print -ru2 "Install $1 with ${installcmd[1]}? [yN] "
+  if ! { read -q }  return 1
+
+  $installcmd $1
+}
+
+# -- Completion Help Messages --
+# Depends: .zshrc_help_complete (help.zsh)
+if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete dropout pie pypi-install wz yt

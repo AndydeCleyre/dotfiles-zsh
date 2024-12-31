@@ -7,7 +7,7 @@ if ! [[ $TMUX ]] { tmux new -A } else {  # Join or create a session if not in on
 .zle_tmux-copy-mode-pgup () {
   tmux \
     copy-mode -u \; \
-    send -X search-backward '^-- '  # jump to prompt prefix
+    send -X search-backward '^-- \$'  # jump to prompt prefix
 }
 zle -N          .zle_tmux-copy-mode-pgup
 bindkey '^[[5~' .zle_tmux-copy-mode-pgup  # pgup

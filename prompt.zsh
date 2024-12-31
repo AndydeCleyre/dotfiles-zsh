@@ -149,7 +149,7 @@ miniprompt () {
     'fedora'              '%F{#50a1d9}'
     'opensuse-tumbleweed' '%F{#73ba25}'
     'pop'                 '%F{#6cc7d2}'  # #faa41a #48b9c7 #6cc7d2
-    'ubuntu'              '%F{#6e2d97}'
+    'ubuntu'              '%F{#E95420}'
     'ultramarine'         '%F{#fdfdff}󱙴'  # #fdfdff #00078f
     # solus:   .
     # cachy: 󰫰  . #01ccff  #00aa87

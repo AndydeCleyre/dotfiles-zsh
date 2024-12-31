@@ -7,6 +7,7 @@ setopt promptsubst transientrprompt
 autoload -Uz add-zsh-hook
 
 PROMPT2='%B%F{blue}…%f%b '
+export PROMPT4='%B%F{white}-- %N:%i %b%f'
 PROMPT_EOL_MARK='%F{red} %f'
 
 # -- Simplify on demand --

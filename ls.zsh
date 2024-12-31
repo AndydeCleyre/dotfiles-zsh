@@ -23,7 +23,7 @@ tree () {  # [-L <depth>] [-d] [<arg>...]
       if [[ $1 == -L ]]  shift 2
       if [[ $1 == -d ]] { dirsonly=-f; shift }
     }
-    cmd=(broot -S $dirsonly -c ' pt')
+    cmd=(broot -S $dirsonly -c ' pt' --height $((LINES-2)))
   } elif (( $+commands[eza] )) {
     while [[ $1 =~ '^-[Ld]$' ]] {
       if [[ $1 == -L ]] { depth=(-L $2); shift 2 }

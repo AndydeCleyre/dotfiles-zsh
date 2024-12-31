@@ -1,41 +1,20 @@
 # -- Old junk, some of which might be worth resurrecting eventually --
 # Not sourced
 
-pd () {  # [<vid>...]
-  emulate -L zsh -o extendedglob -o globdots -o multibyte
 
-  local -U vids=()
-  if [[ $1 ]] {
-    for 1 {
-        if [[ -d $1 ]] {
-            vids+=((#i)$1/***/*.(mp4|mkv|flv|avi|m4v|wmv)(#q.))
-        } else {
-            vids+=($1)
-        }
-    }
-  } else {
-    vids=((#i)***/*.(mp4|mkv|flv|avi|m4v|wmv)(#q.))
-  }
-
-  local vid
-  for vid ( "${(f)$(shuf <<<${(F)vids})}" ) {
-    mpv "$vid"
-    unset REPLY
-    # if { ( read -s -t 12 -q "?Hit Y to delete $vid . . . " ) } {
-    # if { read -s -t 12 -q "?Hit Y to delete $vid . . . " } {
-    read -t 12 -k "?Hit Y to delete $vid . . . "
-    print -l
-    if [[ $REPLY:l == y ]] {
-      rm -i "$vid"
-    }
-  }
-}
 
 
 alias aw="wiki-search"
 alias copy="rsync -aPhhh"
 alias ddg="ddgr -n 3 -x --show-browser-logs"
 alias ggl="googler --show-browser-logs -x -n 6"
+
+log () {  # <key> <val> [<key> <val>]...
+  emulate -L zsh
+  local k v pairs=()
+  for k v ( $@ )  pairs+=("${k}: ${v}")
+  print -rlu2 -- "-- ${(j: -- :)pairs} --"
+}
 
 # TODO: s6.zsh ?
 logrun () {  # <cmd> [<cmd-arg>...]

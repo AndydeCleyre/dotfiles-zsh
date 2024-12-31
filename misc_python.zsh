@@ -16,10 +16,12 @@ if (( $+commands[trash] ))  alias rm="trash --verbose"
 if (( $+functions[compdef] )) && (( $+commands[nt2json] ))  compdef _gnu_generic nt2yaml nt2toml nt2json json2nt toml2nt yaml2nt
 
 # -- Use wheezy.template similarly to jq and jello --
+# Depends: wheezy.template (PyPI)
 # Pipe JSON to it, and provide template content as args.
 # @j is the JSON. Examples:
 #   <pyrightconfig.json wz '@j["venvPath"] is the parent path and @j["venv"] is the folder'
 #   <pyrightconfig.json wz '@(print(as_json(j)))'
+#   <pyrightconfig.json wz '@(x=as_json(j))@x'
 # See https://wheezytemplate.readthedocs.io/en/latest/userguide.html#core-extension
 wz () {  # <template line>...
   emulate -L zsh

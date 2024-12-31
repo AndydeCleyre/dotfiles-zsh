@@ -18,4 +18,6 @@ p () {  # (no arguments)
   }
 }
 
+# -- Completion Help Messages --
+# Depends: .zshrc_help_complete (help.zsh)
 if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete c p

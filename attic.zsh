@@ -2,7 +2,7 @@
 # Not sourced
 
 
-
+insist () { while ! { $@ }  $@ }
 
 alias aw="wiki-search"
 alias copy="rsync -aPhhh"
@@ -18,33 +18,22 @@ log () {  # <key> <val> [<key> <val>]...
 
 # TODO: s6.zsh ?
 logrun () {  # <cmd> [<cmd-arg>...]
-    emulate -L zsh
-    # local logdir=${${:-$1.${$(s6-clock)#@}.log.d}:a}
-    local logdir=$PWD:a/$1.${$(s6-clock)#@}.log.d
-    REPLY=$logdir/current
-    print -r -- $REPLY
-    $@ | s6-log t s4194304 S41943040 $logdir
+  emulate -L zsh
+  # if [[ ! $1 ]] || [[ $1 =~ '^-(-help|h)$' ]] {
+  if [[ $1 =~ '^(-(-help|h))?$' ]] {
+    print -u2 'logrun <cmd> [<cmd-arg>...]'
+    return 1
+  }
+  local logdir=$PWD/$1.${(%):-%D{%Y-%m-%d-%s}}.log.d
+  print -ru2 -- "-- Logging to $logdir/current"
+  $@ |& s6-log T s4194304 S41943040 $logdir
 }
 logit () {  # [logdir]
-    emulate -L zsh
-    # TODO: get and use process name
-    # lsof /dev/fd/0
-    # lsof /dev/stdin
-    local name
-    if { lsof -h |& grep -q lsof-org } {
-        # local incoming=${${:-/dev/stdin}:P}
-        # print -- ${${:-/dev/stdin}:P}
-        name=${$(lsof -F c ${${:-/dev/stdin}:P} 2>/dev/null)[2][2,-1]}
-    }
-
-    local logdir=${${1:-${name}${name:+.}${$(s6-clock)#@}.log.d}:a}
-
-    REPLY=$logdir/current
-    print -r -- $REPLY
-
-    s6-log t s4194304 S41943040 $logdir
+  emulate -L zsh
+  local logdir=${${:-${1:-$PWD}/${(%):-%D{%Y-%m-%d-%s}}.log.d}:a}
+  print -ru2 -- "-- Logging to $logdir/current"
+  s6-log T s4194304 S41943040 $logdir
 }
-# TODO: move to s6 zshrc...
 
 newage () {
   emulate -L zsh
@@ -146,14 +135,14 @@ pw () {  # [<filter-word>...]
 
 x () {  # <archive>
   emulate -L zsh
-  zmodload -mF zsh/files 'b:zf_mkdir'
   rehash
 
   local first_choice new_folder
   local -i count ret
+
   for 1 {
 
-    # local first_choice
+    # TODO: .tar.gz should be treated as one suffix... what else?
     if [[ $1:t:r ]] {
       first_choice=${1:a:r}
     } else {
@@ -169,9 +158,12 @@ x () {  # <archive>
       count+=1
     }
 
-    if (( $+commands[notify-send] )) notify-send -i ark -a Extracting "${1:t}" "$new_folder"
+    if (( $+commands[notify-send] ))  {
+      notify-send -i ark -a Extracting "${1:t}" "$new_folder" || true
+    }
 
-    zf_mkdir $new_folder
+    mkdir $new_folder
+
     if (( $+commands[7zz] )) {
       7zz x "-o${new_folder}" $1
     } elif (( $+commands[7z] )) {
@@ -181,7 +173,7 @@ x () {  # <archive>
     } elif (( $+commands[ark] )) {
       ark -b -o "$new_folder" $1
     } elif (( $+commands[tar] )) {
-      tar xf $1 --directory="$new_folder"
+      tar xf $1 -C "$new_folder"
     } else {
       print -rPu2 "%F{red}No suitable unarchiver detected!%f"
       return 1
@@ -190,7 +182,9 @@ x () {  # <archive>
 
     print -ru2 Destination: $new_folder
 
-    if (( $+commands[notify-send] )) notify-send -i ark -a "Finished Extracting" "${${ret:#0}:+[ERROR $ret] }${1:t}" "$new_folder"
+    if (( $+commands[notify-send] )) {
+      notify-send -i ark -a "Finished Extracting" "${${ret:#0}:+[ERROR $ret] }${1:t}" "$new_folder" || true
+    }
     return ret
   }
 }
@@ -437,3 +431,4 @@ codepic () {  # -s <syntax>
 
   xdg-open $output
 }
+

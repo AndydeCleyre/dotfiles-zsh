@@ -102,6 +102,20 @@ miniprompt () {
   }
 }
 
+# -- tsk Count --
+# Sets: REPLY
+.zshrc_prompt-tskcount () {
+  emulate -L zsh
+  unset REPLY
+
+  local lines
+  if (( $+commands[tsk] )) {
+    lines=(${(f)"$(tsk list 2>/dev/null)"})
+    lines=(${lines:#\*No tasks\*})
+  }
+  if [[ $lines ]]  REPLY="%F{yellow}${#lines}  %f"
+}
+
 # -- Print time in dozenal format --
 .zshrc_prompt-dozenal-time () {
   emulate -L zsh
@@ -241,6 +255,13 @@ miniprompt () {
   #   psvar+=($REPLY)
   # }
 
+  # -- tsk info --
+  .zshrc_prompt-tskcount
+  if [[ $REPLY ]] {
+    .zshrc_prompt-bubble $REPLY
+    psvar+=($REPLY)
+  }
+
   # -- venv --
   if [[ $VIRTUAL_ENV ]] {
     local venv_parent=${VIRTUAL_ENV:h:t}
@@ -269,6 +290,7 @@ miniprompt () {
 
 # -- Configure p10k if loaded --
 if (( $+functions[powerlevel10k_plugin_unload] )) {
+  # TODO: add tsk count to p10k and agkozak configs
   if [[ -r ${ZDOTDIR:-${${(%):-%x}:P:h}}/.p10k.zsh ]]  . ${ZDOTDIR:-${${(%):-%x}:P:h}}/.p10k.zsh
   POWERLEVEL9K_PROMPT_CHAR_ERROR_VIINS_CONTENT_EXPANSION='%F{white}%B-- %F{green}$%b%f'
   POWERLEVEL9K_PROMPT_CHAR_OK_VIINS_CONTENT_EXPANSION='%F{white}%B-- %F{green}$%b%f'

@@ -22,9 +22,11 @@ ZSHZ_UNCOMMON=1
 # -------------------------------------------------
 
 # -- Generated Sources --
+.zshrc_fortnightly gh    ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_gh    gh completion -s zsh               || true
 .zshrc_fortnightly mise  ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_mise  mise completion zsh                || true
 .zshrc_fortnightly prqlc ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_prqlc prqlc shell-completion zsh         || true
 .zshrc_fortnightly ruff  ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_ruff  ruff generate-shell-completion zsh || true
+.zshrc_fortnightly tsk   ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_tsk   tsk completion -s zsh              || true
 .zshrc_fortnightly uv    ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_uv    uv generate-shell-completion zsh   || true
 .zshrc_fortnightly yage  ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_yage  yage --completion zsh              || true
 

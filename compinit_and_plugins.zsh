@@ -1,4 +1,4 @@
-# -- .zshrc_load-plugin, .zshrc_fortnightly, .zshrc_upgrade-plugins, ZSH_PLUGINS_DIR --
+# -- .zshrc_load-plugin, .zshrc_fortnightly, ZSH_PLUGINS_DIR --
 . ${${(%):-%x}:P:h}/plugin_manager.zsh
 
 # -----------------

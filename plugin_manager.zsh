@@ -41,19 +41,6 @@
 
 }
 
-# -- Upgrade plugins --
-# Pull any git repos in ZSH_PLUGINS_DIR
-# Optional: ZSH_PLUGINS_DIR
-# Sets:     ZSH_PLUGINS_DIR
-.zshrc_upgrade-plugins () {
-  emulate -L zsh
-
-  ZSH_PLUGINS_DIR=${ZSH_PLUGINS_DIR:-${${(%):-%x}:P:h}/plugins}  # adjacent plugins/ folder unless already set
-
-  git -C ${ZSH_PLUGINS_DIR} submodule foreach \
-    git pull
-}
-
 # -- Regenerate outdated files --
 # Do nothing and return 1 if check-cmd isn't in PATH
 .zshrc_fortnightly () {  # <check-cmd> <dest> <gen-cmd>...

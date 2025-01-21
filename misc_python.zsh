@@ -8,8 +8,8 @@ pie () {
 
 alias i="ipython"
 alias ddg="ddgr -n 3 -x"
-alias define="camb"
-alias def="cambd"
+alias def="camb -w"
+alias define="cambd"
 alias rb="rainbow"
 if (( $+commands[trash] ))  alias rm="trash --verbose"
 

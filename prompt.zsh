@@ -145,7 +145,7 @@ miniprompt () {
   emulate -L zsh -o extendedglob
   zmodload zsh/mapfile
 
-  local usual_host='pop-os' usual_user='andy'
+  local usual_host='dimwell' usual_user='andy'
 
   # -- Time Bubble --
   .zshrc_prompt-bubble '$(.zshrc_prompt-dozenal-time)'  # fun

@@ -22,7 +22,6 @@ LANG=en_US.UTF-8
 # -- PATH --
 typeset -U path=(
   ~/.local/bin
-  ~/.cargo/bin
   $path
   /usr/lib/execline/bin
 )

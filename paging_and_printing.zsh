@@ -15,6 +15,7 @@ man () {  # <man-arg>...
   # blink -> bold red
   # no-bold no-blink no-underline -> no-bold no-color no-underline
 
+  GROFF_NO_SGR=1 \
   LESS_TERMCAP_so=${(%):-%S} \
   LESS_TERMCAP_se=${(%):-%s} \
   LESS_TERMCAP_us=${(%):-%F{green}%U} \

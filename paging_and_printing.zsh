@@ -1,5 +1,5 @@
 export PAGER=less
-export LESS=JRWXij.3
+export LESS=RWXij.3
 
 export BAT_THEME=Coldark-Dark
 export BAT_STYLE=plain
@@ -35,7 +35,7 @@ l () {  # [<less-arg>...] [<doc>[:<line-num>] (or read stdin)]
   doc=${@[-1]%:<->##}
   if [[ $doc != ${@[-1]} ]]  linenum=${@[-1]#${doc}:}
 
-  LESS=${LESS:-JRWXij.3}  less ${linenum:++${linenum}} ${linenum:+-N} ${@[1,-2]} ${doc}
+  LESS=${LESS:-RWXij.3}  less ${linenum:++${linenum}} ${linenum:+-N} ${@[1,-2]} ${doc}
 }
 
 # -- Highlight with highlight --
@@ -291,7 +291,7 @@ lh () {  # [<doc>[:<line-num>]] [-s <syntax>] [<h-arg>...]
   local linenum
   if [[ $doc != ${@[$doc_idx]} ]]  linenum=${@[$doc_idx]#${doc}:}
 
-  h ${doc} ${@[0,$doc_idx-1]} ${@[$doc_idx+1,-1]} | LESS=${LESS:-JRWXij.3}  less ${linenum:++${linenum}} ${linenum:+-N}
+  h ${doc} ${@[0,$doc_idx-1]} ${@[$doc_idx+1,-1]} | LESS=${LESS:-RWXij.3}  less ${linenum:++${linenum}} ${linenum:+-N}
 }
 
 # -- Highlight files, showing filenames --

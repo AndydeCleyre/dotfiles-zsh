@@ -7,6 +7,8 @@ if (( $+commands[paru] )) {
   alias y="pacaptr"
 }
 
+alias yd="DIFFPROG=meld MERGEPROG=meld pacdiff -3"
+
 # -- pacman-like interface to distro package managers --
 # Optional: gh-install (github.zsh) or mise
 pacaptr () {

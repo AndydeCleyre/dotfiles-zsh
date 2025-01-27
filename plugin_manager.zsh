@@ -42,9 +42,16 @@
 }
 
 # -- Regenerate outdated files --
-# Do nothing and return 1 if check-cmd isn't in PATH
-.zshrc_fortnightly () {  # <check-cmd> <dest> <gen-cmd>...
+# Do nothing and return 1 if check-cmd isn't in PATH,
+# or if <funcname> is already defined outside home
+.zshrc_fortnightly () {  # [--unless <funcname>] <check-cmd> <dest> <gen-cmd>...
   emulate -L zsh -o extendedglob
+
+  if [[ $1 == --unless ]] {
+    shift
+    if { .zshrc_defined_beyond_home $1 }  return 1
+    shift
+  }
 
   local check_cmd=$1; shift
   local dest=$1     ; shift
@@ -54,4 +61,15 @@
 
   mkdir -p ${dest:a:h}
   if [[ ! ${dest}(#qmw-2N) ]]  $gen_cmd >$dest
+}
+
+# -- Is (potentially autoloading) function defined outside user's home? --
+# Succeed if defined outside home, return 1 otherwise
+.zshrc_defined_beyond_home () {  # <funcname>
+  emulate -L zsh
+
+  autoload -r $1
+  local funcpath=$functions_source[$1]
+
+  [[ $funcpath ]] && [[ ${funcpath:#$HOME/*} ]]
 }

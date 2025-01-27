@@ -1,3 +1,5 @@
+alias rsync-copy="rsync -aPXhhh"
+
 # -- yazi --
 # Trying out a bit, until broot implements: https://github.com/Canop/broot/issues/971
 yz () {

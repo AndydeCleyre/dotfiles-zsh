@@ -5,7 +5,7 @@
 insist () { while ! { $@ }  $@ }
 
 alias aw="wiki-search"
-alias copy="rsync -aPhhh"
+
 alias ddg="ddgr -n 3 -x --show-browser-logs"
 alias ggl="googler --show-browser-logs -x -n 6"
 

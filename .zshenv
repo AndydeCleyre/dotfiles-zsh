@@ -15,6 +15,12 @@ LANG=en_US.UTF-8
 # XDG_DATA_DIRS=/usr/local/share:/usr/share
 # XDG_CONFIG_DIRS=/etc/xdg
 
+# -----------------
+# Development Homes
+# -----------------
+
+export CARGO_HOME=${XDG_DATA_HOME:-~/.local/share}/cargo
+
 # ------------------------
 # PATH, fpath, and ZDOTDIR
 # ------------------------

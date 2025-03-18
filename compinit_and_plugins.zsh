@@ -5,6 +5,9 @@
 # Configure plugins
 # -----------------
 
+# -- mise --
+export MISE_PARANOID=1
+
 # -- zpy --
 # zstyle ':zpy:*' exposed-funcs zpy pipz a8 envin envout pipup vrun
 

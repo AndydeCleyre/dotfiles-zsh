@@ -11,7 +11,7 @@
   }
 }
 zle -N       .zle_accept-except-multiline
-bindkey '^M' .zle_accept-except-multiline  # Enter
+bindkey '^M' .zle_accept-except-multiline  # enter
 
 # -- Run input if multiline, otherwise insert newline --
 # Key: alt+enter
@@ -24,4 +24,4 @@ bindkey '^M' .zle_accept-except-multiline  # Enter
   }
 }
 zle -N         .zle_accept-only-multiline
-bindkey '^[^M' .zle_accept-only-multiline  # Enter
+bindkey '^[^M' .zle_accept-only-multiline  # alt+enter

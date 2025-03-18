@@ -10,9 +10,12 @@ mkcd () {  # <folder>
 bak () {  # <file>...
   emulate -L zsh
 
+  local dest
   for 1 {
-    cp -ri $1 $1.bak
-    ls -l $1 $1.bak
+    dest=$1.bak
+    while [[ -e $dest ]]  dest=$dest.bak
+    cp -ri $1 $dest
+    ls -l $1 $dest
   }
 }
 

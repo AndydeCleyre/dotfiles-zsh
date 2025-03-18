@@ -25,13 +25,27 @@ ZSHZ_UNCOMMON=1
 # -------------------------------------------------
 
 # -- Generated Sources --
-.zshrc_fortnightly gh    ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_gh    gh completion -s zsh               || true
-.zshrc_fortnightly mise  ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_mise  mise completion zsh                || true
-.zshrc_fortnightly prqlc ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_prqlc prqlc shell-completion zsh         || true
-.zshrc_fortnightly ruff  ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_ruff  ruff generate-shell-completion zsh || true
-.zshrc_fortnightly tsk   ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_tsk   tsk completion -s zsh              || true
-.zshrc_fortnightly uv    ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_uv    uv generate-shell-completion zsh   || true
-.zshrc_fortnightly yage  ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_yage  yage --completion zsh              || true
+# TODO: https://github.com/jdx/mise/discussions/4217
+() {
+  emulate -L zsh
+  local generator words
+  for generator (
+    'gh completion -s zsh'
+    'mise completion zsh'
+    'prqlc shell-completion zsh'
+    'ruff generate-shell-completion zsh'
+    'tsk completion -s zsh'
+    'uv generate-shell-completion zsh'
+    'yage --completion zsh'
+  ) {
+    words=(${(z)generator})
+    .zshrc_fortnightly \
+      --unless _${words[1]} \
+      ${words[1]} \
+      ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_${words[1]} \
+      $words || true
+  }
+}
 
 # -- Load if found --
 .zshrc_load-plugin zsh-completions zsh-z
@@ -54,5 +68,5 @@ compinit -i -d ${XDG_CACHE_HOME:-~/.cache}/zsh/zcompdump-$ZSH_VERSION
 if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] ))  .zshrc_load-plugin --try ${ZSH_PLUGINS_DIR}/powerlevel10k/powerlevel10k.zsh-theme
 
 # -- Generated Sources --
-if { .zshrc_fortnightly pip  ${ZSH_PLUGINS_DIR}/pip.zsh  pip completion -z }  . ${ZSH_PLUGINS_DIR}/pip.zsh
-if { .zshrc_fortnightly mise ${ZSH_PLUGINS_DIR}/mise.zsh mise activate zsh }  . ${ZSH_PLUGINS_DIR}/mise.zsh
+if { .zshrc_fortnightly --unless _pip pip  ${ZSH_PLUGINS_DIR}/pip.zsh  pip completion -z }  . ${ZSH_PLUGINS_DIR}/pip.zsh
+if { .zshrc_fortnightly               mise ${ZSH_PLUGINS_DIR}/mise.zsh mise activate zsh }  . ${ZSH_PLUGINS_DIR}/mise.zsh

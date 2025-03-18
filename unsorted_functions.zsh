@@ -1,3 +1,4 @@
+alias x="ouch decompress"
 alias rsync-copy="rsync -aPXhhh"
 
 # -- yazi --

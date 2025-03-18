@@ -48,6 +48,7 @@ wz () {  # <template line>...
 # Depends:
 #   - yt-dlp (PyPI)
 #   - xclip
+# Optional: zpick (unsorted_functions.zsh)
 yt () {  # [[<yt-dlp arg>...] <uri>]
   emulate -L zsh
 
@@ -56,10 +57,16 @@ yt () {  # [[<yt-dlp arg>...] <uri>]
 
   local quality
   print -u2 "Quality?"
-  select quality ( 540 720 1080 best ) { break }
+  if (( $+functions[zpick] )) {
+    local REPLY
+    zpick best 1080 720 540
+    quality=$REPLY
+  } else {
+    select quality ( best 1080 720 540 ) { break }
+  }
 
-  local args=($@)
-  if [[ $quality ]]  args+=(-S "res:$quality")
+  local args=(--embed-metadata --embed-subs $@)
+  if [[ $quality && $quality != best ]]  args+=(-f "bestvideo[height<=$quality]+bestaudio/best[height<=$quality]")
 
   yt-dlp $args "$uri"
 }
@@ -67,25 +74,36 @@ yt () {  # [[<yt-dlp arg>...] <uri>]
 # -- Like yt above, but for Dropout --
 # Depends:
 #   - yt-dlp (PyPI)
-#   - sops (not Python)
-#   - ~/sops/netrc.enc
+#   - rage
+#   - ~/Crypt/keys/dropout.txt
+#   - ~/Crypt/corpses/netrc.age
+# Optional: zpick (unsorted_functions.zsh)
 # TODO: wayland paste
 dropout () {  # [<url>=<clipboard>]
   emulate -L zsh
 
   local cmd=(
     yt-dlp
-    -n --netrc-location {}
+    --netrc-cmd "rage -d -i $HOME/Crypt/keys/dropout.txt $HOME/Crypt/coffins/netrc.age"
     --referer https://www.dropout.tv/
+    --embed-metadata
+    --embed-subs
     "${@:-$(xclip -sel clip -o)}"
   )
 
   local quality
   print -u2 "Quality?"
-  select quality ( 540 720 1080 best ) { break }
-  if [[ $quality ]]  cmd+=(-S "res:$quality")
+  if (( $+functions[zpick] )) {
+    local REPLY
+    zpick 540 720 1080 best
+    quality=$REPLY
+  } else {
+    select quality ( 540 720 1080 best ) { break }
+  }
 
-  sops exec-file --no-fifo ~/sops/netrc.enc "$cmd"
+  if [[ $quality && $quality != best ]]  args+=(-f "bestvideo[height<=$quality]+bestaudio/best[height<=$quality]")
+
+  $cmd
 }
 
 # -- Install a tool from PyPI --

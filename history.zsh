@@ -1,4 +1,5 @@
-HISTFILE=~/.zsh_history
+HISTFILE=${XDG_STATE_HOME:-~/.local/state}/zsh/history
+mkdir -p ${HISTFILE:h}
 HISTSIZE=10000
 SAVEHIST=10000
 setopt \

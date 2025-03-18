@@ -35,6 +35,7 @@ fac () {
   $cmd -no-user-init -e="USING: json unicode ; ${(j: :)@}"
 }
 
+# TODO: title/prompt
 # -- Pick from a list of choices --
 # Sets REPLY, unless -m is passed for multi-choice, and reply is set instead
 # Depends: (for -m support) gum, skim, OR fzf

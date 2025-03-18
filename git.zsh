@@ -52,7 +52,7 @@ alias gfi="git flow init -d"
 gson () {  # <submod-dir>...
   emulate -L zsh -o errreturn
 
-  git submodule update --init --remote $@
+  git submodule update --single-branch --init --remote $@
 
   local groot submod relsubmod branch lines line
   groot=$(git rev-parse --show-toplevel)

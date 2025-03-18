@@ -22,6 +22,16 @@ zle -N .zle_redraw-prompt
 zle -N       .zle_push-line-and-clear
 bindkey '^L' .zle_push-line-and-clear  # ctrl+l
 
+# -- Folder Navigation: Home --
+# Key: ctrl+~
+# Optional: .zle_redraw-prompt
+.zle_cd-home () {
+  cd
+  if (( $+functions[.zle_redraw-prompt] ))  zle .zle_redraw-prompt
+}
+zle -N       .zle_cd-home
+bindkey '^^' .zle_cd-home  # ctrl+~
+
 # -- Folder Navigation: Down --
 # Key: alt+down
 # Superseded in broot.zsh

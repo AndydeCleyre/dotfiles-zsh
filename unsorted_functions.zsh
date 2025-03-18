@@ -29,7 +29,11 @@ yz () {
 # Depends: Factor
 # Example:
 #   print -rl -- one two three | fac '[ >upper print ]' each-line
-fac () { factor -e="USING: json unicode ; ${(j: :)@}" }
+fac () {
+  cmd=factor
+  if (( $+commands[factor-vm] ))  cmd=factor-vm
+  $cmd -no-user-init -e="USING: json unicode ; ${(j: :)@}"
+}
 
 # -- Pick from a list of choices --
 # Sets REPLY, unless -m is passed for multi-choice, and reply is set instead

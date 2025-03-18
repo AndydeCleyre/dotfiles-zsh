@@ -87,10 +87,10 @@ bindkey '^f' .zle_for-broot
     partial=${partial/#(\$HOME\/|\~\/)/~\/}
 
     # Store a sanitized version for broot search (broot_search)
-    broot_search=${partial/#~\/}                 # strip leading '~/'
-    broot_search=${broot_search//( |:|..\/|\;)}  # strip ' ', ':', '../', ';'
-    broot_search=${broot_search//.\/}            # strip './'
-    broot_search=${broot_search//\//\\/}         # replace '/' with '\/'
+    broot_search=${partial/#~\/}                          # strip leading '~/'
+    broot_search=${broot_search//( |:|..\/|\;|\\|\'|\")}  # strip ' ', ':', '../', ';', '\', "'", '"'
+    broot_search=${broot_search//.\/}                     # strip './'
+    broot_search=${broot_search//\//\\/}                  # replace '/' with '\/'
 
   }
 

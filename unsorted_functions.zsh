@@ -13,18 +13,6 @@ t () {  # [<task>[ ::: <task>]...]
   mise tasks run $@
 }
 
-# -- yazi --
-# Trying out a bit, until broot implements: https://github.com/Canop/broot/issues/971
-yz () {
-  emulate -L zsh
-  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-  yazi $@ --cwd-file="$tmp"
-  if cwd="$(=cat -- "$tmp")" && [[ "$cwd" ]] && [[ "$cwd" != "$PWD" ]] {
-    cd -- "$cwd"
-  }
-  =rm -f -- "$tmp"
-}
-
 # -- Invoke Factor in a pipe-friendly way --
 # Depends: Factor
 # Example:

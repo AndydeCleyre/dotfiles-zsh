@@ -11,7 +11,8 @@ alias ddg="ddgr -n 3 -x"
 alias def="camb -w"
 alias define="cambd"
 alias rb="rainbow"
-if (( $+commands[trash] ))  alias rm="trash --verbose"
+# if (( $+commands[trash] ))  alias rm="trash --verbose"  # completion for trash is worse than for rm
+if (( $+commands[trash] ))  rm () { trash --verbose $@ }
 
 if (( $+functions[compdef] )) && (( $+commands[nt2json] ))  compdef _gnu_generic nt2yaml nt2toml nt2json json2nt toml2nt yaml2nt
 

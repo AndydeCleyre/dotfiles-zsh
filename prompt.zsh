@@ -50,9 +50,11 @@ miniprompt () {
     bubble_fg="${bubble_fg}#"
   }
 
-  local bookends=''
-  # bookends=('<<' '>>')
-  # bookends=''
+  local bookends
+  bookends=''           # powerline extended
+  # bookends=''         # powerline
+  # bookends=('<<' '>>')  # ASCII
+  # bookends=''           # naked
 
   REPLY="%F{${bubble_bg}}${bookends[1]}%K{${bubble_bg}}%F{${bubble_fg}}${@}%F{${bubble_bg}}%k${bookends[-1]}%f"
 }

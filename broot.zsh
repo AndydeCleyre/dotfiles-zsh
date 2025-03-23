@@ -147,3 +147,12 @@ zle -N        .zle_insert-path-broot
 bindkey '^_'  .zle_insert-path-broot  # ctrl+/
 
 }
+
+# -- Pinned view in another tmux pane --
+pin-broot () {
+  emulate -L zsh
+  local name=$RANDOM
+  eval 'update_pinned_broot_$name () { broot --send '$name' -c ":focus $PWD" }'
+  add-zsh-hook precmd update_pinned_broot_$name
+  tmux splitw -d -h -l 70 broot --listen $name
+}

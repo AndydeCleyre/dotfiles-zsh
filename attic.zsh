@@ -6,9 +6,6 @@ insist () { while ! { $@ }  $@ }
 
 alias aw="wiki-search"
 
-alias ddg="ddgr -n 3 -x --show-browser-logs"
-alias ggl="googler --show-browser-logs -x -n 6"
-
 log () {  # <key> <val> [<key> <val>]...
   emulate -L zsh
   local k v pairs=()
@@ -33,13 +30,6 @@ logit () {  # [logdir]
   local logdir=${${:-${1:-$PWD}/${(%):-%D{%Y-%m-%d-%s}}.log.d}:a}
   print -ru2 -- "-- Logging to $logdir/current"
   s6-log T s4194304 S41943040 $logdir
-}
-
-newage () {
-  emulate -L zsh
-  mkdir -p ~/.config/sops/age
-  print -rl "# --- ${1:-$(date +"%Y-%m-%d %H:%M:%S%Z")} ---" >>~/.config/sops/age/keys.txt
-  age-keygen >>~/.config/sops/age/keys.txt
 }
 
 # video.zsh? av.zsh?
@@ -82,17 +72,6 @@ vidtg () {  # sourcevid [video-encoder=copy [audo-encoder=copy]]
     "$vidname"
     # -map 0 \
 }
-voices () {  # [text]
-    for voice in ${(z)"$(mimic -lv)"#*: }; do
-        print "Testing voice: $voice . . ."
-        mimic -t "$1; This voice is called $voice" -voice $voice \
-        || print "%F{red}ERROR testing $voice%f"
-    done
-}
-say () {  # <text...>
-    mimic -voice awb -t "${(j: :)@}"
-}
-alias xdn="xargs -d '\n'"
 
 cleansubs () {  # [<srt file>...]
   emulate -L zsh

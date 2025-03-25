@@ -301,8 +301,12 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
   POWERLEVEL9K_VIRTUALENV_SHOW_PYTHON_VERSION=true
   POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(newline status command_execution_time background_jobs virtualenv my_rprompt)
   prompt_my_rprompt () { .zshrc_prompt-rprompt; p10k segment -e -t "$REPLY" }
-  .zshrc_prompt-bubble '${$((my_git_formatter(1)))+${my_git_format}}'
-  POWERLEVEL9K_VCS_CONTENT_EXPANSION=$REPLY
+
+  # This doesn't seem to work anymore:
+  # .zshrc_prompt-bubble '${$((my_git_formatter(1)))+${my_git_format}}'
+  # This doesn't quite work either:
+  # .zshrc_prompt-bubble '${P9K_CONTENT//\%([FK]\{[^\}]##\}|[fk])/}'
+  # POWERLEVEL9K_VCS_CONTENT_EXPANSION=$REPLY
 
 # -- Configure agkozak if loaded --
 } elif (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {

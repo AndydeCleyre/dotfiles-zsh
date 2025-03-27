@@ -3,15 +3,7 @@ alias x="ouch decompress"
 alias rsync-copy="rsync -aPXhhh"
 
 # -- run mise tasks --
-# Depends: mise
-# Without args, lists tasks
-t () {  # [<task>[ ::: <task>]...]
-  if [[ ! $1 ]] {
-    mise tasks ls
-    return
-  }
-  mise tasks run $@
-}
+alias t="mise run"
 
 # -- Invoke Factor in a pipe-friendly way --
 # Depends: Factor
@@ -141,13 +133,3 @@ pd () {  # [<vid>...]
 # -- Completion Help Messages --
 # Depends: .zshrc_help_complete (help.zsh)
 if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete fac pd zpick
-
-# -- More Completions --
-# TODO: move this to help.zsh, also used in git.zsh.
-# Optional: help.zsh (_as_if)
-_as_if () {
-  words[1]=("$@")
-  (( CURRENT += $# - 1 ))
-  _normal
-}
-if (( $+functions[compdef] ))  compdef '_as_if mise tasks run' t

@@ -61,6 +61,11 @@ _zshrc_help () {  # <funcname>
 }
 
 # -- Generate completion functions showing help message --
+_as_if () {
+  words[1]=("$@")
+  (( CURRENT += $# - 1 ))
+  _normal
+}
 .zshrc_help_complete () {  # <funcname...>
   if (( $+functions[compdef] )) {
     for 1 {
@@ -70,6 +75,15 @@ _zshrc_help () {  # <funcname>
       }
       compdef _$1 $1
     }
+  }
+}
+.zshrc_help_complete-as-if () {  # <funcname> <as-if-cmd>
+  if (( $+functions[compdef] )) {
+    eval "_$1 () {
+      _zshrc_help $1
+      _as_if $2
+    }"
+    compdef _$1 $1
   }
 }
 .zshrc_help_complete-as-prefix () {  # <funcname...>

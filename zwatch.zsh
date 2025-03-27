@@ -43,10 +43,3 @@ zle -N        .zle_prepend-zwatch
 bindkey '\ez' .zle_prepend-zwatch  # esc, z
 
 if (( $+functions[.zshrc_help_complete-as-prefix] ))  .zshrc_help_complete-as-prefix zwatch
-
-# _zwatch () {
-#   shift words
-#   (( CURRENT-=1 ))
-#   _normal -P
-# }
-# compdef _zwatch zwatch

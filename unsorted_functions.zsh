@@ -2,6 +2,12 @@ alias x="ouch decompress"
 # TODO: fallbacks for x
 alias rsync-copy="rsync -aPXhhh"
 
+if (( $commands[wget] )) {
+  alias get="wget"
+} else {
+  alias get="curl -LO"
+}
+
 # -- run mise tasks --
 alias t="mise run"
 

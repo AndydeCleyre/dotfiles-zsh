@@ -187,7 +187,10 @@ miniprompt () {
   )
   lines=(${(f)mapfile[/etc/os-release]})
   distro=${${${(M)lines:#ID=*}##*=\"#}%%\"#}
-  if (( $+distro_icons[$distro] ))  distro="$distro_icons[$distro] "
+  if (( $+distro_icons[$distro] )) {
+    distro="$distro_icons[$distro]"
+    if [[ $ZSHRC_PAD_ICONS ]]  distro+=' '
+  }
   .zshrc_prompt-bubble "$distro"
   distro_bubble=$REPLY
 

@@ -1,5 +1,5 @@
 if (( $+commands[eza] )) {
-  export EZA_ICON_SPACING=2
+  if [[ $ZSHRC_PAD_ICONS ]]  export EZA_ICON_SPACING=2
   alias ls="eza --binary --octal-permissions --no-permissions --git --icons=always"
   alias recent="eza --binary --octal-permissions --no-permissions --git -snew --icons=always"
 } else {

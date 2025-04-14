@@ -47,7 +47,7 @@ wz () {  # <template line>...
 
 # -- yt-dlp, interactively choose quality --
 # Depends:
-#   - yt-dlp (PyPI)
+#   - yt-dlp (PyPI) -- yt-dlp[default,curl-cffi] recommended
 #   - xclip
 # Optional: zpick (unsorted_functions.zsh)
 yt () {  # [[<yt-dlp arg>...] <uri>]

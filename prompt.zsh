@@ -10,8 +10,6 @@ PROMPT2='%B%F{blue}…%f%b '
 export PROMPT4='%B%F{white}-- %N:%i %b%f'
 PROMPT_EOL_MARK='%F{red} %f'
 
-print '\033[5 q'  # cursor style: blinking bar
-
 # -- Simplify on demand --
 miniprompt () {
   if (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {

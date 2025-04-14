@@ -66,7 +66,13 @@ yt () {  # [[<yt-dlp arg>...] <uri>]
     select quality ( best 1080 720 540 ) { break }
   }
 
-  local args=(--embed-metadata --embed-subs --no-playlist $@)
+  local args=(
+    --embed-metadata
+    --embed-subs
+    --no-playlist
+    --extractor-args "generic:impersonate"
+    $@
+  )
   if [[ $quality && $quality != best ]]  args+=(-f "bestvideo[height<=$quality]+bestaudio/best[height<=$quality]")
 
   yt-dlp $args "$uri"

@@ -231,27 +231,52 @@ miniprompt () {
   local REPLY
   psvar=()
 
-  # -- retcodes if non-zero --
-  local pipestatus_nonzero=(${ZSHRC_PROMPT_PIPESTATUS#0}) pipestatus_color=red
-  if [[ ! $pipestatus_nonzero ]] && (( ZSHRC_PROMPT_RET )) {
-    ZSHRC_PROMPT_PIPESTATUS=($ZSHRC_PROMPT_RET)
-    pipestatus_nonzero=($ZSHRC_PROMPT_RET)
-  }
-  if [[ $pipestatus_nonzero ]] {
-    if [[ ${ZSHRC_PROMPT_PIPESTATUS[-1]} == 0 ]]  pipestatus_color=yellow
-    .zshrc_prompt-bubble "%F{$pipestatus_color}${(j:|:)ZSHRC_PROMPT_PIPESTATUS} <-%f"
-    psvar+=($REPLY)
-  }
+  if (( ! $+functions[powerlevel10k_plugin_unload] )) {
 
-  # -- folder --
-  .zshrc_prompt-bubble '%B%F{magenta}%~%b'
-  psvar+=($REPLY)
+    # -- retcodes if non-zero --
+    local pipestatus_nonzero=(${ZSHRC_PROMPT_PIPESTATUS#0}) pipestatus_color=red
+    if [[ ! $pipestatus_nonzero ]] && (( ZSHRC_PROMPT_RET )) {
+      ZSHRC_PROMPT_PIPESTATUS=($ZSHRC_PROMPT_RET)
+      pipestatus_nonzero=($ZSHRC_PROMPT_RET)
+    }
+    if [[ $pipestatus_nonzero ]] {
+      if [[ ${ZSHRC_PROMPT_PIPESTATUS[-1]} == 0 ]]  pipestatus_color=yellow
+      .zshrc_prompt-bubble "%F{$pipestatus_color}${(j:|:)ZSHRC_PROMPT_PIPESTATUS} <-%f"
+      psvar+=($REPLY)
+    }
 
-  # -- git info --
-  .zshrc_prompt-gitstat
-  if [[ $REPLY ]] {
-    .zshrc_prompt-bubble $REPLY
+    # -- folder --
+    .zshrc_prompt-bubble '%B%F{magenta}%~%b'
     psvar+=($REPLY)
+
+    # -- git info --
+    .zshrc_prompt-gitstat
+    if [[ $REPLY ]] {
+      .zshrc_prompt-bubble $REPLY
+      psvar+=($REPLY)
+    }
+
+    # -- venv --
+    if [[ $VIRTUAL_ENV ]] {
+      local venv_parent=${VIRTUAL_ENV:h:t}
+      if (( #venv_parent > 9 ))  venv_parent=${venv_parent[1,4]}…${venv_parent[-3,-1]}
+
+      .zshrc_prompt-bubble "${venv_parent}/${VIRTUAL_ENV:t}"
+      psvar+=($REPLY)
+    }
+
+    # -- slow cmd time --
+    if [[ $ZSHRC_PROMPT_PRETIME ]] {
+      local cmd_duration=$(( EPOCHREALTIME - ZSHRC_PROMPT_PRETIME ))
+      unset ZSHRC_PROMPT_PRETIME
+      if (( cmd_duration > 1 )) {
+        local bigten=$(( cmd_duration * 10 + 0.5 ))
+        bigten=${bigten%%.*}
+        .zshrc_prompt-bubble ${bigten[1,-2]}.${bigten[-1]}s
+        psvar+=($REPLY)
+      }
+    }
+
   }
 
   # -- yadm info --
@@ -268,31 +293,24 @@ miniprompt () {
     psvar+=($REPLY)
   }
 
-  # -- venv --
-  if [[ $VIRTUAL_ENV ]] {
-    local venv_parent=${VIRTUAL_ENV:h:t}
-    if (( #venv_parent > 9 ))  venv_parent=${venv_parent[1,4]}…${venv_parent[-3,-1]}
-
-    .zshrc_prompt-bubble "${venv_parent}/${VIRTUAL_ENV:t}"
-    psvar+=($REPLY)
-  }
-
-  # -- slow cmd time --
-  if [[ $ZSHRC_PROMPT_PRETIME ]] {
-    local cmd_duration=$(( EPOCHREALTIME - ZSHRC_PROMPT_PRETIME ))
-    unset ZSHRC_PROMPT_PRETIME
-    if (( cmd_duration > 1 )) {
-      local bigten=$(( cmd_duration * 10 + 0.5 ))
-      bigten=${bigten%%.*}
-      .zshrc_prompt-bubble ${bigten[1,-2]}.${bigten[-1]}s
+  # -- mise --
+  if [[ $MISE_SHELL ]] {
+    local mise_configs=(${(f)"$(mise config ls --no-header)"})
+    mise_configs=(${${mise_configs%%  *}/#\~/$HOME})
+    mise_configs=(${mise_configs:#$HOME/.config/mise/config.toml})
+    for mise_cfg ( $mise_configs ) {
+      .zshrc_prompt-bubble $(realpath --relative-to=. $mise_cfg)
       psvar+=($REPLY)
     }
   }
+
 }
 
 # ----------------------------------------------------
 # Set up PROMPT and RPROMPT, or agkozak or p10k plugin
 # ----------------------------------------------------
+
+if (( ! $+functions[agkozak-zsh-prompt_plugin_unload] ))  add-zsh-hook precmd .zshrc_prompt-setpsvar
 
 # -- Configure p10k if loaded --
 if (( $+functions[powerlevel10k_plugin_unload] )) {
@@ -303,7 +321,9 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
   POWERLEVEL9K_STATUS_ERROR=true
   POWERLEVEL9K_VIRTUALENV_CONTENT_EXPANSION='${P9K_CONTENT%% *}'
   POWERLEVEL9K_VIRTUALENV_SHOW_PYTHON_VERSION=true
+  POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=( dir vcs my_psvar newline prompt_char )
   POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(newline status command_execution_time background_jobs virtualenv my_rprompt)
+  prompt_my_psvar () { p10k segment -t "${(j: :)psvar}" }
   prompt_my_rprompt () { .zshrc_prompt-rprompt; p10k segment -e -t "$REPLY" }
 
   # This doesn't seem to work anymore:
@@ -352,7 +372,6 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
   zstyle ':vcs_info:git*' formats '%F{blue}%b%F{red}%u%c%f'
   zstyle ':vcs_info:git*' actionformats '%F{blue}%b%F{yellow}|%a%F{red}%u%c%f'
 
-  add-zsh-hook precmd .zshrc_prompt-setpsvar
   add-zsh-hook preexec .zshrc_prompt-timecheck
   PROMPT=$'\n''${(j: :)psvar}'$'\n''%B%F{white}-- %F{green}%(!.#.$)%f%b '
 

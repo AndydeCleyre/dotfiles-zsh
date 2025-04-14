@@ -18,7 +18,7 @@ alias t="mise run"
 fac () {
   cmd=factor
   if (( $+commands[factor-vm] ))  cmd=factor-vm
-  $cmd -no-user-init -e="USING: json unicode ; ${(j: :)@}"
+  $cmd -no-user-init -e="auto-use ${(j: :)@}"
 }
 
 # TODO: title/prompt

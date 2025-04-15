@@ -2,7 +2,7 @@ alias x="ouch decompress"
 # TODO: fallbacks for x
 alias rsync-copy="rsync -aPXhhh"
 
-if (( $commands[wget] )) {
+if (( $+commands[wget] )) {
   alias get="wget"
 } else {
   alias get="curl -LO"

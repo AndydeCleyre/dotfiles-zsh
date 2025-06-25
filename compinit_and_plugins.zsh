@@ -24,7 +24,7 @@ ZSHZ_UNCOMMON=1
 # Load completions and some plugins before compinit
 # -------------------------------------------------
 
-# -- Generated Sources --
+# -- Generated Completions --
 # TODO: https://github.com/jdx/mise/discussions/4217
 () {
   emulate -L zsh
@@ -44,6 +44,19 @@ ZSHZ_UNCOMMON=1
       ${words[1]} \
       ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_${words[1]} \
       $words || true
+  }
+}
+
+# -- Click-Generated Completions --
+() {
+  emulate -L zsh
+  local clicktool
+  for clicktool ( pip-compile pip-sync ) {
+    .zshrc_fortnightly \
+      --unless _${clicktool} \
+      ${clicktool} \
+      ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_${clicktool} \
+      eval "_${clicktool:u:gs/-/_}_COMPLETE=zsh_source $clicktool" || true
   }
 }
 

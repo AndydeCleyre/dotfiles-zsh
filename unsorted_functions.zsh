@@ -1,6 +1,10 @@
 alias x="ouch decompress"
 # TODO: fallbacks for x
-alias rsync-copy="rsync -aPXhhh"
+
+alias rsync-copy="rsync -hhh --archive --checksum --info=progress2 --partial --xattrs"
+
+# -- Strip leading tai64n timestamps and non json-line lines --
+jlines () { grep -P --color '@[^ ]+ \{' | sed -E 's/^[^ ]+ //g' }
 
 if (( $+commands[wget] )) {
   alias get="wget"
@@ -10,6 +14,8 @@ if (( $+commands[wget] )) {
 
 # -- run mise tasks --
 alias t="mise run"
+
+alias yy="paru && mise up --bump && pipz upgrade --all && DIFFPROG=meld MERGEPROG=meld pacdiff -3 -s"
 
 # -- Invoke Factor in a pipe-friendly way --
 # Depends: Factor

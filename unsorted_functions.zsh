@@ -24,7 +24,23 @@ alias yy="paru && mise up --bump && pipz upgrade --all && DIFFPROG=meld MERGEPRO
 fac () {
   cmd=factor
   if (( $+commands[factor-vm] ))  cmd=factor-vm
-  $cmd -no-user-init -e="auto-use ${(j: :)@}"
+  $cmd -no-user-init -e="
+    auto-use USING: splitting ;
+
+    read-lines
+
+    ${(j: :)@}
+
+    IN: scratch
+    : cli-print ( x -- )
+      {
+        { [ dup string? ] [ print ] }
+        { [ dup sequence? ] [ [ cli-print ] each ] }
+        [ . ]
+      } cond ;
+
+    cli-print
+  "
 }
 
 # TODO: title/prompt

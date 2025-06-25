@@ -27,11 +27,11 @@ gls () {  # [<branch> [<git ls-tree arg>...]]
   git ls-tree -r --name-only ${1:-$(git branch --show-current)} ${@[2,-1]}
 }
 
-# -- Push develop, master, and tags --
+# -- Push develop, main, and tags --
 # bad name, sticking with it out of habit
-hotfixed () {  # <master-branch-name>=master
+hotfixed () {  # <master-branch-name>=main
   git checkout develop && git push
-  git checkout ${1:-master} && git push
+  git checkout ${1:-main} && git push
   git push --tags
   git checkout develop
 }

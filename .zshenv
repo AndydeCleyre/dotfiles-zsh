@@ -20,6 +20,8 @@ LANG=en_US.UTF-8
 # -----------------
 
 export CARGO_HOME=${XDG_DATA_HOME:-~/.local/share}/cargo
+export GOPATH=${XDG_DATA_HOME:-~/.local/share}/go
+export MSHSTDLIB=${XDG_DATA_HOME:-~/.local/share}/mshell/std.msh
 
 # ------------------------
 # PATH, fpath, and ZDOTDIR

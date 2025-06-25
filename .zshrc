@@ -12,7 +12,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 }
 
 # Comment out if using Rio terminal:
-# ZSHRC_PAD_ICONS=1  # before prompt and ls
+ZSHRC_PAD_ICONS=1  # before prompt and ls
 
 . ${ZDOTDIR}/compinit_and_plugins.zsh  # otherwise: autoload -Uz compinit && compinit
 

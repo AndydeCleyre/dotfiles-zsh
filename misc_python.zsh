@@ -1,8 +1,8 @@
 # --  --
-pie () {
+pie () {  # [path[extra[,extra]...]=.]
   emulate -L zsh
-  local cmd=(pip install -e .)
-  if (( $+commands[uv] ))  cmd=(uv pip install -p python -e .)
+  local cmd=(pip install -e ${1:-.})
+  if (( $+commands[uv] ))  cmd=(uv pip install -p python -e ${1:-.})
   $cmd
 }
 

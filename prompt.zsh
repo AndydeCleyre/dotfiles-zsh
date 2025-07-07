@@ -314,14 +314,13 @@ if (( ! $+functions[agkozak-zsh-prompt_plugin_unload] ))  add-zsh-hook precmd .z
 
 # -- Configure p10k if loaded --
 if (( $+functions[powerlevel10k_plugin_unload] )) {
-  # TODO: add tsk count to p10k and agkozak configs
   if [[ -r ${ZDOTDIR:-${${(%):-%x}:P:h}}/.p10k.zsh ]]  . ${ZDOTDIR:-${${(%):-%x}:P:h}}/.p10k.zsh
   POWERLEVEL9K_PROMPT_CHAR_ERROR_VIINS_CONTENT_EXPANSION='%F{white}%B-- %F{green}$%b%f'
   POWERLEVEL9K_PROMPT_CHAR_OK_VIINS_CONTENT_EXPANSION='%F{white}%B-- %F{green}$%b%f'
   POWERLEVEL9K_STATUS_ERROR=true
   POWERLEVEL9K_VIRTUALENV_CONTENT_EXPANSION='${P9K_CONTENT%% *}'
   POWERLEVEL9K_VIRTUALENV_SHOW_PYTHON_VERSION=true
-  POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=( dir vcs my_psvar newline prompt_char )
+  POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=( dir vcs my_psvar kubecontext newline prompt_char )
   POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(newline status command_execution_time background_jobs virtualenv my_rprompt)
   prompt_my_psvar () { p10k segment -t "${(j: :)psvar}" }
   prompt_my_rprompt () { .zshrc_prompt-rprompt; p10k segment -e -t "$REPLY" }
@@ -334,6 +333,7 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
 
 # -- Configure agkozak if loaded --
 } elif (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {
+  # TODO: add tsk count to agkozak config
   AGKOZAK_USER_HOST_DISPLAY=0
   AGKOZAK_CUSTOM_SYMBOLS=('⇣⇡' '⇣' '⇡' '+' 'D' 'M' '→' '?' '$')
   AGKOZAK_LEFT_PROMPT_ONLY=1

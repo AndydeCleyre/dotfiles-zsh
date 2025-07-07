@@ -60,6 +60,20 @@ ZSHZ_UNCOMMON=1
   }
 }
 
+# -- Python Package Included Completions --
+() {
+  emulate -L zsh
+  local pytool fpathentry
+  for pytool ( yt-dlp ) {
+    if (( $+commands[$pytool] )) {
+      fpathentry=${${:-=$pytool}:P:h:h}/share/zsh/site-functions
+      if [[ -d $fpathentry ]] && ! (( ${fpath[(I)$fpathentry]} )) {
+        fpath=($fpathentry $fpath)
+      }
+    }
+  }
+}
+
 # -- Load if found --
 .zshrc_load-plugin zsh-completions zsh-z
 .zshrc_load-plugin --try /usr/share/doc/pkgfile/command-not-found.zsh /etc/zsh_command_not_found  # before mise activation

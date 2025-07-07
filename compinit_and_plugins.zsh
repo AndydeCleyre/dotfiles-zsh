@@ -75,7 +75,9 @@ ZSHZ_UNCOMMON=1
 }
 
 # -- Load if found --
-.zshrc_load-plugin zsh-completions zsh-z
+.zshrc_load-plugin \
+  zsh-completions \
+  zsh-z
 .zshrc_load-plugin --try /usr/share/doc/pkgfile/command-not-found.zsh /etc/zsh_command_not_found  # before mise activation
 
 # --------
@@ -91,8 +93,14 @@ compinit -i -d ${XDG_CACHE_HOME:-~/.cache}/zsh/zcompdump-$ZSH_VERSION
 # --------------------------------
 
 # -- Load if found --
-.zshrc_load-plugin agkozak-zsh-prompt fast-syntax-highlighting zpy zsh-autoenv zsh-fzf-history-search
+.zshrc_load-plugin \
+  agkozak-zsh-prompt \
+  fast-syntax-highlighting \
+  zpy \
+  zsh-autoenv \
+  zsh-fzf-history-search
 if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] ))  .zshrc_load-plugin --try ${ZSH_PLUGINS_DIR}/powerlevel10k/powerlevel10k.zsh-theme
+# TODO: make .zshrc_load-plugin *.zsh-theme -aware?
 
 # -- Generated Sources --
 if { .zshrc_fortnightly --unless _pip pip  ${ZSH_PLUGINS_DIR}/pip.zsh  pip completion -z }  . ${ZSH_PLUGINS_DIR}/pip.zsh

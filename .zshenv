@@ -23,6 +23,9 @@ export CARGO_HOME=${XDG_DATA_HOME:-~/.local/share}/cargo
 export GOPATH=${XDG_DATA_HOME:-~/.local/share}/go
 export MSHSTDLIB=${XDG_DATA_HOME:-~/.local/share}/mshell/std.msh
 
+# https://wiki.archlinux.org/title/Docker#Rootless_Docker_daemon
+export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+
 # ------------------------
 # PATH, fpath, and ZDOTDIR
 # ------------------------

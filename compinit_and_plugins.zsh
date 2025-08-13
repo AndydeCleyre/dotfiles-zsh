@@ -1,5 +1,10 @@
-# -- .zshrc_load-plugin, .zshrc_fortnightly, ZSH_PLUGINS_DIR --
+# -- Import Plugin Helpers --
 . ${${(%):-%x}:P:h}/plugin_manager.zsh
+# - .zshrc::load-plugin
+# - .zshrc::generate-fpath-completions
+# - .zshrc::generate-fpath-completions-click
+# - .zshrc::add-pytool-fpath-entries
+# - .zshrc::generate-and-load-plugin
 
 # -----------------
 # Configure plugins
@@ -20,65 +25,32 @@ ZSHZ_CMD=j
 ZSHZ_NO_RESOLVE_SYMLINKS=1
 ZSHZ_UNCOMMON=1
 
-# -------------------------------------------------
-# Load completions and some plugins before compinit
-# -------------------------------------------------
+# ------------------------------------------------
+# Modify fpath entries and content before compinit
+# ------------------------------------------------
 
-# -- Generated Completions --
-# TODO: https://github.com/jdx/mise/discussions/4217
-() {
-  emulate -L zsh
-  local generator words
-  for generator (
-    'gh completion -s zsh'
-    'mise completion zsh'
-    'prqlc shell-completion zsh'
-    'ruff generate-shell-completion zsh'
-    'tsk completion -s zsh'
-    'uv generate-shell-completion zsh'
-    'yage --completion zsh'
-  ) {
-    words=(${(z)generator})
-    .zshrc_fortnightly \
-      --unless _${words[1]} \
-      ${words[1]} \
-      ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_${words[1]} \
-      $words || true
-  }
-}
+.zshrc::generate-fpath-completions \
+  'devbox completion zsh' \
+  'gh completion -s zsh' \
+  'mise completion zsh' \
+  'prqlc shell-completion zsh' \
+  'ruff generate-shell-completion zsh' \
+  'tsk completion -s zsh' \
+  'uv generate-shell-completion zsh' \
+  'yage --completion zsh'
+.zshrc::generate-fpath-completions-click \
+  pip-compile \
+  pip-sync
 
-# -- Click-Generated Completions --
-() {
-  emulate -L zsh
-  local clicktool
-  for clicktool ( pip-compile pip-sync ) {
-    .zshrc_fortnightly \
-      --unless _${clicktool} \
-      ${clicktool} \
-      ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_${clicktool} \
-      eval "_${clicktool:u:gs/-/_}_COMPLETE=zsh_source $clicktool" || true
-  }
-}
+.zshrc::add-pytool-fpath-entries \
+  yt-dlp
 
-# -- Python Package Included Completions --
-() {
-  emulate -L zsh
-  local pytool fpathentry
-  for pytool ( yt-dlp ) {
-    if (( $+commands[$pytool] )) {
-      fpathentry=${${:-=$pytool}:P:h:h}/share/zsh/site-functions
-      if [[ -d $fpathentry ]] && ! (( ${fpath[(I)$fpathentry]} )) {
-        fpath=($fpathentry $fpath)
-      }
-    }
-  }
-}
-
-# -- Load if found --
-.zshrc_load-plugin \
+.zshrc::load-plugin \
   zsh-completions \
   zsh-z
-.zshrc_load-plugin --try /usr/share/doc/pkgfile/command-not-found.zsh /etc/zsh_command_not_found  # before mise activation
+.zshrc::load-plugin --try \
+  /usr/share/doc/pkgfile/command-not-found.zsh \
+  /etc/zsh_command_not_found  # before mise activation
 
 # --------
 # compinit
@@ -89,19 +61,19 @@ mkdir -p       ${XDG_CACHE_HOME:-~/.cache}/zsh
 compinit -i -d ${XDG_CACHE_HOME:-~/.cache}/zsh/zcompdump-$ZSH_VERSION
 
 # --------------------------------
-# Load some plugins after compinit
+# Load most plugins after compinit
 # --------------------------------
 
-# -- Load if found --
-.zshrc_load-plugin \
+.zshrc::load-plugin \
   agkozak-zsh-prompt \
   fast-syntax-highlighting \
   zpy \
   zsh-autoenv \
   zsh-fzf-history-search
-if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] ))  .zshrc_load-plugin --try ${ZSH_PLUGINS_DIR}/powerlevel10k/powerlevel10k.zsh-theme
-# TODO: make .zshrc_load-plugin *.zsh-theme -aware?
+if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] ))  .zshrc::load-plugin powerlevel10k
 
-# -- Generated Sources --
-if { .zshrc_fortnightly --unless _pip pip  ${ZSH_PLUGINS_DIR}/pip.zsh  pip completion -z }  . ${ZSH_PLUGINS_DIR}/pip.zsh
-if { .zshrc_fortnightly               mise ${ZSH_PLUGINS_DIR}/mise.zsh mise activate zsh }  . ${ZSH_PLUGINS_DIR}/mise.zsh
+.zshrc::generate-and-load-plugin --unless-system _pip pip completion -z
+.zshrc::generate-and-load-plugin mise activate zsh
+
+compdef _gnu_generic \
+  nt2{json,{to,ya}ml} {json,{to,ya}ml}2nt

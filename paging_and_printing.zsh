@@ -247,7 +247,7 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
     if [[ $syntax ]]  argv+=(-s $syntax)
     hi $@
 
-  } elif (( $+commands[gat] )) {
+  } elif (( $+commands[gat] )) {  # should gat be preferred over highlight?
 
     if [[ $syntax ]]  argv+=(-s $syntax)
     gt $@
@@ -341,6 +341,53 @@ gt () {  # [-s <syntax>] [<filepath>...]
   )
 
   gat --force-color -t ${themes[RANDOM % $#themes + 1]} ${@:/-s/-l}
+}
+
+# -- Highlight and page with moor --
+# Depends: moor
+# Optional: mise
+mor () {  # [-s <syntax>] [<doc>[:<line-num>] (or read stdin)]
+  emulate -L zsh -o extendedglob
+  rehash
+
+  if ! (( $+commands[moor] )) {
+    if (( $+functions[mise] ))  mise use -g ubi:walles/moor
+  }
+
+  local doc_idx=1 syntax_idx=${@[(I)-s]}
+  if [[ $syntax_idx == 1 ]]  doc_idx=3
+
+  local syntax
+  if (( syntax_idx ))  syntax=${@[syntax_idx+1]}
+
+  # strip the optional :<line-num> from <doc>
+  local doc=${@[doc_idx]%:<->##}
+
+  local linenum
+  if [[ $doc != ${@[doc_idx]} ]]  linenum=${@[doc_idx]#${doc}:}
+
+  local themes=(
+    base16-snazzy
+    doom-one
+    gruvbox
+    onedark
+    vulcan  # comments might be too dark
+  )
+
+  local args=(
+    ${syntax:+-lang} $syntax
+    -no-clear-on-exit
+    -style ${themes[RANDOM % $#themes + 1]}
+    -wrap
+  )
+  if [[ $linenum ]] {
+    args+=(+${linenum})
+  } else {
+    args+=(-no-linenumbers)
+  }
+  args+=($doc)
+
+  moor $args
 }
 
 # -- Make HTML and XML readable with xmq --

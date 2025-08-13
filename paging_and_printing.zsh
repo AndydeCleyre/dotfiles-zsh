@@ -92,8 +92,8 @@ ric () {  # [-s <syntax>] [<filepath>...]
 
   local syntax syntax_idx=${@[(I)-s]}
   if (( syntax_idx )) {
-    syntax=${@[$syntax_idx+1]}
-    argv=($@[1,$syntax_idx-1] $@[$syntax_idx+2,-1])
+    syntax=${@[syntax_idx+1]}
+    argv=($@[1,syntax_idx-1] $@[syntax_idx+2,-1])
   }
 
   if [[ $syntax ]] {
@@ -124,8 +124,8 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
   # or pop if passed with -s
   local syntax syntax_idx=${@[(I)-s]}
   if (( syntax_idx )) {
-    syntax=${@[$syntax_idx+1]}
-    argv=($@[1,$syntax_idx-1] $@[$syntax_idx+2,-1])
+    syntax=${@[syntax_idx+1]}
+    argv=($@[1,syntax_idx-1] $@[syntax_idx+2,-1])
   } else {
     case $1 {
       (*(#i).rst)  syntax=rst  ;;
@@ -281,17 +281,17 @@ lh () {  # [<doc>[:<line-num>]] [-s <syntax>] [<h-arg>...]
   emulate -L zsh -o extendedglob
 
   # syntax can be specified before doc as well
-  local doc_idx=1 syntax_idx=${@[(I)-[Ss]]}
+  local doc_idx=1 syntax_idx=${@[(I)-s]}
   if [[ $syntax_idx == 1 ]]  doc_idx=3
 
   # strip the optional :<line-num> from <doc>
-  local doc=${@[$doc_idx]%:<->##}
+  local doc=${@[doc_idx]%:<->##}
 
   # extract <line_num> to pass to less
   local linenum
-  if [[ $doc != ${@[$doc_idx]} ]]  linenum=${@[$doc_idx]#${doc}:}
+  if [[ $doc != ${@[doc_idx]} ]]  linenum=${@[doc_idx]#${doc}:}
 
-  h ${doc} ${@[0,$doc_idx-1]} ${@[$doc_idx+1,-1]} | LESS=${LESS:-RWXij.3}  less ${linenum:++${linenum}} ${linenum:+-N}
+  h ${doc} ${@[0,doc_idx-1]} ${@[doc_idx+1,-1]} | LESS=${LESS:-RWXij.3}  less ${linenum:++${linenum}} ${linenum:+-N}
 }
 
 # -- Highlight files, showing filenames --
@@ -326,7 +326,7 @@ gt () {  # [-s <syntax>] [<filepath>...]
 
   if ! (( $+commands[gat] )) {
     if (( $+functions[mise] )) {
-      mise use -g ubi:koki-develop/gat@latest
+      mise use -g ubi:koki-develop/gat
     } elif (( $+functions[gh-install] )) {
       gh-install koki-develop gat gat_Linux_x86_64.tar.gz gat
     }

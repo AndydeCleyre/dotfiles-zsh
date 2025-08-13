@@ -10,8 +10,8 @@ export BAT_PAGER=
 man () {  # <man-arg>...
   # standout -> standout
   # no-standout -> no-standout
-  # underline -> underline green
-  # no-underline -> no-color no-underline
+  # italic -> italic green
+  # no-italic -> no-color no-italic
   # bold -> bold white
   # blink -> bold red
   # no-bold no-blink no-underline -> no-bold no-color no-underline
@@ -19,8 +19,8 @@ man () {  # <man-arg>...
   GROFF_NO_SGR=1 \
   LESS_TERMCAP_so=${(%):-%S} \
   LESS_TERMCAP_se=${(%):-%s} \
-  LESS_TERMCAP_us=${(%):-%F{green}%U} \
-  LESS_TERMCAP_ue=${(%):-%f%u} \
+  LESS_TERMCAP_us=${(%):-%F{green}}$'\e[3m' \
+  LESS_TERMCAP_ue=${(%):-%f}$'\e[0m' \
   LESS_TERMCAP_md=${(%):-%B%F{white}} \
   LESS_TERMCAP_mb=${(%):-%B%F{red}} \
   LESS_TERMCAP_me=${(%):-%b%f%u} \

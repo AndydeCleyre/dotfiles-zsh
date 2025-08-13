@@ -113,10 +113,7 @@ miniprompt () {
     lines=(${(f)"$(tsk list 2>/dev/null)"})
     lines=(${lines:#\*No tasks\*})
   }
-  if [[ $lines ]] {
-    REPLY="%F{yellow}${#lines} %f"
-    if [[ $ZSHRC_PAD_ICONS ]]  REPLY+=' '
-  }
+  if [[ $lines ]]  REPLY="%F{yellow}%f${ZSHRC_PAD_ICONS:+ }${#lines}"
 }
 
 # -- Print time in dozenal format --

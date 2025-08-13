@@ -81,7 +81,7 @@ hi () {  # [-s <syntax>] [<filepath>...]
 ric () {  # [-s <syntax>] [<filepath>...]
   emulate -L zsh -o errreturn
 
-  if (( ! $+commands[rich] )) && (( $+functions[pypi-install] ))  pypi-install install rich-cli
+  if (( ! $+commands[rich] )) && (( $+functions[pypi-install] ))  pypi-install rich-cli
 
   local r_args=(
     --force-terminal

@@ -115,13 +115,17 @@ dropout () {  # [<url>=<clipboard>]
 
 # -- Install a tool from PyPI --
 # Depends: zpy, uv, or pipx
+# Optional: mise
 pypi-install () {  # <pkg>
   emulate -L zsh
 
-  local installcmd=()
+  local installcmd=() pkg=$1
 
   if (( $+functions[pipz] )) {
     installcmd=(pipz install)
+  } elif (( $+commands[mise] )) && (( $+commands[uv] || $+commands[pipx] )) {
+    installcmd=(mise use -g)
+    pkg=pipx:$pkg
   } elif (( $+commands[uv] )) {
     installcmd=(uv tool install)
   } elif (( $+commands[pipx] )) {
@@ -134,7 +138,7 @@ pypi-install () {  # <pkg>
   print -ru2 "Install $1 with ${installcmd[1]}? [yN] "
   if ! { read -q }  return 1
 
-  $installcmd $1
+  $installcmd $pkg
 }
 
 # -- Completion Help Messages --

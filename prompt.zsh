@@ -8,7 +8,7 @@ autoload -Uz add-zsh-hook
 
 PROMPT2='%B%F{blue}…%f%b '
 export PROMPT4='%B%F{white}-- %N:%i %b%f'
-PROMPT_EOL_MARK='%F{red} %f'
+PROMPT_EOL_MARK='%F{red}${ZSHRC_PAD_ICONS:+ }%f'
 
 # -- Simplify on demand --
 miniprompt () {
@@ -188,10 +188,7 @@ miniprompt () {
   )
   lines=(${(f)mapfile[/etc/os-release]})
   distro=${${${(M)lines:#ID=*}##*=\"#}%%\"#}
-  if (( $+distro_icons[$distro] )) {
-    distro="$distro_icons[$distro]"
-    if [[ $ZSHRC_PAD_ICONS ]]  distro+=' '
-  }
+  if (( $+distro_icons[$distro] ))  distro="$distro_icons[$distro]${ZSHRC_PAD_ICONS:+ }"
   .zshrc_prompt-bubble "$distro"
   distro_bubble=$REPLY
 

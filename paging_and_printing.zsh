@@ -1,5 +1,6 @@
 export PAGER=less
 export LESS=RWXij.3
+if (( $+commands[moor] ))  export PAGER=moor  # do I want this?
 
 export BAT_THEME=Coldark-Dark
 export BAT_STYLE=plain
@@ -28,8 +29,14 @@ man () {  # <man-arg>...
 
 # -- Page with less --
 # Accept <doc>:<line-num> as last arg
+# Depends: less, or moor (and mor func)
 l () {  # [<less-arg>...] [<doc>[:<line-num>] (or read stdin)]
   emulate -L zsh -o extendedglob
+
+  if (( $+commands[moor] )) {
+    mor $@
+    return
+  }
 
   local doc linenum
   doc=${@[-1]%:<->##}
@@ -277,8 +284,15 @@ alias hs="h -s"  # <syntax> [<filepath>... (or read stdin)]
 
 # -- Highlight and page --
 # Depends: h
+# Optional: moor (and mor func)
 lh () {  # [<doc>[:<line-num>]] [-s <syntax>] [<h-arg>...]
   emulate -L zsh -o extendedglob
+
+  # not sure if this is a good idea:
+  if (( $+commands[moor] )) {
+    mor $@
+    return
+  }
 
   # syntax can be specified before doc as well
   local doc_idx=1 syntax_idx=${@[(I)-s]}

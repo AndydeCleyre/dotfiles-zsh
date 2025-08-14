@@ -129,7 +129,7 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
   emulate -L zsh -o extendedglob
   rehash
 
-  # get syntax if first arg is md/rst/log/html/xml/json file,
+  # get syntax if first arg is md/djot/rst/log/html/xml/json file,
   # or pop if passed with -s
   local syntax syntax_idx=${@[(I)-s]}
   if (( syntax_idx )) {
@@ -139,6 +139,7 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
     case $1 {
       (*(#i).rst)  syntax=rst  ;;
       (*(#i).md)   syntax=md   ;;
+      (*(#i).dj)   syntax=djot ;;
       (*(#i).html) syntax=html ;;
       (*(#i).xml)  syntax=xml  ;;
       (*(#i).json) syntax=json ;;
@@ -177,6 +178,12 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
           return
 
         }
+      }
+
+    ;; (djot)
+      if (( $+commands[tjot] )) {
+        tjot $@
+        return
       }
 
     ;; (rst)

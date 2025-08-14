@@ -184,6 +184,9 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
       if (( $+commands[tjot] )) {
         tjot $@
         return
+      } elif (( $+commands[pandoc] )) {
+        pandoc -f djot -t ansi $@
+        return
       }
 
     ;; (rst)

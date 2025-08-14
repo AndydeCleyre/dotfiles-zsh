@@ -1,6 +1,8 @@
 export PAGER=less
-export LESS=RWXij.3
 if (( $+commands[moor] ))  export PAGER=moor  # do I want this?
+
+export LESS=RWXij.3
+export MOOR='-no-linenumbers -style onedark -no-clear-on-exit -wrap'
 
 export BAT_THEME=Coldark-Dark
 export BAT_STYLE=plain
@@ -283,16 +285,9 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
 alias hs="h -s"  # <syntax> [<filepath>... (or read stdin)]
 
 # -- Highlight and page --
-# Depends: h
-# Optional: moor (and mor func)
+# Depends: h, and less or moor
 lh () {  # [<doc>[:<line-num>]] [-s <syntax>] [<h-arg>...]
   emulate -L zsh -o extendedglob
-
-  # not sure if this is a good idea:
-  if (( $+commands[moor] )) {
-    mor $@
-    return
-  }
 
   # syntax can be specified before doc as well
   local doc_idx=1 syntax_idx=${@[(I)-s]}
@@ -305,7 +300,11 @@ lh () {  # [<doc>[:<line-num>]] [-s <syntax>] [<h-arg>...]
   local linenum
   if [[ $doc != ${@[doc_idx]} ]]  linenum=${@[doc_idx]#${doc}:}
 
-  h ${doc} ${@[0,doc_idx-1]} ${@[doc_idx+1,-1]} | LESS=${LESS:-RWXij.3}  less ${linenum:++${linenum}} ${linenum:+-N}
+  if (( $+commands[moor] )) {
+    h ${doc} ${@[0,doc_idx-1]} ${@[doc_idx+1,-1]} | MOOR='-no-linenumbers -style onedark -no-clear-on-exit -wrap' moor ${linenum:++${linenum}} ${linenum:+-no-linenumbers=f}
+  } else {
+    h ${doc} ${@[0,doc_idx-1]} ${@[doc_idx+1,-1]} | LESS=${LESS:-RWXij.3}  less ${linenum:++${linenum}} ${linenum:+-N}
+  }
 }
 
 # -- Highlight files, showing filenames --
@@ -395,7 +394,7 @@ mor () {  # [-s <syntax>] [<doc>[:<line-num>] (or read stdin)]
     -wrap
   )
   if [[ $linenum ]] {
-    args+=(+${linenum})
+    args+=(-no-linenumbers=f +${linenum})
   } else {
     args+=(-no-linenumbers)
   }
@@ -424,4 +423,4 @@ xmq () {
 
 # -- Completion Help Messages --
 # Depends: .zshrc_help_complete (help.zsh)
-if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete gt l lh h hi ric sho
+if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete gt l lh h hi ric sho mor

@@ -306,6 +306,9 @@ miniprompt () {
 
 if (( ! $+functions[agkozak-zsh-prompt_plugin_unload] ))  add-zsh-hook precmd .zshrc_prompt-setpsvar
 
+.zshrc_prompt-rprompt
+ZSHRC_RPROMPT=$REPLY
+
 # -- Configure p10k if loaded --
 if (( $+functions[powerlevel10k_plugin_unload] )) {
   if [[ -r ${ZDOTDIR:-${${(%):-%x}:P:h}}/.p10k.zsh ]]  . ${ZDOTDIR:-${${(%):-%x}:P:h}}/.p10k.zsh
@@ -318,7 +321,7 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
   POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=( dir vcs my_psvar kubecontext newline prompt_char )
   POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(newline status command_execution_time background_jobs virtualenv my_rprompt)
   prompt_my_psvar () { p10k segment -t "${(j: :)psvar}" }
-  prompt_my_rprompt () { .zshrc_prompt-rprompt; p10k segment -e -t "$REPLY" }
+  prompt_my_rprompt () { p10k segment -e -t "$ZSHRC_RPROMPT" }
 
   # This doesn't seem to work anymore:
   # .zshrc_prompt-bubble '${$((my_git_formatter(1)))+${my_git_format}}'
@@ -352,8 +355,7 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
   }
   add-zsh-hook precmd .zshrc_prompt-agkozak-pipestatus-hook
 
-  .zshrc_prompt-rprompt
-  AGKOZAK_CUSTOM_RPROMPT="\${AGKOZAK_PIPESTATUS} $REPLY"
+  AGKOZAK_CUSTOM_RPROMPT="\${AGKOZAK_PIPESTATUS} $ZSHRC_RPROMPT"
 
 # -- Set PROMPT and RPROMPT if no prompt plugin is loaded --
 } else {
@@ -368,8 +370,7 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
   zstyle ':vcs_info:git*' actionformats '%F{blue}%b%F{yellow}|%a%F{red}%u%c%f'
 
   add-zsh-hook preexec .zshrc_prompt-timecheck
-  PROMPT=$'\n''${(j: :)psvar}'$'\n''%B%F{white}-- %F{green}%(!.#.$)%f%b '
 
-  .zshrc_prompt-rprompt
-  RPROMPT=$REPLY
+  PROMPT=$'\n''${(j: :)psvar}'$'\n''%B%F{white}-- %F{green}%(!.#.$)%f%b '
+  RPROMPT=$ZSHRC_RPROMPT
 }

@@ -331,7 +331,6 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
 
 # -- Configure agkozak if loaded --
 } elif (( $+functions[agkozak-zsh-prompt_plugin_unload] )) {
-  # TODO: add tsk count to agkozak config
   AGKOZAK_USER_HOST_DISPLAY=0
   AGKOZAK_CUSTOM_SYMBOLS=('⇣⇡' '⇣' '⇡' '+' 'D' 'M' '→' '?' '$')
   AGKOZAK_LEFT_PROMPT_ONLY=1
@@ -355,7 +354,15 @@ if (( $+functions[powerlevel10k_plugin_unload] )) {
   }
   add-zsh-hook precmd .zshrc_prompt-agkozak-pipestatus-hook
 
-  AGKOZAK_CUSTOM_RPROMPT="\${AGKOZAK_PIPESTATUS} $ZSHRC_RPROMPT"
+  .zshrc_prompt-tskcount-rprompt () {
+    .zshrc_prompt-tskcount
+    if [[ $REPLY ]] {
+      .zshrc_prompt-bubble $REPLY
+      print -rn -- " $REPLY"
+    }
+  }
+
+  AGKOZAK_CUSTOM_RPROMPT='${AGKOZAK_PIPESTATUS}$(.zshrc_prompt-tskcount-rprompt)'" $ZSHRC_RPROMPT"
 
 # -- Set PROMPT and RPROMPT if no prompt plugin is loaded --
 } else {

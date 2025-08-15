@@ -266,7 +266,7 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
     if [[ $syntax ]]  argv+=(-s $syntax)
     hi $@
 
-  } elif (( $+commands[gat] )) {  # should gat be preferred over highlight?
+  } elif (( $+commands[gat] )) {
 
     if [[ $syntax ]]  argv+=(-s $syntax)
     gt $@

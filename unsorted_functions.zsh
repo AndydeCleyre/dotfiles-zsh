@@ -23,28 +23,114 @@ alias yy="paru && mise up --bump && pipz upgrade --all && DIFFPROG=meld MERGEPRO
 
 # -- Invoke Factor in a pipe-friendly way --
 # Depends: Factor
-# Example:
-#   print -rl -- one two three | fac '[ >upper print ]' each-line
-fac () {
-  cmd=factor
+# Optional: h (paging_and_printing.zsh)
+# Options:
+#  -l: map code to each line
+#  -s: split lines into a sequence
+#  -j: parse input as JSON
+#  -j: parse input as JSON Lines
+#  -y: parse input as YAML
+#  -d: debug (show Factor code)
+# Examples:
+#   fac -l '>upper " is an uppercase line" append'
+#   fac -s 'length I"${} lines"'
+#   fac 'length I"${} characters"'
+fac () {  # [-(l|s|j|J|y)] [-d] <factor-code>...
+  emulate -L zsh
+
+  local usage=(
+    'fac: Invoke Factor in a pipe-friendly way' ''
+    'Usage:' '' '  fac [-(l|s|j|J|y)] [-d] <factor-code>...' ''
+    'Options:' ''
+    '  -l    map code to each line'
+    '  -s    split lines into a sequence'
+    '  -j    parse input as JSON'
+    '  -j    parse input as JSON Lines'
+    '  -y    parse input as YAML'
+    '  -d    debug (show Factor code)' ''
+    'Examples:' ''
+    '  fac -l '"'"'>upper " is an uppercase line" append'"'"
+    '  fac -s '"'"'length I"${} lines"'"'"
+    '  fac '"'"'length I"${} characters"'"'"
+  )
+
+  local cmd=factor
   if (( $+commands[factor-vm] ))  cmd=factor-vm
-  $cmd -no-user-init -e="
-    auto-use USING: splitting ;
 
-    read-lines
+  local eachline splitlines onestring debug parsejson parseyaml parsejsonlines
+  while [[ $1 == -[lsjJyd] ]] {
+    case $1 {
+      (-l)  eachline=1        ;;
+      (-s)  splitlines=1      ;;
+      (-j)  parsejson=1       ;;
+      (-J)  parsejsonlines=1  ;;
+      (-y)  parseyaml=1       ;;
+      (-d)  debug=1
+    }
+    shift
+  }
 
-    ${(j: :)@}
+  if [[ $1 == -* ]] {
+    print -rlu2 -- ${(F)usage}
+    return 1
+  }
 
+  if [[ $parsejson || $parseyaml || $parsejsonlines ]] {
+    eachline=
+    splitlines=
+  }
+  if [[ $eachline ]]  splitlines=1
+  if ! [[ $eachline || $splitlines ]]  onestring=1
+
+  if [[ -t 0 ]] {
+    eachline=
+    splitlines=
+    onestring=
+    parsejson=
+    parsejsonlines=
+    parseyaml=
+  }
+
+  local factorcode="
+    auto-use
+    USING: splitting unicode ;
     IN: scratch
+
     : cli-print ( x -- )
       {
-        { [ dup string? ] [ print ] }
-        { [ dup sequence? ] [ [ cli-print ] each ] }
+        { [ dup string?   ] [ print                   ] }
+        { [ dup boolean?  ] [ .                       ] }
+        { [ dup sequence? ] [ [ cli-print ] each      ] }
+        { [ dup assoc?    ] [ USE: json write-json nl ] }
         [ . ]
       } cond ;
 
+    ${splitlines:+read-lines}
+    ${eachline:+[}
+    ${onestring:+read-contents}
+
+    ${parsejson:+USE: json json>}
+    ${parsejsonlines:+USE: json jsonlines>}
+    ${parseyaml:+USE: yaml yaml>}
+
+    ${(j: :)@}
+
+    ${eachline:+] map }
+
     cli-print
   "
+
+  if [[ $debug ]] {
+    if (( $+functions[h] )) {
+      print -rlu2 -- "-- Start Factor Code --"
+      h -s factor <<<$factorcode >&2
+      print -rlu2 -- "-- End Factor Code --" ''
+    } else {
+      print -rlu2 -- "-- Start Factor Code --" $factorcode "-- End Factor Code --" ''
+    }
+  }
+
+  $cmd -no-user-init -e=$factorcode
 }
 
 # TODO: title/prompt

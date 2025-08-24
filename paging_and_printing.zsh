@@ -53,12 +53,12 @@ hi () {  # [-s <syntax>] [<filepath>...]
   emulate -L zsh
 
   local themes=(
-    aiseered
+    # aiseered
     base16/gruvbox-dark-pale
-    base16/snazzy
-    blacknblue
+    # base16/snazzy
+    # blacknblue
     bluegreen
-    ekvoli
+    # ekvoli
     navy
   )
 

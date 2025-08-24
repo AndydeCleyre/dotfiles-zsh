@@ -15,9 +15,15 @@ zle -N .zle_redraw-prompt
 # Key: ctrl+l
 # Optional: .zle_redraw-prompt
 .zle_push-line-and-clear () {
+  ZSHRC_PROMPT_LEADING_NEWLINE=
+  if [[ $PS1 == $'\n'* ]] ZSHRC_PROMPT_LEADING_NEWLINE=1
+  if [[ $ZSHRC_PROMPT_LEADING_NEWLINE ]]  PS1=${PS1#$'\n'}
+
   zle .push-input
   zle .clear-screen
   if (( $+functions[.zle_redraw-prompt] ))  zle .zle_redraw-prompt
+
+  if [[ $ZSHRC_PROMPT_LEADING_NEWLINE ]]  PS1=$'\n'${PS1}
 }
 zle -N       .zle_push-line-and-clear
 bindkey '^L' .zle_push-line-and-clear  # ctrl+l

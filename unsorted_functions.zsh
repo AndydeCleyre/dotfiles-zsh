@@ -113,7 +113,7 @@ fac () {  # [-(l|s|j|J|y)] [-d] <factor-code>...
     ${parsejsonlines:+USE: json jsonlines>}
     ${parseyaml:+USE: yaml yaml>}
 
-    ${(j: :)@}
+    ${${${(j: :)@}/ >json/ USE: json >json}/ >yaml/ USE: yaml >yaml}
 
     ${eachline:+] map }
 

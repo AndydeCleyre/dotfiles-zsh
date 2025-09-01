@@ -29,15 +29,10 @@ ZSHZ_UNCOMMON=1
 # Modify fpath entries and content before compinit
 # ------------------------------------------------
 
-.zshrc::generate-fpath-completions \
-  'devbox completion zsh' \
-  'gh completion -s zsh' \
-  'mise completion zsh' \
-  'prqlc shell-completion zsh' \
-  'ruff generate-shell-completion zsh' \
-  'tsk completion -s zsh' \
-  'uv generate-shell-completion zsh' \
-  'yage --completion zsh'
+# See bottom of file for workaround
+# .zshrc::generate-and-load-plugin mise activate zsh
+# .zshrc::generate-fpath-completions ...
+
 .zshrc::generate-fpath-completions-click \
   pip-compile \
   pip-sync
@@ -77,3 +72,18 @@ if ! (( $+functions[agkozak-zsh-prompt_plugin_unload] ))  .zshrc::load-plugin po
 
 compdef _gnu_generic \
   nt2{json,{to,ya}ml} {json,{to,ya}ml}2nt
+
+# To figure out:
+#   I want mise enter hooks to run after the plugins that must run after compinit,
+#   but add tools to the path before .zshrc::generate-fpath-completions, which must be before compinit.
+#   See: https://github.com/jdx/mise/discussions/4217
+.zshrc::generate-fpath-completions \
+  'devbox completion zsh' \
+  'gh completion -s zsh' \
+  'mise completion zsh' \
+  'pixi completion --shell zsh' \
+  'prqlc shell-completion zsh' \
+  'ruff generate-shell-completion zsh' \
+  'tsk completion -s zsh' \
+  'uv generate-shell-completion zsh' \
+  'yage --completion zsh'

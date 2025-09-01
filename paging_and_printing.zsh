@@ -117,6 +117,9 @@ ric () {  # [-s <syntax>] [<filepath>...]
   }
 }
 
+# TODO: is splash support worthwhile?
+# TODO: check how each handler is handling multiple file args, if at all, and make it work
+
 # -- Highlight with whatever --
 # dispatches to rich-cli, highlight, bat, etc. if it can
 # Depends:
@@ -124,7 +127,7 @@ ric () {  # [-s <syntax>] [<filepath>...]
 # Optional:
 #   - bat/highlight/rich-cli/gat
 #   - colordiff/delta/diff-so-fancy/riff/diffr
-#   - glow/mdcat, jq/jello, pandoc, tspin, xmq
+#   - glow/mdcat, jq/jello, pandoc, tspin, splash, xmq
 h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
   emulate -L zsh -o extendedglob
   rehash
@@ -254,7 +257,20 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
     ;; (log)
       if (( $+commands[tspin] )) {
 
-        tspin --print $@
+        if [[ -r $1 ]] {
+          for 1 { tspin --print $1 }
+        } else {
+          tspin --print
+        }
+        return
+
+      } elif (( $+commands[splash] )) {
+
+        if [[ -r $1 ]] {
+          for 1 { splash <$1 }
+        } else {
+          splash
+        }
         return
 
       }

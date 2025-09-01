@@ -67,8 +67,9 @@ gson () {  # <submod-dir>...
       branch=${line#*: }
     }
 
-    git -C $submod fetch origin $branch:$branch
+    git -C $submod fetch origin $branch
     git -C $submod switch $branch
+    git -C $submod branch --set-upstream-to=origin/$branch
   }
 }
 alias gsoff="git submodule deinit"

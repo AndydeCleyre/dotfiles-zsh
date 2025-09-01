@@ -82,7 +82,7 @@
   for 1 {
     words=(${(z)1})
     .zshrc::fortnightly \
-      --unless _${words[1]} \
+      --unless-system _${words[1]} \
       ${words[1]} \
       ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_${words[1]} \
       $words || true
@@ -96,7 +96,7 @@
 
   for 1 {
     .zshrc::fortnightly \
-      --unless _${1} \
+      --unless-system _${1} \
       ${1} \
       ${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions/_${1} \
       eval "_${1:u:gs/-/_}_COMPLETE=zsh_source $1" || true

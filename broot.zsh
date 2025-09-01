@@ -38,16 +38,39 @@ bindkey '^b' .zle_broot  # ctrl+b
 # Fancy Selections
 # ----------------
 
+# -- Select files with broot and print each on a line --
+# Depends: ~/.config/broot/select.hjson ( https://github.com/AndydeCleyre/dotfiles-broot )
+broot-print-files () {  # [broot-arg...]
+  emulate -L zsh
+  broot \
+    --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/select.hjson;${XDG_CONFIG_HOME:-${HOME}/.config}/broot/conf.hjson" \
+    --color yes \
+    --git-ignored \
+    --show-git-info \
+    --no-sizes \
+    $@
+}
+
+# -- Select a single folder with broot and print it --
+# Depends: ~/.config/broot/select-folder.hjson ( https://github.com/AndydeCleyre/dotfiles-broot )
+broot-print-folder () {  # [broot-arg...]
+  emulate -L zsh
+  broot \
+    --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/select-folder.hjson;${XDG_CONFIG_HOME:-${HOME}/.config}/broot/conf.hjson" \
+    --color yes \
+    --git-ignored \
+    --show-git-info \
+    --only-folders \
+    $@
+}
+
 # -- Folder Navigation: Down --
 # Key: alt+down
-# Depends: ~/.config/broot/select-folder.hjson ( https://github.com/AndydeCleyre/dotfiles-broot )
+# Depends: broot-print-folder
 # Optional: .zle_redraw-prompt (clear_and_foldernav.zsh)
 .zle_cd-broot () {
   echoti rmkx
-  cd "$(
-    <$TTY broot --color yes --git-ignored --show-git-info --only-folders \
-    --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/select-folder.hjson;${XDG_CONFIG_HOME:-${HOME}/.config}/broot/conf.hjson"
-  )"
+  cd "$(<$TTY broot-print-folder)"
   if (( $+functions[.zle_redraw-prompt] ))  zle .zle_redraw-prompt
   if (( $+functions[_zsh_highlight]     ))  _zsh_highlight
 }
@@ -56,10 +79,10 @@ bindkey '^[[1;3B' .zle_cd-broot  # alt+down
 
 # -- Start writing a for loop over broot-selected paths (each is $f) --
 # Key: ctrl+f
-# Depends: ~/.config/broot/select.hjson ( https://github.com/AndydeCleyre/dotfiles-broot )
+# Depends: broot-print-files
 .zle_for-broot () {
   zle .push-input
-  LBUFFER='for f ( ${(f)"$(br --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/select.hjson;${XDG_CONFIG_HOME:-${HOME}/.config}/broot/conf.hjson")"} ) {'$'\n''  '
+  LBUFFER='for f ( ${(f)"$(broot-print-files)"} ) {'$'\n''  '
   RBUFFER=' $f'$'\n''}'
 }
 zle -N       .zle_for-broot
@@ -67,7 +90,7 @@ bindkey '^f' .zle_for-broot
 
 # -- Complete current word as path using broot --
 # Key: ctrl+/
-# Depends: ~/.config/broot/select.hjson ( https://github.com/AndydeCleyre/dotfiles-broot )
+# Depends: broot-print-files
 .zle_insert-path-broot () {
   setopt localoptions extendedglob
 
@@ -109,14 +132,14 @@ bindkey '^f' .zle_for-broot
     start_dir=${updirs:-.}
   }
 
+  # Collect determined broot arguments
+  local broot_args=($show_hidden $start_dir)
+  if [[ $broot_search ]]  broot_args+=(--cmd "$broot_search")
+
   # Get a location (or not) from broot,
   # using select.hjson config
   echoti rmkx
-  local locations=(${(f)"$(
-    <$TTY broot --color yes --cmd "$broot_search" $show_hidden --no-sizes \
-    --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/select.hjson;${XDG_CONFIG_HOME:-${HOME}/.config}/broot/conf.hjson" \
-    $start_dir
-  )"})
+  local locations=(${(f)"$(<$TTY broot-print-files $broot_args)"})
 
   # Add location to line or restore original partial
   if [[ $locations ]] {
@@ -149,7 +172,7 @@ bindkey '^_'  .zle_insert-path-broot  # ctrl+/
 }
 
 # -- Pinned view in another tmux pane --
-pin-broot () {
+broot-pin () {
   emulate -L zsh
   local name=$RANDOM
   eval 'update_pinned_broot_$name () { broot --send '$name' -c ":focus $PWD" }'

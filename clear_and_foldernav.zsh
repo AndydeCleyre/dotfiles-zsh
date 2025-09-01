@@ -10,20 +10,43 @@
 }
 zle -N .zle_redraw-prompt
 
+# -- Remove a leading newline from the prompt, returning 0 if there was one --
+.zshrc_prompt-remove-leading-newline () {
+  emulate -L zsh
+  local found semantic_start=$'%{\C-[]133;P;k=i\C-G%}'
+  if [[ $PS1 == ($semantic_start|)$'\n'* ]] {
+    found=1
+    PS1=${PS1/$'\n'}
+  }
+  if [[ ! $found ]]  return 2
+}
+
+# -- Prepend a newline to the prompt, preserving the semantic prompt start code if present --
+.zshrc_prompt-prepend-newline () {
+  emulate -L zsh
+  local semantic_start=$'%{\C-[]133;P;k=i\C-G%}'
+  if [[ $PS1 == ${semantic_start}* ]] {
+    PS1=${PS1/${semantic_start}/${semantic_start}$'\n'}
+  } else {
+    PS1=$'\n'${PS1}
+  }
+}
+
 # -- Better Screen Clearing --
 # Clear line and redraw prompt, restore line at next prompt
 # Key: ctrl+l
-# Optional: .zle_redraw-prompt
+# Optional: .zle_redraw-prompt, .zshrc_prompt-{remove-leading,prepend}-newline
 .zle_push-line-and-clear () {
-  ZSHRC_PROMPT_LEADING_NEWLINE=
-  if [[ $PS1 == $'\n'* ]] ZSHRC_PROMPT_LEADING_NEWLINE=1
-  if [[ $ZSHRC_PROMPT_LEADING_NEWLINE ]]  PS1=${PS1#$'\n'}
+  ZSHRC_PROMPT_STASHED_NEWLINE=
+  if (( $+functions[.zshrc_prompt-remove-leading-newline] )) {
+    if { .zshrc_prompt-remove-leading-newline }  ZSHRC_PROMPT_STASHED_NEWLINE=1
+  }
 
   zle .push-input
   zle .clear-screen
   if (( $+functions[.zle_redraw-prompt] ))  zle .zle_redraw-prompt
 
-  if [[ $ZSHRC_PROMPT_LEADING_NEWLINE ]]  PS1=$'\n'${PS1}
+  if [[ $ZSHRC_PROMPT_STASHED_NEWLINE ]]  .zshrc_prompt-prepend-newline
 }
 zle -N       .zle_push-line-and-clear
 bindkey '^L' .zle_push-line-and-clear  # ctrl+l

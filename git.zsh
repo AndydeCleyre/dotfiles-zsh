@@ -52,19 +52,22 @@ alias gfi="git flow init -d"
 gson () {  # <submod-dir>...
   emulate -L zsh -o errreturn
 
-  git submodule update --single-branch --init --remote $@
+  git submodule update --init $@
 
   local groot submod relsubmod branch lines line
   groot=$(git rev-parse --show-toplevel)
+
   for submod ( $@ ) {
+
+    # Determine branch:
     relsubmod=${${submod:a}#$groot/}
     if ! { branch=$(git config -f "${groot}/.gitmodules" "submodule.$relsubmod.branch") } {
       lines=(${(f)"$(git -C $submod remote show origin)"})
       line=${(M)lines:#* HEAD branch: *}
       branch=${line#*: }
     }
-    # git -C "$submod" config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-    # git -C "$submod" switch "$branch"
+
+    git -C $submod fetch origin $branch:$branch
     git -C $submod switch $branch
   }
 }

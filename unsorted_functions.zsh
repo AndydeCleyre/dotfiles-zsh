@@ -8,7 +8,8 @@ alias scu="systemctl --user"
 alias rsync-copy="rsync -hhh --archive --checksum --info=progress2 --partial --xattrs"
 
 # -- Strip leading tai64n timestamps and non json-line lines --
-jlines () { grep -P --color '@[^ ]+ \{' | sed -E 's/^[^ ]+ //g' }
+jlines () { grep -E '@[^ ]+ \{' | sed -E 's/^[^ ]+ //g' }
+# fac -s '[ R/ ^@[^ ]+ .*/ matches? ] [ R/ ^@[^ ]+ / "" re-replace ] filter-map'
 
 if (( $+commands[wget] )) {
   alias get="wget"

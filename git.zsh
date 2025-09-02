@@ -59,17 +59,26 @@ gson () {  # <submod-dir>...
 
   for submod ( $@ ) {
 
+    relsubmod=${${submod:a}#${groot}/}
+
     # Determine branch:
-    relsubmod=${${submod:a}#$groot/}
-    if ! { branch=$(git config -f "${groot}/.gitmodules" "submodule.$relsubmod.branch") } {
+    if ! { branch=$(git config -f "${groot}/.gitmodules" "submodule.${relsubmod}.branch") } {
       lines=(${(f)"$(git -C $submod remote show origin)"})
       line=${(M)lines:#* HEAD branch: *}
       branch=${line#*: }
     }
 
-    git -C $submod fetch origin $branch
-    git -C $submod switch $branch
-    git -C $submod branch --set-upstream-to=origin/$branch
+    # Fetch, with care for shallow clones:
+    if [[ $(git config -f "${groot}/.gitmodules" "submodule.${relsubmod}.shallow" 2>/dev/null) == "true" ]] {
+      git -C $submod remote set-branches origin $branch
+      git -C $submod fetch --depth=1 origin $branch
+    } else {
+      git -C $submod fetch origin $branch
+    }
+
+    # Ensure branch tracking:
+    git -C $submod switch -C $branch origin/$branch
+    git -C $submod branch --set-upstream-to=origin/$branch $branch
   }
 }
 alias gsoff="git submodule deinit"

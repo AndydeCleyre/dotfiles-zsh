@@ -7,7 +7,7 @@
   path = plugins/fast-syntax-highlighting
   url = https://github.com/andydecleyre/fast-syntax-highlighting
   branch = bugfix/38
-  shallow = false
+  shallow = true
 [submodule "plugins/zsh-z"]
   path = plugins/zsh-z
   url = https://github.com/agkozak/zsh-z

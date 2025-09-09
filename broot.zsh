@@ -7,7 +7,7 @@ if (( $+commands[broot] )) {  # Without broot, skip this file
 zmodload zsh/mapfile
 
 # -- Run broot, cd into pathfile if successful --
-# Depends: zmapfile
+# Depends: zsh/mapfile
 br () {  # [<broot-opt>...]
   emulate -L zsh -o localtraps
 
@@ -166,10 +166,8 @@ bindkey '^f' .zle_for-broot
   if (( $+functions[_zsh_highlight] ))  _zsh_highlight
 
 }
-zle -N        .zle_insert-path-broot
-bindkey '^_'  .zle_insert-path-broot  # ctrl+/
-
-}
+zle -N       .zle_insert-path-broot
+bindkey '^_' .zle_insert-path-broot  # ctrl+/
 
 # -- Pinned view in another tmux pane --
 broot-pin () {
@@ -178,4 +176,6 @@ broot-pin () {
   eval 'update_pinned_broot_$name () { broot --send '$name' -c ":focus $PWD" }'
   add-zsh-hook precmd update_pinned_broot_$name
   tmux splitw -d -h -l 70 broot --listen $name
+}
+
 }

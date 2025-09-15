@@ -118,6 +118,9 @@ bindkey '\ey' .zle_prepend-yadm  # esc, y
 
 # -- Completion Help Messages --
 # Depends: help.zsh (.zshrc_help_complete, .zshrc_help_complete-as-if, .zshrc_help_complete-as-prefix)
-if (( $+functions[.zshrc_help_complete]           ))  .zshrc_help_complete gcl gcl1 gls hotfixed
-if (( $+functions[.zshrc_help_complete-as-if]     ))  .zshrc_help_complete-as-if gson 'git submodule init --'
+if (( $+functions[.zshrc_help_complete]           ))  .zshrc_help_complete gls hotfixed
 if (( $+functions[.zshrc_help_complete-as-prefix] ))  .zshrc_help_complete-as-prefix gse
+if (( $+functions[.zshrc_help_complete-as-if]     )) {
+  .zshrc_help_complete-as-if gcl 'git clone'
+  .zshrc_help_complete-as-if gson 'git submodule init --'
+}

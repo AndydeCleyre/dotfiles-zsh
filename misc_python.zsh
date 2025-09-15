@@ -6,6 +6,15 @@ pie () {  # [path[extra[,extra]...]=.]
   $cmd
 }
 
+# -- uv pip instead of pip if possible (will I regret this?) --
+pip () {  # <pip-arg>...
+  if (( $+commands[uv] )) {
+    uv pip $@
+  } else {
+    =pip $@
+  }
+}
+
 alias i="ipython"
 alias ddg="ddgr -n 3 -x"
 alias def="camb -w"

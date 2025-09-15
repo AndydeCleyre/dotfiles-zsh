@@ -23,6 +23,16 @@ alias rb="rainbow"
 # if (( $+commands[trash] ))  alias rm="trash --verbose"  # completion for trash is worse than for rm
 if (( $+commands[trash] ))  rm () { trash --verbose $@ }
 
+# -- yaml-get for NestedText --
+# Depends: nt2 (PyPI), yamlpath (PyPI)
+ntget () {  # <yamlpath> [<nt-file>]
+  if [[ -t 0 ]] {
+    nt2yaml ${@[-1]} | yaml-get -p ${@[1,-2]} | yaml2nt
+  } else {
+    nt2yaml | yaml-get -p $@ | yaml2nt
+  }
+}
+
 # -- Use wheezy.template similarly to jq and jello --
 # Depends: wheezy.template (PyPI)
 # Pipe JSON to it, and provide template content as args.

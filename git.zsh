@@ -16,12 +16,6 @@ gcl () {  # <uri> [<folder>] [<git clone arg>...]
   && cd $folder
 }
 
-# -- git clone (shallow) --
-# Recursively clone, then enter repo folder
-gcl1 () {  # <uri> [<folder>] [<git clone arg>...]
-  gcl $@ --depth 1
-}
-
 # -- List tracked files --
 gls () {  # [<branch> [<git ls-tree arg>...]]
   git ls-tree -r --name-only ${1:-$(git branch --show-current)} ${@[2,-1]}

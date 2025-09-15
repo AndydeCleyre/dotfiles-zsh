@@ -13,7 +13,10 @@ br () {  # [<broot-opt>...]
 
   local pathfile=$(mktemp)
   trap "=rm ${(q-)pathfile}" EXIT INT QUIT
-  if { broot --verb-output "$pathfile" $@ } {
+
+  local name=$RANDOM
+
+  if { broot --verb-output "$pathfile" --listen $name $@ } {
     if [[ -r $pathfile ]] {
       local folder=${mapfile[$pathfile]}
       if [[ $folder ]]  cd $folder

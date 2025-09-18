@@ -312,6 +312,7 @@ ZSHRC_RPROMPT=$REPLY
 # -- Configure p10k if loaded --
 if (( $+functions[powerlevel10k_plugin_unload] )) {
   if [[ -r ${ZDOTDIR:-${${(%):-%x}:P:h}}/.p10k.zsh ]]  . ${ZDOTDIR:-${${(%):-%x}:P:h}}/.p10k.zsh
+  POWERLEVEL9K_INSTANT_PROMPT=quiet
   POWERLEVEL9K_PROMPT_CHAR_ERROR_VIINS_CONTENT_EXPANSION='%F{white}%B-- %F{green}$%b%f'
   POWERLEVEL9K_PROMPT_CHAR_OK_VIINS_CONTENT_EXPANSION='%F{white}%B-- %F{green}$%b%f'
   POWERLEVEL9K_STATUS_ERROR=true

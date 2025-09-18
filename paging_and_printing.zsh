@@ -160,7 +160,7 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
   }
 
   # use special highlighters if present, for md/rst/diff/log/html/xml/json
-  local hi
+  local hi content files=()
   case $syntax {
 
     (md)
@@ -227,10 +227,19 @@ h () {  # [-s <syntax>] [<filepath>... (or read stdin)]
       if (( $+commands[xmq] )) {
         local xml_success=1
         if [[ $1 ]] {
-          for 1 { xmq $1 render-terminal --color || xml_success= }
+          for 1 {
+            if ! { xmq $1 render-terminal --color } {
+              xml_success=
+              files+=( $1 )
+            }
+          }
+          if ! [[ $xml_success ]]  argv=($files)
         } else {
-          # TODO: consider capturing stdin for if xmq fails here
-          xmq render-terminal --color
+          content=$(<&0)
+          if ! { xmq render-terminal --color <<<$content } {
+            xml_success=
+            exec < <(<<<$content)
+          }
         }
         if [[ $xml_success ]]  return
       }

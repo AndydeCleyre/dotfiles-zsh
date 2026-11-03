@@ -205,8 +205,8 @@ zle -N .zle_backspace-or-undo
   .zshrc_def-select-and right        .forward-char          '^[[1;2C'                 # shift+right
   .zshrc_def-select-and left-word    .backward-word         '^[[1;6D' '^[[5;2~'       # {ctrl+shift+left,shift+pgup}
   .zshrc_def-select-and right-word   .forward-word          '^[[1;6C' '^[[6;2~'       # {ctrl+shift+right,shift+pgdown}
-  .zshrc_def-select-and home         .beginning-of-line     '^[[1;2H' '^[[1;6A'       # {shift+home,ctrl+shift+up}
-  .zshrc_def-select-and end          .end-of-line           '^[[1;2F' '^[[1;6B'       # {shift+end,ctrl+shift+down}
+  .zshrc_def-select-and home         .beginning-of-line     '^[[1;2H' '^[[1;6A' '^[[1;2A'  # {shift+home,ctrl+shift+up,shift+up}
+  .zshrc_def-select-and end          .end-of-line           '^[[1;2F' '^[[1;6B' '^[[1;2B'  # {shift+end,ctrl+shift+down,shift+down}
 
   .zshrc_def-del-selected-or bksp    .zle_backspace-or-undo '^?'                      # backspace
   .zshrc_def-del-selected-or del     .delete-char           '^[[3~' "^[3'5~" '\e[3~'  # delete

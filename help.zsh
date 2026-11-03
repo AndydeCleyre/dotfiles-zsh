@@ -229,3 +229,6 @@ mz () {  # <search-term>...
     man zshall
   }
 }
+
+# -- Generate basic completion functions --
+alias comp="compdef _gnu_generic"

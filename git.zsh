@@ -35,6 +35,7 @@ alias gsb="git status -sb"
 alias gco="git checkout --recurse-submodules"
 alias gd="git diff --submodule=log"
 alias gc="git commit -v"
+alias gsw="git switch"
 alias ga="git add"
 alias gp="git push"
 alias gm="git merge"
@@ -79,7 +80,7 @@ alias gsoff="git submodule deinit"
 
 # -- git submodule foreach, and eval --
 # You can use your functions and aliases
-gse () {  # <cmd> [<cmd-arg>...]
+gse () {  # [<git-flag>...] <cmd> [<cmd-arg>...]
   emulate -L zsh -o localtraps
   trap "cd ${(q-)PWD}" EXIT INT QUIT
 

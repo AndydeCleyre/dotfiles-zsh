@@ -1,10 +1,11 @@
 # -- Copy stdin or file content to clipboard --
-# TODO: test wayland
 c () {  # [<file>]
   if [[ $XDG_SESSION_TYPE == x11 ]] {
     xclip -sel clip $@
-  } else {
+  } elif [[ $@ ]] {
     <$@ wl-copy
+  } else {
+    wl-copy
   }
 }
 

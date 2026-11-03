@@ -2,7 +2,8 @@
 # Either check plugins folder for each named plugin folder and load all found:
 #   .zshrc::load-plugin <plugin-name>...
 # Or check a few file or folder paths for a single plugin and load up to one:
-#   .zshrc::load-plugin --try <probable-plugin-path> <alt-plugin-path>...
+#   .zshrc::load-plugin --try <probable-plugin-path> [<alt-plugin-path>...]
+# --try also returns 1 if not found at any of the locations
 # Optional: ZSH_PLUGINS_DIR
 .zshrc::load-plugin () {
   emulate zsh
@@ -14,6 +15,7 @@
   if [[ $1 == --try ]] {
     shift
 
+    local ret=1
     for 1 {
       plugin_path=$1
       if [[ -d $1 ]] {
@@ -23,9 +25,11 @@
       }
       if [[ -r $plugin_path ]] {
         . $plugin_path
+        ret=0
         break
       }
     }
+    return ret
 
   } else {
 
@@ -43,12 +47,14 @@
 # -- Regenerate outdated files --
 # Do nothing and return 1 if check-cmd isn't in PATH,
 # or if <funcname> is already defined outside home.
+# Depends: .zshrc::defined_beyond_home
 .zshrc::fortnightly () {  # [--unless-system <funcname>] <check-cmd> <dest> <gen-cmd> [<gen-cmd-arg>...]
   emulate -L zsh -o extendedglob
 
+  local unless_system_func
   if [[ $1 == --unless-system ]] {
     shift
-    if { .zshrc_defined_beyond_home $1 }  return 1
+    unless_system_func=$1
     shift
   }
 
@@ -58,13 +64,17 @@
 
   if ! (( $+commands[$check_cmd] ))  return 1
 
-  mkdir -p ${dest:a:h}
-  if [[ ! ${dest}(#qmw-2N) ]]  $gen_cmd >$dest
+  if [[ $unless_system_func ]] && { .zshrc::defined_beyond_home $unless_system_func }  return 1
+
+  if [[ ! ${dest}(#qmw-2N) ]] {
+    mkdir -p ${dest:a:h}
+    $gen_cmd >$dest
+  }
 }
 
 # -- Is (potentially autoloading) function defined outside user's home? --
 # Succeed if defined outside home, return 1 otherwise
-.zshrc_defined_beyond_home () {  # <funcname>
+.zshrc::defined_beyond_home () {  # <funcname>
   emulate -L zsh
 
   autoload -r $1
@@ -117,7 +127,7 @@
 }
 
 # -- Generate and Load a Plugin --
-# Do nothing if generation-cmd isn't in PATH,
+# Do nothing and return 1 if generation-cmd isn't in PATH,
 # or if <funcname> is already defined outside home
 # Depends: .zshrc::fortnightly
 # Optional: ZSH_PLUGINS_DIR
@@ -134,7 +144,11 @@
     args+=($1 $2)
     shift 2
   }
-  args+=($@[1] ${gen_dir}/${@[1]}.zsh $@)
+  args+=($1 ${gen_dir}/${1}.zsh $@)
 
-  if { .zshrc::fortnightly $args }  . ${gen_dir}/${@[1]}.zsh
+  if { .zshrc::fortnightly $args } {
+    . ${gen_dir}/${1}.zsh
+  } else {
+    return 1
+  }
 }

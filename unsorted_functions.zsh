@@ -1,9 +1,7 @@
 alias x="ouch decompress"
 # TODO: fallbacks for x
 
-# systemd.zsh:
-alias sc="systemctl"
-alias scu="systemctl --user"
+
 
 alias rsync-copy="rsync -hhh --archive --checksum --info=progress2 --partial --xattrs"
 

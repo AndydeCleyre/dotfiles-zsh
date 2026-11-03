@@ -41,6 +41,7 @@ ZSHRC_PAD_ICONS=1  # before prompt and ls
 . ${ZDOTDIR}/multiline_enter.zsh
 . ${ZDOTDIR}/pacman.zsh
 . ${ZDOTDIR}/prompt_redraw.zsh
+. ${ZDOTDIR}/systemd.zsh
 
 . ${ZDOTDIR}/broot.zsh  # supersedes keys:
                         #   - ctrl+/   (load after completion_and_glob_opts)

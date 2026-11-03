@@ -14,9 +14,7 @@ br () {  # [<broot-opt>...]
   local pathfile=$(mktemp)
   trap "=rm ${(q-)pathfile}" EXIT INT QUIT
 
-  local name=$RANDOM
-
-  if { broot --verb-output "$pathfile" --listen $name $@ } {
+  if { broot --verb-output "$pathfile" --listen-auto $@ } {
     if [[ -r $pathfile ]] {
       local folder=${mapfile[$pathfile]}
       if [[ $folder ]]  cd $folder
@@ -29,13 +27,13 @@ br () {  # [<broot-opt>...]
 # -- Clear line, run broot, restore line --
 # Key: ctrl+b
 # Depends: br
-.zle_broot () {
+.zle::broot () {
   zle .push-input
   BUFFER="br"
   zle .accept-line
 }
-zle -N       .zle_broot
-bindkey '^b' .zle_broot  # ctrl+b
+zle -N       .zle::broot
+bindkey '^b' .zle::broot  # ctrl+b
 
 # ----------------
 # Fancy Selections
@@ -49,7 +47,6 @@ broot-print-files () {  # [broot-arg...]
     --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/select.hjson;${XDG_CONFIG_HOME:-${HOME}/.config}/broot/conf.hjson" \
     --color yes \
     --git-ignored \
-    --show-git-info \
     --no-sizes \
     $@
 }
@@ -62,7 +59,6 @@ broot-print-folder () {  # [broot-arg...]
     --conf "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/select-folder.hjson;${XDG_CONFIG_HOME:-${HOME}/.config}/broot/conf.hjson" \
     --color yes \
     --git-ignored \
-    --show-git-info \
     --only-folders \
     $@
 }
@@ -70,32 +66,38 @@ broot-print-folder () {  # [broot-arg...]
 # -- Folder Navigation: Down --
 # Key: alt+down
 # Depends: broot-print-folder
-# Optional: .zle_redraw-prompt (clear_and_foldernav.zsh)
-.zle_cd-broot () {
+# Optional: .zle::redraw-prompt (prompt_redraw.zsh)
+.zle::cd-broot () {
   echoti rmkx
   cd "$(<$TTY broot-print-folder)"
-  if (( $+functions[.zle_redraw-prompt] ))  zle .zle_redraw-prompt
-  if (( $+functions[_zsh_highlight]     ))  _zsh_highlight
+  if (( $+functions[.zle::redraw-prompt] ))  zle .zle::redraw-prompt
+  if (( $+functions[_zsh_highlight]      ))  _zsh_highlight
 }
-zle -N            .zle_cd-broot
-bindkey '^[[1;3B' .zle_cd-broot  # alt+down
+zle -N            .zle::cd-broot
+bindkey '^[[1;3B' .zle::cd-broot  # alt+down
 
 # -- Start writing a for loop over broot-selected paths (each is $f) --
-# Key: ctrl+f
+# Key: esc, f
 # Depends: broot-print-files
-.zle_for-broot () {
+.zle::for-broot () {
   zle .push-input
   LBUFFER='for f ( ${(f)"$(broot-print-files)"} ) {'$'\n''  '
   RBUFFER=' $f'$'\n''}'
+  if (( $+functions[_zsh_highlight] ))  _zsh_highlight
 }
-zle -N       .zle_for-broot
-bindkey '^f' .zle_for-broot
+zle -N        .zle::for-broot
+bindkey '\ef' .zle::for-broot  # esc, f
 
 # -- Complete current word as path using broot --
 # Key: ctrl+/
 # Depends: broot-print-files
-.zle_insert-path-broot () {
-  setopt localoptions extendedglob
+.zle::insert-path-broot () {
+  setopt localoptions extendedglob localtraps
+
+  # In case the user aborts with alt-enter, be ready to change folder
+  local pathfile=$(mktemp)
+  trap "=rm ${(q-)pathfile}" EXIT INT QUIT
+  local broot_args=(--verb-output $pathfile)
 
   # If the current word is partially typed, grab it (partial),
   # pop it off the line, and create a search string for it (broot_search)
@@ -136,7 +138,7 @@ bindkey '^f' .zle_for-broot
   }
 
   # Collect determined broot arguments
-  local broot_args=($show_hidden $start_dir)
+  broot_args+=($show_hidden $start_dir)
   if [[ $broot_search ]]  broot_args+=(--cmd "$broot_search")
 
   # Get a location (or not) from broot,
@@ -163,22 +165,53 @@ bindkey '^f' .zle_for-broot
     LBUFFER+="$locations "
   } else {
     LBUFFER+=$partial
+
+    # Change folder instead, if user used alt-enter to abort
+    if [[ -r $pathfile ]] {
+      local folder=${mapfile[$pathfile]}
+      if [[ $folder ]]  cd $folder
+      if (( $+functions[.zle::redraw-prompt] ))  zle .zle::redraw-prompt
+    }
   }
 
   # If using fast-syntax-highlighting, retrigger it
   if (( $+functions[_zsh_highlight] ))  _zsh_highlight
 
 }
-zle -N       .zle_insert-path-broot
-bindkey '^_' .zle_insert-path-broot  # ctrl+/
+zle -N       .zle::insert-path-broot
+bindkey '^_' .zle::insert-path-broot  # ctrl+/
 
 # -- Pinned view in another tmux pane --
+# Key: alt+b, or: esc, b
+# Depends: autoload -Uz add-zsh-hook
 broot-pin () {
   emulate -L zsh
   local name=$RANDOM
-  eval 'update_pinned_broot_$name () { broot --send '$name' -c ":focus $PWD" }'
+
+  eval '
+    update_pinned_broot_$name () {
+      if ! { broot --send '$name' -c ":focus $PWD" 2>/dev/null } {
+        add-zsh-hook -d precmd $0
+        unfunction jb
+      }
+    }
+
+    jb () {
+      emulate -L zsh
+      cd "$(broot --send '$name' --get-root)"
+    }
+  '
+
+  local orientation_flag=-h size=48
+  if (( COLUMNS < 96 )) {
+    orientation_flag=-v
+    size=24
+  }
+
   add-zsh-hook precmd update_pinned_broot_$name
-  tmux splitw -d -h -l 70 broot --listen $name
+  tmux splitw -d $orientation_flag -l $size broot --listen $name
 }
+zle -N broot-pin
+bindkey '\eb' broot-pin  # alt+b, or: esc, b
 
 }

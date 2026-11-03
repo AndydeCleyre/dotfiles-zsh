@@ -151,3 +151,19 @@ bindkey '\e ' copy-prev-shell-word
 
 # -- Don't color bg for pasted text --
 zle_highlight=(paste:none)
+
+# TODO: check line spelling (hunspell -l?)
+
+# -- Replace home with tilde in line --
+.zle::replace-homepaths-with-tilde () {
+  BUFFER=${BUFFER//~/\~}
+}
+zle -N        .zle::replace-homepaths-with-tilde
+bindkey '^[~' .zle::replace-homepaths-with-tilde  # esc, tilde
+
+# -- Replace home with $HOME in line --
+.zle::replace-homepaths-with-homevar () {
+  BUFFER=${BUFFER//~/'$HOME'}
+}
+zle -N        .zle::replace-homepaths-with-homevar
+bindkey '^[$' .zle::replace-homepaths-with-homevar  # esc, dollar-sign

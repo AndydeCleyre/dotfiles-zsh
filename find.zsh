@@ -32,7 +32,13 @@ loc () {  # <regex-term>...
 
   eval $cmd
 }
-alias locu="doas updatedb && loc"
-alias uloc="doas updatedb && loc"
+
+if (( $+commands[doas] )) {
+  alias locu="doas updatedb && loc"
+  alias uloc="doas updatedb && loc"
+} else {
+  alias locu="sudo updatedb && loc"
+  alias uloc="sudo updatedb && loc"
+}
 
 if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete fnd loc

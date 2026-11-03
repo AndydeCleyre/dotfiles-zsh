@@ -33,13 +33,13 @@ zwatch () {  # [-t] [-n <seconds>=2] <cmd> [<cmd-arg>...]
 
 # -- Prepend zwatch --
 # Key: esc, z
-.zle_prepend-zwatch () {
+.zle::prepend-zwatch () {
   BUFFER="zwatch $BUFFER"
   CURSOR=$#BUFFER
 
   if (( $+functions[_zsh_highlight] ))  _zsh_highlight
 }
-zle -N        .zle_prepend-zwatch
-bindkey '\ez' .zle_prepend-zwatch  # esc, z
+zle -N        .zle::prepend-zwatch
+bindkey '\ez' .zle::prepend-zwatch  # esc, z
 
 if (( $+functions[.zshrc_help_complete-as-prefix] ))  .zshrc_help_complete-as-prefix zwatch

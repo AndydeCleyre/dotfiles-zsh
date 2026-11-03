@@ -1,6 +1,9 @@
 zmodload -mF zsh/files 'b:(mkdir|ln|mv|rmdir|rm)'
 umask 007
 
+alias cp="cp -i"
+alias mv="mv -i"
+
 # -- Make and enter a folder --
 mkcd () {  # <folder>
   mkdir -p "$1" && cd "$1"

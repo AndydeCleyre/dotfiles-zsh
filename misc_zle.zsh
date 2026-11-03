@@ -73,6 +73,18 @@ bindkey '\e\e' .zle_prepend-doas  # esc, esc
 zle -N        .zle_setx-sandwich
 bindkey '\es' .zle_setx-sandwich  # esc, s
 
+# -- Array of output lines from current command --
+# Key: esc, l
+.zle::output-lines-array () {
+  local obuffer=$BUFFER
+  zle .push-input
+  LBUFFER='for line ( ${(f)"$('$obuffer')"} ) {'$'\n''  '
+  RBUFFER=' $line'$'\n''}'
+  if (( $+functions[_zsh_highlight] ))  _zsh_highlight
+}
+zle -N        .zle::output-lines-array
+bindkey '\el' .zle::output-lines-array  # esc, l
+
 # -- Expand aliases on the line --
 # Key: esc, x
 # Credit: https://unix.stackexchange.com/a/150737

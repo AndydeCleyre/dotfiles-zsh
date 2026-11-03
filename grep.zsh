@@ -3,7 +3,7 @@ rg () {
   emulate -L zsh
 
   local args=(--smart-case --hidden --no-ignore)
-  local ignores=('!.git/' '!.venv/' '!venv/' '!.tox/' '!.mypy_cache/' '!.nox/' '!.pytest_cache/')
+  local ignores=('!.git/' '!.venv/' '!venv/' '!.tox/' '!.tsk/' '!.mypy_cache/' '!.nox/' '!.pytest_cache/')
   args+=(${${ignores/*/--glob}:^ignores})
 
   =rg $args $@
@@ -17,7 +17,7 @@ ug () {
   emulate -L zsh
 
   local args=(--smart-case --glob-ignore-case --hidden --ignore-binary --perl-regexp)
-  local ignores=('!.git/' '!.venv/' '!venv/' '!.tox/' '!.mypy_cache/' '!.nox/' '!.pytest_cache/')
+  local ignores=('!.git/' '!.venv/' '!venv/' '!.tox/' '!.tsk/' '!.mypy_cache/' '!.nox/' '!.pytest_cache/')
   args+=(--glob=${(j:,:)ignores})
   if [[ -t 0 ]] {
     args+=(--recursive)
@@ -29,21 +29,20 @@ ug () {
 }
 
 # -- grep --
-g () {  # <grep-arg>...
-  emulate -L zsh
-  rehash
-
-  local cmd=(grep -P --color -i)
-  if (( $+commands[pcre2grep] )) {
-    cmd=(pcre2grep --color -i)
-  } elif (( $+commands[pcregrep] )) {
-    cmd=(pcregrep --color -i)
-  } elif [[ ${commands[grep]:P:t} != grep ]] {
-    cmd=(grep -E --color -i)
-  }
-
-  $cmd $@
+if (( $+commands[ug] )) {
+  alias g="ug"
+} elif (( $+commands[rg] )) {
+  alias g="rg"
+} elif (( $+commands[pcre2grep] )) {
+  alias g="pcre2grep --color -i"
+} elif (( $+commands[pcregrep] )) {
+  alias g="pcregrep --color -i"
+} elif [[ ${commands[grep]:P:t} != grep ]] {
+  alias g="grep -E --color -i"
+} else {
+  alias g="grep -P --color -i"
 }
+
 alias no="g -v"
 
 # -- Strip comments and blank lines --
@@ -71,7 +70,7 @@ redact () {  # [<file>]
       'user(name)?|_id|acct|login'
       '|passw(or)?d|pw|key|token|secret'
       '|address|email'
-      '|blob|data'
+      '|blob|data|uuid'
       '|History Items\[\$e\]'
       '|calendar_(id_)?list'
   ') ?[=: ] ?)(\S+)$')
@@ -116,4 +115,4 @@ gblock () {  # <term> [<pcre(2)grep-arg>...]
   $cmd $@
 }
 
-if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete g fax redact gblock
+if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete fax redact gblock

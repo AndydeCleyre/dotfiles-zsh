@@ -28,7 +28,7 @@ if (( $+commands[sera] ))  aliases[yy]="${aliases[yy]} && sera -u"
 #  -l: map code to each line
 #  -s: split lines into a sequence
 #  -j: parse input as JSON
-#  -j: parse input as JSON Lines
+#  -J: parse input as JSON Lines
 #  -y: parse input as YAML
 #  -d: debug (show Factor code)
 # Examples:
@@ -45,7 +45,7 @@ fac () {  # [-(l|s|j|J|y)] [-d] <factor-code>...
     '  -l    map code to each line'
     '  -s    split lines into a sequence'
     '  -j    parse input as JSON'
-    '  -j    parse input as JSON Lines'
+    '  -J    parse input as JSON Lines'
     '  -y    parse input as YAML'
     '  -d    debug (show Factor code)' ''
     'Examples:' ''

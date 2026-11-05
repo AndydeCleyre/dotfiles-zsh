@@ -88,22 +88,29 @@ wz () {  # <template line>...
 # -- yt-dlp, interactively choose quality --
 # Depends:
 #   - yt-dlp (PyPI) -- yt-dlp[default,curl-cffi] recommended
-#   - xclip
+#   - xclip or wl-clipboard (wl-paste)
 # Optional: zpick (unsorted_functions.zsh)
 yt () {  # [[<yt-dlp arg>...] <uri>]
   emulate -L zsh
 
-  local uri=${@[-1]:-$(xclip -sel clip -o)}
-  if [[ $@ ]]  shift -p
+  local uri
+  if [[ $@ ]] {
+    uri=${@[-1]}
+    shift -p
+  } elif [[ $XDG_SESSION_TYPE == x11 ]] {
+    uri=$(xclip -sel clip -o)
+  } else {
+    uri=$(wl-paste)
+  }
 
   local quality
   print -u2 "Quality?"
   if (( $+functions[zpick] )) {
     local REPLY
-    zpick best 1080 720 540
+    zpick best 1080 720 540 360
     quality=$REPLY
   } else {
-    select quality ( best 1080 720 540 ) { break }
+    select quality ( best 1080 720 540 360 ) { break }
   }
 
   local args=(
@@ -142,10 +149,10 @@ dropout () {  # [<url>=<clipboard>]
   print -u2 "Quality?"
   if (( $+functions[zpick] )) {
     local REPLY
-    zpick 540 720 1080 best
+    zpick 360 540 720 1080 best
     quality=$REPLY
   } else {
-    select quality ( 540 720 1080 best ) { break }
+    select quality ( 360 540 720 1080 best ) { break }
   }
 
   if [[ $quality && $quality != best ]]  args+=(-f "bestvideo[height<=$quality]+bestaudio/best[height<=$quality]")

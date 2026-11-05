@@ -139,27 +139,39 @@ if [[ $TERM == linux ]]  tty-colors
   if [[ $lines ]]  REPLY="%F{yellow}%f${ZSHRC_PAD_ICONS:+ } ${#lines}"
 }
 
-# -- Print time in dozenal format --
-.zshrc_prompt-dozenal-time () {
+# -- Print current or specified time in dozenal format --
+dozenal-time () {  # [-t] [<hour> <minute>]
   emulate -L zsh
 
-  local ten=Ŧ lem=Ł
-
-  local h_m=(${(s: :)${(%):-%D{%L %M}}})
-  if [[ "$1" && "$2" ]] {
-    local user_hour=$1
-    (( user_hour %= 12 ))
-    h_m=($user_hour $2)
+  local show_twentyfour_hours  # 1 or empty
+  if [[ $1 == -t ]] {
+    show_twentyfour_hours=1
+    shift
   }
 
-  local hour=${h_m[1]:s/10/$ten/:s/11/$lem/:s/12/0/}
-  local -i minute=${h_m[2]}
+  local hour_minute=()  # numeric pair
+  if [[ "$1" && "$2" ]] {
+    hour_minute=($1 $2)
+  } else {
+    hour_minute=(${(s: :)${(%):-%D{%K %M}}})
+  }
+
+  if [[ $show_twentyfour_hours ]] && (( hour_minute[1] < 13 ))  show_twentyfour_hours=
+
+  hour_minute=($((hour_minute[1] % 12)) $hour_minute[2])
+
+  local ten=Ŧ lem=Ł  # digits
+
+  local hour=${hour_minute[1]:s/10/$ten/:s/11/$lem/}
+  local -i minute=${hour_minute[2]}
 
   local fivers=${$(( minute/5 )):s/10/$ten/:s/11/$lem/}
   local spillover="${$(( minute%5 )):/0}"
 
-  print -r -- "${hour}.${fivers}${spillover:+:}${spillover}"
+  print -r -- "${show_twentyfour_hours}${hour}.${fivers}${spillover:+:$spillover}"
 }
+
+
 # TODO: when tmux is "empty" there's an extra gap
 
 # -- Craft an RPROMPT string --
@@ -171,8 +183,8 @@ if [[ $TERM == linux ]]  tty-colors
   local usual_host='dimwell' usual_user='andy'
 
   # -- Time Bubble --
-  .zshrc_prompt-bubble '$(.zshrc_prompt-dozenal-time)'  # fun
-  # .zshrc_prompt-bubble '%D{%L:%M}'                    # business
+  .zshrc_prompt-bubble '$(dozenal-time)'  # fun
+  # .zshrc_prompt-bubble '%D{%L:%M}'      # business
   local time_bubble=$REPLY
 
   # -- Tab Bubbles --

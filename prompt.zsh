@@ -331,6 +331,21 @@ dozenal-time () {  # [-t] [<hour> <minute>]
       .zshrc_prompt-bubble $(realpath --relative-to=. $mise_cfg)
       psvar+=($REPLY)
     }
+  #   local mise_tools=(${${${(M)path:#*/mise/*}#*mise/installs/}%/bin}) mise_tool
+  #   for mise_tool ( $mise_tools ) {
+  #     .zshrc_prompt-bubble $mise_tool
+  #     psvar+=($REPLY)
+  #   }
+  }
+
+  # -- flox, devbox, or other nixy things --
+  if [[ $FLOX_PROMPT_ENVIRONMENTS ]] {
+    .zshrc_prompt-bubble "󱄅${ZSHRC_PAD_ICONS:+ }$FLOX_PROMPT_ENVIRONMENTS"
+    psvar+=($REPLY)
+  }
+  if [[ $DEVBOX_PROJECT_ROOT ]] {
+    .zshrc_prompt-bubble "󱄅${ZSHRC_PAD_ICONS:+ }${DEVBOX_PROJECT_ROOT:t}"
+    psvar+=($REPLY)
   }
 
 }

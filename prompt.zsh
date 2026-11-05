@@ -136,7 +136,7 @@ if [[ $TERM == linux ]]  tty-colors
     lines=(${(f)"$(tsk list 2>/dev/null)"})
     lines=(${lines:#\*No tasks\*})
   }
-  if [[ $lines ]]  REPLY="%F{yellow}%f${ZSHRC_PAD_ICONS:+ }${#lines}"
+  if [[ $lines ]]  REPLY="%F{yellow}%f${ZSHRC_PAD_ICONS:+ } ${#lines}"
 }
 
 # -- Print time in dozenal format --

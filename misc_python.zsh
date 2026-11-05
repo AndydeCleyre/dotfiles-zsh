@@ -61,8 +61,8 @@ ntreject () {  # <yamlpath> [<yaml-file>]
 # Pipe JSON to it, and provide template content as args.
 # @j is the JSON. Examples:
 #   <pyrightconfig.json wz '@j["venvPath"] is the parent path and @j["venv"] is the folder'
-#   <pyrightconfig.json wz '@(print(as_json(j)))'
-#   <pyrightconfig.json wz '@(x=as_json(j))@x'
+#   <pyrightconfig.json wz '@{as_json(j)}'
+#   <pyrightconfig.json wz '@(x = as_json(j))@x'
 # See https://wheezytemplate.readthedocs.io/en/latest/userguide.html#core-extension
 wz () {  # <template line>...
   emulate -L zsh

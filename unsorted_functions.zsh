@@ -18,7 +18,8 @@ if (( $+commands[wget] )) {
 # -- run mise tasks --
 alias t="mise run"
 
-alias yy="paru && mise up && pipz upgrade --all && DIFFPROG=meld MERGEPROG=meld pacdiff -3 -s"
+alias yy="paru && mise up && pipz upgrade --all && DIFFPROG=meld MERGEPROG=meld pacdiff -3 -s && fwupdmgr update"
+if (( $+commands[sera] ))  aliases[yy]="${aliases[yy]} && sera -u"
 
 # -- Invoke Factor in a pipe-friendly way --
 # Depends: Factor

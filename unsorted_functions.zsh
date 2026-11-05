@@ -206,6 +206,7 @@ pd () {  # [<vid>...]
       if [[ -d $1 ]] {
         vids+=( $1/***.(#i)(${(j:|:)~exts})(.) )
       } else {
+        # TODO: maybe exclude non-exts here
         vids+=($1)
       }
     }

@@ -261,6 +261,36 @@ pd () {  # [<vid>...]
 zle -N       .zle::tsk::list
 bindkey '^t' .zle::tsk::list  # ctrl+t
 
+# TODO:
+# diff-and-clobber () {  # <dest-file> <cmd> [<cmd-arg>...]
+#   emulate -L zsh -o errreturn
+#   if ! [[ $1 && $2 ]]  return 2
+
+#   local targetfile=$1
+#   shift
+
+#   local tmpfile=$(mktemp)
+#   if [[ -e $targetfile ]]  cp $targetfile $tmpfile
+
+#   # $@ >$tmpfile
+#   echo BLAHJ >$tmpfile
+#   # TODO: ^ will we need eval?
+#   # TODO: option to distinguish redirection vs providing $tmpfile as last arg?
+
+#   if ! { diff -q $targetfile $tmpfile 2>/dev/null } {
+ 
+#     if (( $+functions[.zshrc::printing::diff] )) {
+#       diff -u $targetfile $tmpfile 2>/dev/null | .zshrc::printing::diff || true
+#     } else {
+#       diff -u $targetfile $tmpfile 2>/dev/null || true
+#     }
+
+#     mv -i $tmpfile $targetfile
+#   }
+
+#   if [[ -e $tmpfile ]]  rm $tmpfile
+# }
+
 # -- Completion Help Messages --
 # Depends: .zshrc_help_complete (help.zsh)
 if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete fac pd zpick

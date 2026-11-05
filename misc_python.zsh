@@ -26,11 +26,34 @@ if (( $+commands[trash] ))  rm () { trash --verbose $@ }
 # -- yaml-get for NestedText --
 # Depends: nt2 (PyPI), yamlpath (PyPI)
 ntget () {  # <yamlpath> [<nt-file>]
-  if [[ -t 0 ]] {
-    nt2yaml ${@[-1]} | yaml-get -p ${@[1,-2]} | yaml2nt
-  } else {
-    nt2yaml | yaml-get -p $@ | yaml2nt
+  nt2json $2 | yaml-get -p $1 | json2nt
+  # nt2 json $2 | yaml-get -p $1 | 2nt json
+}
+
+# -- jq for NestedText --
+# Depends: nt2 (PyPI), jq
+ntq () {  # [<jq arg>...] <jq filter> [<nt-file>]
+  emulate -L zsh
+  local file
+  if [[ -r ${@[-1]} ]] {
+    file=${@[-1]}
+    shift -p
   }
+  nt2json $file | jq $@ | json2nt
+  # nt2 json $file | jq $@ | 2nt json
+}
+
+# -- headson for NestedText --
+nthead () {
+  nt2json $@ | headson -f json | json2nt
+  # nt2 json $@ | headson -f json | 2nt json
+}
+
+# -- yaml-set --delete for NestedText --
+# Depends: nt2 (PyPI), yamlpath (PyPI)
+ntreject () {  # <yamlpath> [<yaml-file>]
+  nt2yaml $2 | yaml-set --delete --change=$1 | yaml2nt
+  # nt2 yaml $2 | yaml-set --delete --change=$1 | 2nt yaml
 }
 
 # -- Use wheezy.template similarly to jq and jello --
@@ -159,5 +182,10 @@ pypi-install () {  # <pkg>
 }
 
 # -- Completion Help Messages --
-# Depends: .zshrc_help_complete (help.zsh)
+# Depends: .zshrc_help_complete, .zshrc_help_complete-as-if (help.zsh)
 if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete dropout pie pypi-install wz yt
+if (( $+functions[.zshrc_help_complete-as-if] )) {
+  .zshrc_help_complete-as-if ntget    'yaml-get -p'
+  .zshrc_help_complete-as-if ntreject 'yaml-set --delete --change'
+  .zshrc_help_complete-as-if ntq      'jq'
+}

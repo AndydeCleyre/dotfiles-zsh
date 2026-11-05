@@ -249,6 +249,18 @@ pd () {  # [<vid>...]
   }
 }
 
+# -- Clear line, run tsk list, restore line --
+# Key: ctrl+t
+# Depends: tmux, mise, cargo:tsk-cli
+.zle::tsk::list () {
+  zle .push-input
+  # BUFFER='tmux display-popup -k "mise x -- tsk -C ${(q-)PWD} list"'
+  BUFFER='tmux display-popup -k -d $PWD -w 84% "mise x -- tsk list"'
+  zle .accept-line
+}
+zle -N       .zle::tsk::list
+bindkey '^t' .zle::tsk::list  # ctrl+t
+
 # -- Completion Help Messages --
 # Depends: .zshrc_help_complete (help.zsh)
 if (( $+functions[.zshrc_help_complete] ))  .zshrc_help_complete fac pd zpick

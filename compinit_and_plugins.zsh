@@ -40,10 +40,11 @@ ZSHZ_UNCOMMON=1
 
 # If any plugins might be used in mise enter hooks,
 # see bottom of file for workaround.
-.zshrc::generate-and-load-plugin mise activate zsh  # my be needed for some tools below
+.zshrc::generate-and-load-plugin mise activate zsh  # may be needed for some tools below
 .zshrc::generate-fpath-completions \
   'devbox completion zsh' \
   'gh completion -s zsh' \
+  'hson --completions zsh' \
   'leaf --auto-complete zsh:dump' \
   'mise completion zsh' \
   'niri completions zsh' \
@@ -56,7 +57,7 @@ ZSHZ_UNCOMMON=1
   'uv generate-shell-completion zsh' \
   'yage --completion zsh' \
   'zsh-patina completion'
-  # consider killing: devbox, pixi
+  # consider killing: devbox, pixi, tdl, niri, splash
 
 .zshrc::generate-fpath-completions-click \
   pip-compile \

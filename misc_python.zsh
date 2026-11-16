@@ -45,8 +45,8 @@ ntq () {  # [<jq arg>...] <jq filter> [<nt-file>]
 
 # -- headson for NestedText --
 nthead () {
-  nt2json $@ | headson -f json | json2nt
-  # nt2 json $@ | headson -f json | 2nt json
+  nt2json $@ | hson -f json | json2nt
+  # nt2 json $@ | hson -f json | 2nt json
 }
 
 # -- yaml-set --delete for NestedText --
